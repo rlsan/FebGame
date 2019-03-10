@@ -43,9 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug.cs" />
-    <Compile Include="Tilemap.cs" />
-    <Compile Include="TileProperties.cs" />
-    <Compile Include="TileType.cs" />
+    <Compile Include="RNG.cs" />
+    <Compile Include="Tiles\AnimatedTile.cs" />
+    <Compile Include="Tiles\ColumnTile.cs" />
+    <Compile Include="Tiles\Tile.cs" />
+    <Compile Include="Tiles\Tilemap.cs" />
+    <Compile Include="Tiles\TileProperties.cs" />
+    <Compile Include="Tiles\RandomTile.cs" />
+    <Compile Include="Tiles\RowTile.cs" />
+    <Compile Include="Tiles\TileType.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="IState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,10 +60,9 @@
     <Compile Include="SpriteFactory.cs" />
     <Compile Include="SpriteFont.cs" />
     <Compile Include="TextField.cs" />
-    <Compile Include="Tile.cs" />
-    <Compile Include="TileBrush.cs" />
-    <Compile Include="TilemapLayer.cs" />
-    <Compile Include="Tileset.cs" />
+    <Compile Include="Tiles\TileBrush.cs" />
+    <Compile Include="Tiles\TilemapLayer.cs" />
+    <Compile Include="Tiles\Tileset.cs" />
     <Compile Include="UI\TileBrushSwatch.cs" />
     <Compile Include="Transform.cs" />
   </ItemGroup>

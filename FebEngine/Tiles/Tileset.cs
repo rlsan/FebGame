@@ -2,14 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine
+namespace FebEngine.Tiles
 {
   public class Tileset
   {
     public Texture2D Texture { get; }
 
     private Tile[] rawTiles;
-    public List<TileBrush> brushPalette { get; }
+    public List<Tile> TilePalette { get; }
 
     public int TileWidth { get; }
 
@@ -19,7 +19,7 @@ namespace FebEngine
     private readonly int columns;
 
     public int TotalRawTiles { get { return rawTiles.Length; } }
-    public int Brushes { get { return brushPalette.Count; } }
+    public int Tiles { get { return TilePalette.Count; } }
 
     public Tileset(Texture2D texture, int tileWidth, int tileHeight)
     {
@@ -32,22 +32,39 @@ namespace FebEngine
       columns = Texture.Height / tileHeight;
 
       rawTiles = new Tile[rows * columns];
-      brushPalette = new List<TileBrush>();
+      TilePalette = new List<Tile>();
 
       for (int i = 0; i < rawTiles.Length; i++)
       {
         //rawTiles[i].Reset();
-        AddBrush(new int[] { i });
+        AddTile(new Tile { id = i });
       }
     }
 
-    public Vector2 GetTileFromIndex(int index)
+    public Vector2 GetTilePositionFromIndex(int index)
     {
       int tileX = index % rows;
       int tileY = index / rows;
 
       return new Vector2(tileX, tileY);
     }
+
+    public Tile GetTileFromIndex(int index)
+    {
+      return TilePalette[index];
+    }
+
+    public Tile AddTile(Tile tile)
+    {
+      var t = tile;
+      t.id = Tiles + 0;
+
+      TilePalette.Add(t);
+
+      return t;
+    }
+
+    /*
 
     public TileBrush AddBrush(int[] frames)
     {
@@ -58,7 +75,7 @@ namespace FebEngine
         properties = new TileType[] { TileType.Solid },
       };
 
-      brushPalette.Add(tb);
+      TilePalette.Add(tb);
 
       return tb;
     }
@@ -72,7 +89,7 @@ namespace FebEngine
         properties = new TileType[] { TileType.Solid },
       };
 
-      brushPalette.Add(tb);
+      TilePalette.Add(tb);
 
       return tb;
     }
@@ -86,7 +103,7 @@ namespace FebEngine
         properties = properties,
       };
 
-      brushPalette.Add(tb);
+      TilePalette.Add(tb);
 
       return tb;
     }
@@ -100,7 +117,7 @@ namespace FebEngine
         properties = new TileType[] { property },
       };
 
-      brushPalette.Add(tb);
+      TilePalette.Add(tb);
 
       return tb;
     }
@@ -114,9 +131,10 @@ namespace FebEngine
         properties = new TileType[] { property },
       };
 
-      brushPalette.Add(tb);
+      TilePalette.Add(tb);
 
       return tb;
     }
+    */
   }
 }

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine
+namespace FebEngine.Tiles
 {
   public class TileProperties
   {
-    TileType[] Properties { get; set; }
+    private TileType[] Properties { get; set; }
 
     public TileType Property
     {

@@ -1,4 +1,4 @@
-﻿namespace FebEngine
+﻿namespace FebEngine.Tiles
 {
   public enum TileType
   {

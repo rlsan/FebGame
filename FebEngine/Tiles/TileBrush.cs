@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FebEngine
+﻿namespace FebEngine.Tiles
 {
   public class TileBrush
   {
     public int id;
     public int[] frames;
     public TileType[] properties;
+    public Tile rawTile;
 
     public bool IsAnimated { get { return frames.Length > 0; } }
 

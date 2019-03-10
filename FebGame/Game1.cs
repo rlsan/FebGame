@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 using FebEngine;
 using FebEngine.UI;
-using FebGame.States;
+using FebEngine.Tiles;
 
 namespace FebGame
 {
@@ -20,13 +20,11 @@ namespace FebGame
     private Texture2D selector;
 
     private List<TileBrushSwatch> swatches;
-    private TileBrush selectedBrush;
+    private Tile selectedTile;
     private List<Tile> tiles;
 
     private Tileset tileset;
     private Tilemap tilemap;
-
-    private Rectangle paintableArea;
 
     private RenderTarget2D renderTarget;
 
@@ -51,14 +49,14 @@ namespace FebGame
     protected override void Initialize()
     {
       swatches = new List<TileBrushSwatch>();
-      selectedBrush = new TileBrush { id = -1, frames = new int[] { -1 }, properties = new TileType[] { TileType.None } };
+      selectedTile = new Tile();
       tiles = new List<Tile>();
       tilemap = new Tilemap(40, 25, 16, 16);
 
-      tilemap.AddLayer("Foreground");
-      tilemap.AddLayer("Background");
+      tilemap.SetLayers("BG", "FG", "D");
 
-      paintableArea = new Rectangle(200, 0, 600, 800);
+      tilemap.GetLayer(2).X = 8;
+      tilemap.GetLayer(2).Y = 8;
 
       IsMouseVisible = true;
 
@@ -89,7 +87,25 @@ namespace FebGame
       selector = Content.Load<Texture2D>("selector");
 
       tileset = new Tileset(tilesetTexture, 16, 16);
-      tileset.AddBrush(new int[] { 0, 1, 2 }, TileType.Breakable);
+      //tileset.AddBrush(new ColumnTile());
+      var logMiddle = tileset.AddTile(new RandomTile(
+        tileset.GetTileFromIndex(34),
+        tileset.GetTileFromIndex(35),
+        tileset.GetTileFromIndex(36)
+        ));
+      var logEnd = tileset.AddTile(new RandomTile(
+        tileset.GetTileFromIndex(37),
+        tileset.GetTileFromIndex(38)
+        ));
+
+      var log = tileset.AddTile(new RowTile(
+
+        tileset.GetTileFromIndex(33),
+        logMiddle,
+        logEnd
+        ));
+
+      //tileset.AddBrush(new int[] { 0, 1, 2 }, TileType.Breakable);
 
       Debug.fontTexture = Content.Load<Texture2D>("debug1");
 
@@ -100,13 +116,13 @@ namespace FebGame
 
       int paletteWidth = 16;
 
-      for (int i = 0; i < tileset.Brushes; i++)
+      for (int i = 0; i < tileset.Tiles; i++)
       {
-        var brush = tileset.brushPalette[i];
+        var brush = tileset.TilePalette[i];
         swatches.Add(new TileBrushSwatch(brush, new Vector2((i % paletteWidth) * size, i / paletteWidth * size), size));
       }
 
-      tilemap.texture = tilesetTexture;
+      tilemap.tileset = tileset;
     }
 
     protected override void UnloadContent()
@@ -134,6 +150,10 @@ namespace FebGame
       {
         selectedLayerIndex = 1;
       }
+      if (keyboard.IsKeyDown(Keys.D3))
+      {
+        selectedLayerIndex = 2;
+      }
 
       selectedLayerIndex = selectedLayerIndex % tilemap.LayerCount;
 
@@ -148,15 +168,15 @@ namespace FebGame
         if (swatch.Hover)
         {
           hoverSwatches = true;
-          hoveredTileString = swatch.brush.id.ToString();
-          hoveredTilePropertiesString = swatch.brush.PropertiesToString;
+          hoveredTileString = swatch.tile.id.ToString();
+          hoveredTilePropertiesString = swatch.tile.PropertiesToString;
         }
 
         if (swatch.Pressed)
         {
           //this.selectedBrush.Clear();
-          selectedBrush = swatches[i].brush;
-          selectedTileString = selectedBrush.id.ToString();
+          selectedTile = swatches[i].tile;
+          selectedTileString = selectedTile.id.ToString();
         }
       }
 
@@ -175,15 +195,15 @@ namespace FebGame
           }
           else
           {
-            selectedLayer.PutTile(selectedBrush, posX, posY);
+            selectedLayer.PutTile(selectedTile, posX, posY);
           }
         }
         if (mouse.RightButton == ButtonState.Pressed)
         {
           var tile = selectedLayer.GetTileXY(posX, posY);
 
-          selectedBrush = new TileBrush { id = tile.id, frames = tile.frames, properties = tile.properties };
-          selectedTileString = selectedBrush.id.ToString();
+          selectedTile = tile;
+          selectedTileString = selectedTile.id.ToString();
         }
         //}
 
@@ -195,13 +215,30 @@ namespace FebGame
       if (keyboard.IsKeyDown(Keys.D))
       {
         selectedLayer.ShowTileIndices();
+        selectedLayer.IsVisible = false;
+      }
+      else
+      {
+        selectedLayer.IsVisible = true;
       }
       if (keyboard.IsKeyDown(Keys.K))
       {
         selectedLayer.Clear();
       }
 
-      selectedTileString = selectedBrush.id.ToString();
+      foreach (var tile in selectedLayer.tileArray)
+      {
+        if (tile.id != -1)
+        {
+          if (selectedLayer.GetTileXY(tile.X, tile.Y - 1).id == -1)
+          {
+            //selectedLayer.PutTile(tileset.brushPalette[0], tile.X, tile.Y);
+            //Debug.Text("X", tile.X * tilemap.tileWidth, tile.Y * tilemap.tileHeight);
+          }
+        }
+      }
+
+      selectedTileString = selectedTile.id.ToString();
 
       //textField.Update(gameTime, keyboard);
 
@@ -214,6 +251,7 @@ namespace FebGame
         "Layer: " + selectedLayerIndex + " (" + selectedLayer.Name + ")",
         "",
         "Current: " + hoveredTileString,
+        "Type: " + selectedTile.Name,
         "Properties: " + hoveredTilePropertiesString,
         "Selected: " + selectedTileString,
       };
@@ -238,59 +276,22 @@ namespace FebGame
       int unitsX = tilesetTexture.Width / size;
       int unitsY = tilesetTexture.Height / size;
 
-      // Draw tilemap
-      for (int layerID = 0; layerID < tilemap.LayerCount; layerID++)
-      {
-        var layer = tilemap.GetLayer(layerID);
-
-        var color = Color.White;
-
-        if (layerID != selectedLayerIndex)
-        {
-          color = new Color(Color.LightGray, 1f);
-        }
-
-        for (int i = 0; i < layer.tileArray.Length; i++)
-        {
-          int tileX = i % tilemap.width;
-          int tileY = i / tilemap.width;
-          var tile = layer.tileArray[tileX, tileY];
-
-          int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % tile.frames.Length;
-          var frame = tile.frames[timeFrame];
-
-          Vector2 framePosition = tileset.GetTileFromIndex(frame);
-          int x = (int)framePosition.X;
-          int y = (int)framePosition.Y;
-
-          if (tile.id >= 0)
-          {
-            spriteBatch.Draw(
-              tilemap.texture,
-              new Rectangle(tileX * size, tileY * size, size, size),
-              new Rectangle(x * size, y * size, size, size),
-              color
-              );
-          }
-        }
-      }
+      // Draw tilemap layers
+      tilemap.Draw(spriteBatch);
 
       // Draw brush swatch palette
       for (int i = 0; i < swatches.Count; i++)
       {
-        var brush = tileset.brushPalette[i];
-        var frame = brush.frames[0];
+        var tile = tileset.TilePalette[i];
+        //var frame = brush.frames[0];
 
-        if (brush.IsAnimated)
-        {
-          int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % brush.frames.Length;
-          frame = brush.frames[timeFrame];
-        }
-
-        Vector2
-
-          framePosition = tileset.GetTileFromIndex(frame);
-
+        //if (brush.IsAnimated)
+        //{
+        //  int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % brush.frames.Length;
+        //  frame = brush.frames[timeFrame];
+        //}
+        int frame = tile.ReturnFirstFrame();
+        Vector2 framePosition = tileset.GetTilePositionFromIndex(frame);
         int x = (int)framePosition.X;
         int y = (int)framePosition.Y;
 
@@ -304,13 +305,14 @@ namespace FebGame
 
       // Draw selected tile
 
-      if (selectedBrush != null)
+      if (selectedTile != null)
       {
-        if (selectedBrush.id != -1)
+        if (selectedTile.id != -1)
         {
-          for (int i = 0; i < selectedBrush.frames.Length; i++)
+          /*
+          for (int i = 0; i < selectedTile.frames.Length; i++)
           {
-            var frame = selectedBrush.frames[i];
+            var frame = selectedTile.frames[i];
 
             Vector2 framePosition = tileset.GetTileFromIndex(frame);
 
@@ -324,6 +326,7 @@ namespace FebGame
                 Color.White
                 );
           }
+          */
         }
       }
 

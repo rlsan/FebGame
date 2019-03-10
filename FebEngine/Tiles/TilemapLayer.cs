@@ -1,57 +1,72 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FebEngine
+namespace FebEngine.Tiles
 {
   public class TilemapLayer
   {
     private Tilemap Tilemap { get; }
     public string Name { get; }
 
+    public int X { get; set; }
+    public int Y { get; set; }
+
     public Dictionary<int, Tile> tiles;
     public Tile[,] tileArray;
+    public int[,] hashArray;
 
-    public TilemapLayer(Tilemap tilemap, string Name)
+    public bool IsVisible { get; set; }
+    public bool IsDirty { get; set; }
+
+    public TilemapLayer(Tilemap tilemap, string name)
     {
-      this.Tilemap = tilemap;
-      this.Name = Name;
+      Tilemap = tilemap;
+      Name = name;
 
       tiles = new Dictionary<int, Tile>();
-      tileArray = new Tile[this.Tilemap.width, this.Tilemap.height];
+      tileArray = new Tile[Tilemap.width, Tilemap.height];
+      hashArray = new int[Tilemap.width, Tilemap.height];
+
+      IsVisible = true;
 
       //Populate the tile array
 
-      for (int i = 0; i < tileArray.GetLength(0); i++)
+      for (int x = 0; x < tileArray.GetLength(0); x++)
       {
-        for (int j = 0; j < tileArray.GetLength(1); j++)
+        for (int y = 0; y < tileArray.GetLength(1); y++)
         {
           var t = new Tile
           {
-            id = -1,
-            frames = new int[] { -1 },
             properties = new TileType[] { TileType.None },
+            X = x,
+            Y = y,
           };
 
-          tileArray[i, j] = t;
+          tileArray[x, y] = t;
+          hashArray[x, y] = RNG.RandIntRange(0, 99);
         }
       }
     }
 
-    public void PutTile(TileBrush brush, int x, int y)
+    public void PutTile(Tile tile, int x, int y)
     {
       if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
       {
         return;
       }
 
-      tileArray[x, y].id = brush.id;
-      tileArray[x, y].frames = brush.frames;
-      tileArray[x, y].properties = brush.properties;
+      hashArray[x, y] = RNG.RandIntRange(0, 99);
+
+      if (tileArray[x, y].id == tile.id)
+      {
+        return;
+      }
+
+      Tile t = tile;
+
+      tileArray[x, y] = t;
+
+      IsDirty = true;
     }
 
     public void EraseTile(int x, int y)
@@ -61,7 +76,9 @@ namespace FebEngine
         return;
       }
 
-      tileArray[x, y].Reset();
+      tileArray[x, y] = new Tile();
+
+      IsDirty = true;
     }
 
     public void Clear()
@@ -70,17 +87,16 @@ namespace FebEngine
       {
         for (int y = 0; y < tileArray.GetLength(1); y++)
         {
-          tileArray[x, y].id = -1;
+          tileArray[x, y] = new Tile();
         }
       }
+
+      IsDirty = true;
     }
 
     public Tile GetTile(Vector2 position)
     {
-      Tile t = new Tile
-      {
-        id = -1
-      };
+      Tile t = new Tile();
 
       int x = (int)position.X / 16;
       int y = (int)position.Y / 16;
@@ -118,16 +134,18 @@ namespace FebEngine
       return tileArray[x, y].id;
     }
 
-    public void ShowTileIndices()
+    public void ShowTileIndices(bool showEmptyTiles = false)
     {
       for (int x = 0; x < tileArray.GetLength(0); x++)
       {
         for (int y = 0; y < tileArray.GetLength(1); y++)
         {
           Tile tile = tileArray[x, y];
-          if (tile.id >= 0)
+
+          if (showEmptyTiles || tile.id >= 0)
           {
             Debug.Text(tile.id.ToString(), x * Tilemap.tileWidth, y * Tilemap.tileHeight);
+            //Debug.Text(hashArray[x, y], x * Tilemap.tileWidth, y * Tilemap.tileHeight);
           }
         }
       }
