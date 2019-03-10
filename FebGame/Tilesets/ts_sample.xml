@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tileset image="tileset" tileWidth="16" tileHeight="16">
+  <tile id="0" type="solid" animated="true">
+    <frames>0,1,2,10,2,1</frames>
+  </tile>
+  <tile id="1" type="oneway" animated="false"></tile>
+</tileset>
