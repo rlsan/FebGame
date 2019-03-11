@@ -4,19 +4,27 @@
   {
     public override string Name { get; } = "Animated";
 
-    public int fps;
+    public int fps = 12;
+    public bool random = false;
 
-    public AnimatedTile(params Tile[] tiles)
+    public AnimatedTile(int fps, bool random, params Tile[] tiles)
     {
       children = tiles;
+      this.fps = fps;
+      this.random = random;
     }
 
-    /*
-    public override int ReturnFrame(TilemapLayer layer)
+    public override int ReturnFrame(TilemapLayer layer, int x, int y)
     {
-      for (int i = 0; i < children.Length; i++)
-        return children[i].ReturnFrame(layer);
+      int timeFrame = 0;
+      if (random)
+        timeFrame = ((int)(Time.Seconds * fps) + layer.hashArray[x, y]) % children.Length;
+      else
+        timeFrame = (int)(Time.Seconds * fps) % children.Length;
+
+      var picked = children[timeFrame];
+
+      return picked.ReturnFrame(layer, x, y);
     }
-    */
   }
 }

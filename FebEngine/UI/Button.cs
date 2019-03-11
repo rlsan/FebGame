@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.UI
 {
-  public abstract class Button
+  public class Button : UIElement
   {
     public Rectangle Bounds { get; set; }
 
@@ -25,6 +26,10 @@ namespace FebEngine.UI
 
         return Hover && m.LeftButton == ButtonState.Pressed || Hover && m.RightButton == ButtonState.Pressed;
       }
+    }
+
+    public override void Draw(SpriteBatch sb)
+    {
     }
   }
 }

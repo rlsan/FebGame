@@ -15,8 +15,6 @@
     {
       var pickedTile = children[layer.hashArray[x, y] % children.Length];
 
-      //Debug.Text(x + ", " + y, x * 16, y * 16);
-
       return pickedTile.ReturnFrame(layer, x, y);
     }
   }

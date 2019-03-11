@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using FebEngine.Tiles;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.UI
 {
@@ -11,6 +12,10 @@ namespace FebEngine.UI
     {
       Bounds = new Rectangle(position.ToPoint(), new Point(size));
       this.tile = tile;
+    }
+
+    public override void Draw(SpriteBatch sb)
+    {
     }
   }
 }

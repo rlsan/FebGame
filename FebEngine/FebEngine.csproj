@@ -52,6 +52,7 @@
     <Compile Include="Tiles\RandomTile.cs" />
     <Compile Include="Tiles\RowTile.cs" />
     <Compile Include="Tiles\TileType.cs" />
+    <Compile Include="Time.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="IState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,8 +64,11 @@
     <Compile Include="Tiles\TileBrush.cs" />
     <Compile Include="Tiles\TilemapLayer.cs" />
     <Compile Include="Tiles\Tileset.cs" />
+    <Compile Include="UI\TextWindow.cs" />
     <Compile Include="UI\TileBrushSwatch.cs" />
     <Compile Include="Transform.cs" />
+    <Compile Include="UI\UICanvas.cs" />
+    <Compile Include="UI\UIElement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

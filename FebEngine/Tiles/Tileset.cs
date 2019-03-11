@@ -18,7 +18,6 @@ namespace FebEngine.Tiles
     private readonly int rows;
     private readonly int columns;
 
-    public int TotalRawTiles { get { return rawTiles.Length; } }
     public int Tiles { get { return TilePalette.Count; } }
 
     public Tileset(Texture2D texture, int tileWidth, int tileHeight)
@@ -36,7 +35,6 @@ namespace FebEngine.Tiles
 
       for (int i = 0; i < rawTiles.Length; i++)
       {
-        //rawTiles[i].Reset();
         AddTile(new Tile { id = i });
       }
     }
@@ -63,78 +61,5 @@ namespace FebEngine.Tiles
 
       return t;
     }
-
-    /*
-
-    public TileBrush AddBrush(int[] frames)
-    {
-      var tb = new TileBrush
-      {
-        id = Brushes + 0,
-        frames = frames,
-        properties = new TileType[] { TileType.Solid },
-      };
-
-      TilePalette.Add(tb);
-
-      return tb;
-    }
-
-    public TileBrush AddBrush(int frame)
-    {
-      var tb = new TileBrush
-      {
-        id = Brushes + 0,
-        frames = new int[] { frame },
-        properties = new TileType[] { TileType.Solid },
-      };
-
-      TilePalette.Add(tb);
-
-      return tb;
-    }
-
-    public TileBrush AddBrush(int[] frames, TileType[] properties)
-    {
-      var tb = new TileBrush
-      {
-        id = Brushes + 0,
-        frames = frames,
-        properties = properties,
-      };
-
-      TilePalette.Add(tb);
-
-      return tb;
-    }
-
-    public TileBrush AddBrush(int frame, TileType property)
-    {
-      var tb = new TileBrush
-      {
-        id = Brushes + 0,
-        frames = new int[] { frame },
-        properties = new TileType[] { property },
-      };
-
-      TilePalette.Add(tb);
-
-      return tb;
-    }
-
-    public TileBrush AddBrush(int[] frames, TileType property)
-    {
-      var tb = new TileBrush
-      {
-        id = Brushes + 1,
-        frames = frames,
-        properties = new TileType[] { property },
-      };
-
-      TilePalette.Add(tb);
-
-      return tb;
-    }
-    */
   }
 }
