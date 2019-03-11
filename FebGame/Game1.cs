@@ -30,11 +30,12 @@ namespace FebGame
     private const int VIRTUAL_WIDTH = 1400 / 2;
     private const int VIRTUAL_HEIGHT = 900 / 2;
 
-    private TextField textField = new TextField("TILEMAP.ATM");
+    private TextField textField = new TextField("TestTilemap");
 
     private int selectedLayerIndex = 1;
 
     private UICanvas canvas;
+    private TilemapXML tilemapXML;
 
     public Game1()
     {
@@ -80,13 +81,33 @@ namespace FebGame
       canvas = new UICanvas();
       canvas.AddElement("Palette", new TextWindow(true), new Rectangle(0, 0, 128, 300));
       canvas.AddElement("Tilemap Info", new TextWindow(false), new Rectangle(128, 0, 128, 300));
+      canvas.AddElement("Tile Info", new TextWindow(false), new Rectangle(256, 0, 128, 300));
       canvas.AddElement("Shortcuts", new TextWindow(false,
         "Left M - Paint",
         "Right M - Dropper",
         "E - Erase",
+        "K - Clear",
         "D - Show indices",
+        "F - Show properties",
         "1-3 - Layers"
-        ), new Rectangle(256, 0, 128, 300));
+        ), new Rectangle(128 + 256, 0, 128, 300));
+
+      canvas.AddElement("Save", new TextButton(), new Rectangle(512, 0, 40, 30));
+      canvas.AddElement("Load", new TextButton(), new Rectangle(512 + 40, 0, 40, 30));
+
+      canvas.AddElement("New Tile", new TextButton(), new Rectangle(512 + 80, 0, 70, 30));
+      canvas.AddElement("Solid", new TextButton(), new Rectangle(512 + 80, 30, 70, 30));
+      canvas.AddElement("One Way Up", new TextButton(), new Rectangle(512 + 80, 60, 70, 30));
+      canvas.AddElement("Ladder", new TextButton(), new Rectangle(512 + 80, 90, 70, 30));
+      canvas.AddElement("Water", new TextButton(), new Rectangle(512 + 80, 120, 70, 30));
+      canvas.AddElement("Breakable", new TextButton(), new Rectangle(512 + 80, 150, 70, 30));
+
+      tilemap.name = textField.text;
+      tilemapXML = new TilemapXML(tilemap);
+
+      //canvas.AddElement("Properties", new TextWindow(false,
+      //  Enum.GetNames(typeof(TileType))
+      //  ), new Rectangle(256 + 128, 0, 128, 300));
 
       base.Initialize();
     }
@@ -101,63 +122,72 @@ namespace FebGame
 
       tileset = new Tileset(tilesetTexture, 16, 16);
 
-      var breakableBlock = tileset.AddTile(new RandomTile(
+      var breakableBlock = tileset.AddTile(new RandomTile(false,
         tileset.GetTileFromIndex(24),
         tileset.GetTileFromIndex(25),
         tileset.GetTileFromIndex(26)
         ));
 
-      var logEnd = tileset.AddTile(new RandomTile(
+      var logEnd = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(37),
         tileset.GetTileFromIndex(38)
         ));
 
-      var logMossMiddle = tileset.AddTile(new RandomTile(
+      var logMossMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(45),
         tileset.GetTileFromIndex(46),
         tileset.GetTileFromIndex(47)
         ));
-      var logMoss = tileset.AddTile(new RowTile(
+      var logMoss = tileset.AddTile(new RowTile(false,
         tileset.GetTileFromIndex(44),
         logMossMiddle,
         tileset.GetTileFromIndex(48)
         ));
-      var logMiddle = tileset.AddTile(new RandomTile(
+      var logMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(34),
         tileset.GetTileFromIndex(35),
         tileset.GetTileFromIndex(36)
         ));
-      var ladder = tileset.AddTile(new RandomTile(
-        tileset.GetTileFromIndex(29),
+      var ladder = tileset.AddTile(new RandomTile(false,
         tileset.GetTileFromIndex(39),
         tileset.GetTileFromIndex(49),
         tileset.GetTileFromIndex(59)
         ));
-      var poleMiddle = tileset.AddTile(new RandomTile(
+      var ladderTop = tileset.AddTile(new ColumnTile(false,
+        tileset.GetTileFromIndex(29),
+        ladder,
+        ladder
+        ));
+      var poleMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(17),
         tileset.GetTileFromIndex(27)
         ));
-      var pole = tileset.AddTile(new ColumnTile(
+      var pole = tileset.AddTile(new ColumnTile(false,
         tileset.GetTileFromIndex(7),
         poleMiddle,
         poleMiddle
         ));
 
-      var animated = tileset.AddTile(new AnimatedTile(12, true,
+      var animated = tileset.AddTile(new AnimatedTile(false, 12, true,
         ladder,
         logMiddle,
         breakableBlock,
         logMoss
         ));
 
-      var log = tileset.AddTile(new RowTile(
+      var log = tileset.AddTile(new RowTile(false,
 
         tileset.GetTileFromIndex(33),
         logMiddle,
         logEnd
         ));
 
-      //tileset.AddBrush(new int[] { 0, 1, 2 }, TileType.Breakable);
+      var breakableLog = tileset.AddTile(new RowTile(false,
+
+        tileset.GetTileFromIndex(33),
+        logMiddle,
+        logEnd
+        ));
 
       Debug.fontTexture = Content.Load<Texture2D>("debug1");
 
@@ -171,7 +201,11 @@ namespace FebGame
       for (int i = 0; i < tileset.Tiles; i++)
       {
         var brush = tileset.TilePalette[i];
+
+        //if (!brush.hidden)
+        //{
         swatches.Add(new TileBrushSwatch(brush, new Vector2((i % paletteWidth) * size, 16 + i / paletteWidth * size), size));
+        //}
       }
 
       tilemap.tileset = tileset;
@@ -267,15 +301,38 @@ namespace FebGame
       if (keyboard.IsKeyDown(Keys.D))
       {
         selectedLayer.ShowTileIndices();
-        selectedLayer.IsVisible = false;
+        //selectedLayer.IsVisible = false;
       }
       else
       {
-        selectedLayer.IsVisible = true;
+        //selectedLayer.IsVisible = true;
       }
       if (keyboard.IsKeyDown(Keys.K))
       {
         selectedLayer.Clear();
+      }
+      if (keyboard.IsKeyDown(Keys.F))
+      {
+        tilemap.showTileProperties = true;
+      }
+      else
+      {
+        tilemap.showTileProperties = false;
+      }
+
+      if (keyboard.IsKeyDown(Keys.W))
+      {
+        if (selectedTile.id != -1)
+        {
+          selectedTile.properties[0] = TileType.Breakable;
+        }
+      }
+      if (keyboard.IsKeyDown(Keys.M))
+      {
+        if (selectedTile.id != -1)
+        {
+          selectedTile.properties[0] = TileType.Solid;
+        }
       }
 
       foreach (var tile in selectedLayer.tileArray)
@@ -290,22 +347,50 @@ namespace FebGame
         }
       }
 
+      foreach (var layer in tilemap.Layers)
+      {
+        if (layer != selectedLayer)
+        {
+          layer.tint = Color.LightGray;
+        }
+        else
+        {
+          layer.tint = Color.White;
+        }
+      }
+
       selectedTileString = selectedTile.id.ToString();
 
       //textField.Update(gameTime, keyboard);
 
-      TextWindow window = canvas.GetElement("Tilemap Info") as TextWindow;
+      TextWindow tilemapInfo = canvas.GetElement("Tilemap Info") as TextWindow;
 
-      window.SetLines(
+      tilemapInfo.SetLines(
         "Name: " + textField.text,
         "Coords: " + ((int)mousePosition.X / 16).ToString() + ", " + ((int)mousePosition.Y / 16).ToString(),
         "Layer: " + selectedLayerIndex + " (" + selectedLayer.Name + ")",
-        "",
-        "Current: " + hoveredTileString,
-        "Type: " + selectedTile.Name,
-        "Properties: " + hoveredTilePropertiesString,
-        "Selected: " + selectedTileString
+        "Current: " + hoveredTileString
         );
+
+      TextWindow tileInfo = canvas.GetElement("Tile Info") as TextWindow;
+
+      tileInfo.SetLines(
+        "Selected: " + selectedTileString,
+        "Type: " + selectedTile.Name,
+        "Properties: " + hoveredTilePropertiesString
+        );
+
+      TextWindow palette = canvas.GetElement("Palette") as TextWindow;
+
+      palette.bounds.Height = 16 * 10;
+
+      Button saveButton = canvas.GetElement("Save") as Button;
+
+      if (saveButton.Click)
+      {
+        Console.Clear();
+        tilemapXML.Test();
+      }
 
       Time.Update(gameTime);
       base.Update(gameTime);
@@ -346,7 +431,7 @@ namespace FebGame
 
         spriteBatch.Draw(
             tileset.Texture,
-            swatches[i].Bounds,
+            swatches[i].bounds,
             new Rectangle(x * 16, y * 16, 16, 16),
             Color.White
             );
@@ -384,7 +469,10 @@ namespace FebGame
       int posX = (int)Math.Round((mousePosition.X - 8) / 16);
       int posY = (int)Math.Round((mousePosition.Y - 8) / 16);
 
-      spriteBatch.Draw(selector, new Vector2(posX * size, posY * size), Color.White);
+      if (canvas.GetElement("Palette").bounds.Contains(mousePosition))
+      {
+        spriteBatch.Draw(selector, new Vector2(posX * size, posY * size), Color.White);
+      }
 
       Debug.Draw(spriteBatch);
 

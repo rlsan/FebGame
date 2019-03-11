@@ -10,7 +10,7 @@ namespace FebEngine.UI
 
     public TileBrushSwatch(Tile tile, Vector2 position, int size)
     {
-      Bounds = new Rectangle(position.ToPoint(), new Point(size));
+      bounds = new Rectangle(position.ToPoint(), new Point(size));
       this.tile = tile;
     }
 

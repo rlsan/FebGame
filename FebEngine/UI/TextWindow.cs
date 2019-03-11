@@ -42,7 +42,7 @@ namespace FebEngine.UI
       }
 
       sb.Draw(canvas.ThemeTexture,
-        new Rectangle(X, Y, bounds.Width, 16),
+        new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, 16),
         new Rectangle(0, 0, 16, 16),
         Color.White
           );
@@ -51,7 +51,9 @@ namespace FebEngine.UI
 
       for (int i = 0; i < lines.Length; i++)
       {
-        Debug.Text(lines[i], indent + X, 18 + Y + i * marginY);
+        string line = lines[i];
+
+        Debug.Text(line, indent + X, 18 + Y + i * marginY);
       }
     }
   }

@@ -6,8 +6,9 @@
 
     public float[] probabilityValues;
 
-    public RandomTile(params Tile[] tiles)
+    public RandomTile(bool hidden, params Tile[] tiles)
     {
+      this.hidden = hidden;
       children = tiles;
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace FebEngine.Tiles
@@ -11,8 +12,10 @@ namespace FebEngine.Tiles
     public TileType[] properties;
 
     public Tile[] children = new Tile[0];
+    public Color tint = Color.White;
 
     public int frame = 0;
+    public bool hidden = false;
 
     public int X { get; set; }
     public int Y { get; set; }

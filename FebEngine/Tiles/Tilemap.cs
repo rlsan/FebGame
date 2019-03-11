@@ -7,9 +7,11 @@ namespace FebEngine.Tiles
 {
   public class Tilemap
   {
-    private TilemapLayer[] Layers;
+    public TilemapLayer[] Layers { get; set; }
 
     public Tileset tileset;
+
+    public string name;
 
     public int width;
     public int height;
@@ -18,6 +20,8 @@ namespace FebEngine.Tiles
     public int tileHeight;
 
     public int LayerCount { get { return Layers.Length; } }
+
+    public bool showTileProperties = false;
 
     public Tilemap(int width, int height, int tileWidth, int tileHeight)
     {
@@ -62,6 +66,23 @@ namespace FebEngine.Tiles
             //int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % tile.frames.Length;
             //var frame = tile.frames[timeFrame];
 
+            tile.tint = Color.White;
+            if (showTileProperties)
+            {
+              if (tile.properties[0] == TileType.None)
+              {
+                tile.tint = Color.DarkRed;
+              }
+              if (tile.properties[0] == TileType.Solid)
+              {
+                tile.tint = Color.LightGreen;
+              }
+              else if (tile.properties[0] == TileType.Breakable)
+              {
+                tile.tint = Color.Yellow;
+              }
+            }
+
             Vector2 framePosition = tileset.GetTilePositionFromIndex(tile.id);
             int x = (int)framePosition.X;
             int y = (int)framePosition.Y;
@@ -82,66 +103,8 @@ namespace FebEngine.Tiles
                 tileset.Texture,
                 destinationRectangle,
                 new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight),
-                Color.White
+                tile.tint
                 );
-              /*
-              if (tile.Name == "Random")
-              {
-                var rand = (RandomTile)tile;
-
-                var pickedTile = rand.tiles[layer.hashArray[tileX, tileY] % rand.tiles.Length];
-
-                framePosition = tileset.GetTilePositionFromIndex(pickedTile.id);
-                x = (int)framePosition.X;
-                y = (int)framePosition.Y;
-
-                // Don't go straight to drawing.
-                sb.Draw(
-                  tileset.Texture,
-                  destinationRectangle,
-                  new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight),
-                  Color.White
-                  );
-              }
-              else if (tile.Name == "Column")
-              {
-                var col = (ColumnTile)tile;
-
-                //var tiles = rand.tiles[layer.hashArray[tileX, tileY] % rand.tiles.Length];
-
-                if (layer.GetTileIndexXY(tileX, tileY - 1) != tile.id)
-                {
-                  framePosition = tileset.GetTilePositionFromIndex(col.top.id);
-                }
-                else if (layer.GetTileIndexXY(tileX, tileY + 1) != tile.id)
-                {
-                  framePosition = tileset.GetTilePositionFromIndex(col.bottom.id);
-                }
-                else
-                {
-                  framePosition = tileset.GetTilePositionFromIndex(col.middle.id);
-                }
-
-              x = (int)framePosition.X;
-              y = (int)framePosition.Y;
-
-              sb.Draw(
-                tileset.Texture,
-                destinationRectangle,
-                new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight),
-                Color.White
-                );
-            }
-            else
-            */
-              {
-                sb.Draw(
-                  tileset.Texture,
-                  destinationRectangle,
-                  new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight),
-                  Color.White
-                  );
-              }
             }
           }
         }

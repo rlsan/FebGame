@@ -4,8 +4,9 @@
   {
     public override string Name { get; } = "Column";
 
-    public ColumnTile(Tile top, Tile middle, Tile bottom)
+    public ColumnTile(bool hidden, Tile top, Tile middle, Tile bottom)
     {
+      this.hidden = hidden;
       children = new Tile[3] { top, middle, bottom };
     }
 

@@ -15,6 +15,8 @@ namespace FebEngine.Tiles
     public Tile[,] tileArray;
     public int[,] hashArray;
 
+    public Color tint = Color.White;
+
     public bool IsVisible { get; set; }
     public bool IsDirty { get; set; }
 

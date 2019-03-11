@@ -48,6 +48,7 @@
     <Compile Include="Tiles\ColumnTile.cs" />
     <Compile Include="Tiles\Tile.cs" />
     <Compile Include="Tiles\Tilemap.cs" />
+    <Compile Include="Tiles\TilemapXML.cs" />
     <Compile Include="Tiles\TileProperties.cs" />
     <Compile Include="Tiles\RandomTile.cs" />
     <Compile Include="Tiles\RowTile.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Tiles\TileBrush.cs" />
     <Compile Include="Tiles\TilemapLayer.cs" />
     <Compile Include="Tiles\Tileset.cs" />
+    <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\TextWindow.cs" />
     <Compile Include="UI\TileBrushSwatch.cs" />
     <Compile Include="Transform.cs" />

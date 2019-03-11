@@ -7,8 +7,9 @@
     public int fps = 12;
     public bool random = false;
 
-    public AnimatedTile(int fps, bool random, params Tile[] tiles)
+    public AnimatedTile(bool hidden, int fps, bool random, params Tile[] tiles)
     {
+      this.hidden = hidden;
       children = tiles;
       this.fps = fps;
       this.random = random;
