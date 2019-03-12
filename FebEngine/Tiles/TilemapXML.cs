@@ -12,12 +12,74 @@ namespace FebEngine.Tiles
   {
     public Tilemap tilemap;
 
-    public TilemapXML(Tilemap tilemap)
+    public Tileset tileset;
+
+    public TilemapXML(Tilemap tilemap, Tileset tileset)
     {
       this.tilemap = tilemap;
+      this.tileset = tileset;
     }
 
-    public void Test()
+    public void printNode(Tile tile, XElement container, bool first = true)
+    {
+      XElement newContainer;
+
+      if (!first)
+      {
+        newContainer = new XElement("Tile",
+          new XAttribute("Name", tile.Name),
+          new XAttribute("Type", tile.GetType().Name),
+          new XAttribute("ID", tile.id));
+
+        container.Add(newContainer);
+      }
+      else
+      {
+        newContainer = container;
+      }
+
+      for (int i = 0; i < tile.children.Length; i++)
+      {
+        printNode(tile.children[i], newContainer, false);
+      }
+    }
+
+    public void WriteTileset()
+    {
+      if (tileset == null) return;
+
+      XElement root = new XElement("Tileset",
+        new XAttribute("Name", tileset.name),
+        new XAttribute("TileWidth", tileset.TileWidth),
+        new XAttribute("TileHeight", tileset.TileHeight)
+        );
+      XElement tilesElement = new XElement("Tiles");
+
+      for (int i = 0; i < tileset.TilePalette.Count; i++)
+      {
+        var tile = tileset.TilePalette[i];
+
+        var tileElement = new XElement("Tile",
+        new XAttribute("Name", tile.Name),
+        new XAttribute("Type", tile.GetType().Name),
+        new XAttribute("ID", tile.id),
+        new XAttribute("Properties", tile.properties[0]));
+
+        if (tile.children.Length > 0)
+        {
+          printNode(tile, tileElement);
+        }
+
+        root.Add(tileElement);
+        //Console.WriteLine();
+      }
+
+      Console.WriteLine(root);
+
+      root.Save(tileset.name + ".ats");
+    }
+
+    public void WriteTilemap()
     {
       XElement root = new XElement("Tilemap",
         new XAttribute("Name", tilemap.name),
@@ -57,7 +119,7 @@ namespace FebEngine.Tiles
 
       Console.WriteLine(root);
 
-      root.Save(tilemap.name + ".xml");
+      root.Save(tilemap.name + ".atm");
     }
   }
 }

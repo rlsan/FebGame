@@ -2,11 +2,17 @@
 {
   public class ColumnTile : Tile
   {
-    public override string Name { get; } = "Column";
+    public override string Name { get; set; } = "Column";
 
     public ColumnTile(bool hidden, Tile top, Tile middle, Tile bottom)
     {
       this.hidden = hidden;
+
+      foreach (var child in children)
+      {
+        child.parent = this;
+      }
+
       children = new Tile[3] { top, middle, bottom };
     }
 

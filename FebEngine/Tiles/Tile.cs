@@ -6,11 +6,12 @@ namespace FebEngine.Tiles
 {
   public class Tile
   {
-    virtual public string Name { get; } = "Tile";
+    virtual public string Name { get; set; } = "Tile";
 
     public int id = -1;
     public TileType[] properties;
 
+    public Tile parent;
     public Tile[] children = new Tile[0];
     public Color tint = Color.White;
 
@@ -65,7 +66,7 @@ namespace FebEngine.Tiles
 
     public virtual int ReturnFrame(TilemapLayer layer, int x, int y)
     {
-      if (Name == "Tile")
+      if (GetType() == typeof(Tile))
       {
         return id;
       }

@@ -6,6 +6,7 @@ namespace FebEngine.Tiles
 {
   public class Tileset
   {
+    public string name = "Tileset";
     public Texture2D Texture { get; }
 
     private Tile[] rawTiles;
@@ -52,10 +53,19 @@ namespace FebEngine.Tiles
       return TilePalette[index];
     }
 
-    public Tile AddTile(Tile tile)
+    public Tile AddTile(Tile tile, string name = null)
     {
       var t = tile;
-      t.id = Tiles + 0;
+      t.id = Tiles;
+
+      if (name != null)
+      {
+        t.Name = name;
+      }
+      else
+      {
+        t.Name = t.GetType().Name + Tiles;
+      }
 
       TilePalette.Add(t);
 

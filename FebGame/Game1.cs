@@ -92,18 +92,19 @@ namespace FebGame
         "1-3 - Layers"
         ), new Rectangle(128 + 256, 0, 128, 300));
 
-      canvas.AddElement("Save", new TextButton(), new Rectangle(512, 0, 40, 30));
-      canvas.AddElement("Load", new TextButton(), new Rectangle(512 + 40, 0, 40, 30));
+      canvas.AddElement("Save Tilemap", new TextButton(), new Rectangle(512, 0, 90, 30));
+      canvas.AddElement("Save Tileset", new TextButton(), new Rectangle(512 + 90, 0, 90, 30));
 
-      canvas.AddElement("New Tile", new TextButton(), new Rectangle(512 + 80, 0, 70, 30));
-      canvas.AddElement("Solid", new TextButton(), new Rectangle(512 + 80, 30, 70, 30));
-      canvas.AddElement("One Way Up", new TextButton(), new Rectangle(512 + 80, 60, 70, 30));
-      canvas.AddElement("Ladder", new TextButton(), new Rectangle(512 + 80, 90, 70, 30));
-      canvas.AddElement("Water", new TextButton(), new Rectangle(512 + 80, 120, 70, 30));
-      canvas.AddElement("Breakable", new TextButton(), new Rectangle(512 + 80, 150, 70, 30));
+      /*
+      canvas.AddElement("New Tile", new TextButton(), new Rectangle(512 + 200, 0, 70, 30));
+      canvas.AddElement("Solid", new TextButton(), new Rectangle(512 + 200, 30, 70, 30));
+      canvas.AddElement("One Way Up", new TextButton(), new Rectangle(512 + 200, 60, 70, 30));
+      canvas.AddElement("Ladder", new TextButton(), new Rectangle(512 + 200, 90, 70, 30));
+      canvas.AddElement("Water", new TextButton(), new Rectangle(512 + 200, 120, 70, 30));
+      canvas.AddElement("Breakable", new TextButton(), new Rectangle(512 + 200, 150, 70, 30));
+      */
 
       tilemap.name = textField.text;
-      tilemapXML = new TilemapXML(tilemap);
 
       //canvas.AddElement("Properties", new TextWindow(false,
       //  Enum.GetNames(typeof(TileType))
@@ -121,73 +122,85 @@ namespace FebGame
       canvas.ThemeTexture = Content.Load<Texture2D>("theme");
 
       tileset = new Tileset(tilesetTexture, 16, 16);
-
+      tilemapXML = new TilemapXML(tilemap, tileset);
       var breakableBlock = tileset.AddTile(new RandomTile(false,
         tileset.GetTileFromIndex(24),
         tileset.GetTileFromIndex(25),
         tileset.GetTileFromIndex(26)
-        ));
+        ),
+        "BreakableBlock");
 
       var logEnd = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(37),
         tileset.GetTileFromIndex(38)
-        ));
+        ),
+        "LogEnd");
 
       var logMossMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(45),
         tileset.GetTileFromIndex(46),
         tileset.GetTileFromIndex(47)
-        ));
+        ),
+        "LogMossMiddle");
       var logMoss = tileset.AddTile(new RowTile(false,
         tileset.GetTileFromIndex(44),
         logMossMiddle,
         tileset.GetTileFromIndex(48)
-        ));
+        ),
+        "LogMoss");
       var logMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(34),
         tileset.GetTileFromIndex(35),
         tileset.GetTileFromIndex(36)
-        ));
+        ),
+        "LogMiddle");
       var ladder = tileset.AddTile(new RandomTile(false,
         tileset.GetTileFromIndex(39),
         tileset.GetTileFromIndex(49),
         tileset.GetTileFromIndex(59)
-        ));
+        ),
+        "Ladder");
       var ladderTop = tileset.AddTile(new ColumnTile(false,
         tileset.GetTileFromIndex(29),
         ladder,
         ladder
-        ));
+        ),
+        "LadderTop");
       var poleMiddle = tileset.AddTile(new RandomTile(true,
         tileset.GetTileFromIndex(17),
         tileset.GetTileFromIndex(27)
-        ));
+        ),
+        "PoleMiddle");
       var pole = tileset.AddTile(new ColumnTile(false,
         tileset.GetTileFromIndex(7),
         poleMiddle,
         poleMiddle
-        ));
+        ),
+        "Pole");
 
       var animated = tileset.AddTile(new AnimatedTile(false, 12, true,
         ladder,
         logMiddle,
         breakableBlock,
         logMoss
-        ));
+        ),
+        "Animated");
 
       var log = tileset.AddTile(new RowTile(false,
 
         tileset.GetTileFromIndex(33),
         logMiddle,
         logEnd
-        ));
+        ),
+        "Log");
 
       var breakableLog = tileset.AddTile(new RowTile(false,
 
         tileset.GetTileFromIndex(33),
         logMiddle,
         logEnd
-        ));
+        ),
+        "BreakableLog");
 
       Debug.fontTexture = Content.Load<Texture2D>("debug1");
 
@@ -218,7 +231,7 @@ namespace FebGame
     protected override void Update(GameTime gameTime)
     {
       string hoveredTileString = "";
-      string hoveredTilePropertiesString = "";
+      string selectedTilePropertiesString = "";
       string selectedTileString = "";
 
       if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
@@ -255,7 +268,7 @@ namespace FebGame
         {
           hoverSwatches = true;
           hoveredTileString = swatch.tile.id.ToString();
-          hoveredTilePropertiesString = swatch.tile.PropertiesToString;
+          selectedTilePropertiesString = swatch.tile.PropertiesToString;
         }
 
         if (swatch.Pressed)
@@ -295,7 +308,6 @@ namespace FebGame
 
         var hoveredTile = selectedLayer.GetTile(mousePosition);
         hoveredTileString = hoveredTile.id.ToString();
-        hoveredTilePropertiesString = hoveredTile.PropertiesToString;
       }
 
       if (keyboard.IsKeyDown(Keys.D))
@@ -360,6 +372,7 @@ namespace FebGame
       }
 
       selectedTileString = selectedTile.id.ToString();
+      selectedTilePropertiesString = selectedTile.PropertiesToString;
 
       //textField.Update(gameTime, keyboard);
 
@@ -376,20 +389,29 @@ namespace FebGame
 
       tileInfo.SetLines(
         "Selected: " + selectedTileString,
-        "Type: " + selectedTile.Name,
-        "Properties: " + hoveredTilePropertiesString
+        "Name: " + selectedTile.Name,
+        "Type: " + selectedTile.GetType().Name,
+        "Properties: " + selectedTilePropertiesString
         );
 
       TextWindow palette = canvas.GetElement("Palette") as TextWindow;
 
       palette.bounds.Height = 16 * 10;
 
-      Button saveButton = canvas.GetElement("Save") as Button;
+      Button saveButton = canvas.GetElement("Save Tilemap") as Button;
 
       if (saveButton.Click)
       {
         Console.Clear();
-        tilemapXML.Test();
+        tilemapXML.WriteTilemap();
+      }
+
+      Button saveTSButton = canvas.GetElement("Save Tileset") as Button;
+
+      if (saveTSButton.Click)
+      {
+        Console.Clear();
+        tilemapXML.WriteTileset();
       }
 
       Time.Update(gameTime);

@@ -2,7 +2,7 @@
 {
   public class AnimatedTile : Tile
   {
-    public override string Name { get; } = "Animated";
+    public override string Name { get; set; } = "Animated";
 
     public int fps = 12;
     public bool random = false;
@@ -11,6 +11,12 @@
     {
       this.hidden = hidden;
       children = tiles;
+
+      foreach (var child in children)
+      {
+        child.parent = this;
+      }
+
       this.fps = fps;
       this.random = random;
     }
