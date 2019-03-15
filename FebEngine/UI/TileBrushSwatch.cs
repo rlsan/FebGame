@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.UI
 {
-  public class TileBrushSwatch : Button
+  public class TileBrushSwatch : UIButton
   {
     public Tile tile;
 
@@ -12,10 +12,6 @@ namespace FebEngine.UI
     {
       bounds = new Rectangle(position.ToPoint(), new Point(size));
       this.tile = tile;
-    }
-
-    public override void Draw(SpriteBatch sb)
-    {
     }
   }
 }

@@ -13,11 +13,19 @@ namespace FebEngine.Tiles
 
     public string name;
 
+    public int X;
+    public int Y;
+
     public int width;
     public int height;
 
     public int tileWidth;
     public int tileHeight;
+
+    public Rectangle bounds
+    {
+      get { return new Rectangle(X, Y, width, height); }
+    }
 
     public int LayerCount { get { return Layers.Length; } }
 
@@ -62,9 +70,6 @@ namespace FebEngine.Tiles
             int tileX = tileIndex % width;
             int tileY = tileIndex / width;
             var tile = layer.tileArray[tileX, tileY];
-
-            //int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % tile.frames.Length;
-            //var frame = tile.frames[timeFrame];
 
             tile.tint = Color.White;
             if (showTileProperties)

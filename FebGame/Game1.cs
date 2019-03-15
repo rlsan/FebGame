@@ -9,6 +9,8 @@ using FebEngine;
 using FebEngine.UI;
 using FebEngine.Tiles;
 
+using FebGame.States;
+
 namespace FebGame
 {
   public class Game1 : Game
@@ -37,6 +39,21 @@ namespace FebGame
     private UICanvas canvas;
     private TilemapXML tilemapXML;
 
+    private TilemapSet tilemapSet = new TilemapSet();
+
+    private Vector2 savedMousePosition;
+
+    private Tilemap selectedTilemap;
+
+    private enum LevelEditorView
+    {
+      None,
+      Tilemap,
+      TilemapSet
+    }
+
+    private LevelEditorView levelEditorView;
+
     public Game1()
     {
       Window.Title = "Level Editor";
@@ -50,6 +67,8 @@ namespace FebGame
 
     protected override void Initialize()
     {
+      levelEditorView = LevelEditorView.None;
+
       swatches = new List<TileBrushSwatch>();
       selectedTile = new Tile();
       //tiles = new List<Tile>();
@@ -79,10 +98,15 @@ namespace FebGame
       Debug.pixelTexture = pixelTexture;
 
       canvas = new UICanvas();
-      canvas.AddElement("Palette", new TextWindow(true), new Rectangle(0, 0, 128, 300));
-      canvas.AddElement("Tilemap Info", new TextWindow(false), new Rectangle(128, 0, 128, 300));
-      canvas.AddElement("Tile Info", new TextWindow(false), new Rectangle(256, 0, 128, 300));
-      canvas.AddElement("Shortcuts", new TextWindow(false,
+      canvas.AddElement("TilemapView", new UIContainer());
+      /*
+      canvas.AddElement("Palette", new TextWindow(true), new Rectangle(0, 16, 128, 400));
+      canvas.AddElement("Tilemap Info", new TextWindow(false), new Rectangle(128, 16, 128, 300));
+      canvas.AddElement("Tile Info", new TextWindow(false), new Rectangle(256, 16, 128, 300));
+      */
+      canvas.GetElement("TilemapView").Add(new UITextWindow(
+        0, 12, 128, 300,
+        false,
         "Left M - Paint",
         "Right M - Dropper",
         "E - Erase",
@@ -90,25 +114,21 @@ namespace FebGame
         "D - Show indices",
         "F - Show properties",
         "1-3 - Layers"
-        ), new Rectangle(128 + 256, 0, 128, 300));
-
-      canvas.AddElement("Save Tilemap", new TextButton(), new Rectangle(512, 0, 90, 30));
-      canvas.AddElement("Save Tileset", new TextButton(), new Rectangle(512 + 90, 0, 90, 30));
+        ));
 
       /*
-      canvas.AddElement("New Tile", new TextButton(), new Rectangle(512 + 200, 0, 70, 30));
-      canvas.AddElement("Solid", new TextButton(), new Rectangle(512 + 200, 30, 70, 30));
-      canvas.AddElement("One Way Up", new TextButton(), new Rectangle(512 + 200, 60, 70, 30));
-      canvas.AddElement("Ladder", new TextButton(), new Rectangle(512 + 200, 90, 70, 30));
-      canvas.AddElement("Water", new TextButton(), new Rectangle(512 + 200, 120, 70, 30));
-      canvas.AddElement("Breakable", new TextButton(), new Rectangle(512 + 200, 150, 70, 30));
+      canvas.AddElement("Save Tilemap", new TextButton("save"), new Rectangle(512, 16, 90, 30));
+      canvas.AddElement("Save Tileset", new TextButton("save"), new Rectangle(512 + 90, 16, 90, 30));
+
+      canvas.AddElement("Tilemap View", new TextButton("TM"), new Rectangle(0, 0, 200, 16));
+      canvas.AddElement("Tilemap Set View", new TextButton("TMS"), new Rectangle(200, 0, 200, 16));
       */
 
-      tilemap.name = textField.text;
+      canvas.AddElement("Header", new UIContainer());
+      canvas.GetElement("Header").Add(new UITextButton("Tilemap View", 0, 0, 100, 12));
+      canvas.GetElement("Header").Add(new UITextButton("Chapter View", 100, 0, 100, 12));
 
-      //canvas.AddElement("Properties", new TextWindow(false,
-      //  Enum.GetNames(typeof(TileType))
-      //  ), new Rectangle(256 + 128, 0, 128, 300));
+      tilemap.name = textField.text;
 
       base.Initialize();
     }
@@ -217,11 +237,13 @@ namespace FebGame
 
         //if (!brush.hidden)
         //{
-        swatches.Add(new TileBrushSwatch(brush, new Vector2((i % paletteWidth) * size, 16 + i / paletteWidth * size), size));
+        swatches.Add(new TileBrushSwatch(brush, new Vector2((i % paletteWidth) * size, 32 + i / paletteWidth * size), size));
         //}
       }
 
       tilemap.tileset = tileset;
+
+      tilemapSet.Add(tilemap);
     }
 
     protected override void UnloadContent()
@@ -241,178 +263,188 @@ namespace FebGame
 
       Vector2 mousePosition = mouse.Position.ToVector2() / 2;
 
-      if (keyboard.IsKeyDown(Keys.D1))
+      var cont = canvas.GetElement("Header");
+
+      cont.isVisible = keyboard.IsKeyUp(Keys.P);
+
+      if (levelEditorView == LevelEditorView.Tilemap)
       {
-        selectedLayerIndex = 0;
-      }
-      if (keyboard.IsKeyDown(Keys.D2))
-      {
-        selectedLayerIndex = 1;
-      }
-      if (keyboard.IsKeyDown(Keys.D3))
-      {
-        selectedLayerIndex = 2;
-      }
-
-      selectedLayerIndex = selectedLayerIndex % tilemap.LayerCount;
-
-      TilemapLayer selectedLayer = tilemap.GetLayer(selectedLayerIndex);
-
-      bool hoverSwatches = false;
-
-      for (int i = 0; i < swatches.Count; i++)
-      {
-        var swatch = swatches[i];
-
-        if (swatch.Hover)
+        if (keyboard.IsKeyDown(Keys.D1))
         {
-          hoverSwatches = true;
-          hoveredTileString = swatch.tile.id.ToString();
-          selectedTilePropertiesString = swatch.tile.PropertiesToString;
+          selectedLayerIndex = 0;
+        }
+        if (keyboard.IsKeyDown(Keys.D2))
+        {
+          selectedLayerIndex = 1;
+        }
+        if (keyboard.IsKeyDown(Keys.D3))
+        {
+          selectedLayerIndex = 2;
         }
 
-        if (swatch.Pressed)
-        {
-          //this.selectedBrush.Clear();
-          selectedTile = swatches[i].tile;
-          selectedTileString = selectedTile.id.ToString();
-        }
-      }
+        selectedLayerIndex = selectedLayerIndex % tilemap.LayerCount;
 
-      if (!hoverSwatches)
-      {
-        //if (this.selectedBrush.Count > 0)
-        //{
-        int posX = (int)Math.Round((mousePosition.X - 8) / 16);
-        int posY = (int)Math.Round((mousePosition.Y - 8) / 16);
+        TilemapLayer selectedLayer = tilemap.GetLayer(selectedLayerIndex);
 
-        if (mouse.LeftButton == ButtonState.Pressed)
+        bool hoverSwatches = false;
+
+        for (int i = 0; i < swatches.Count; i++)
         {
-          if (keyboard.IsKeyDown(Keys.E))
+          var swatch = swatches[i];
+
+          if (swatch.Hover)
           {
-            selectedLayer.EraseTile(posX, posY);
+            hoverSwatches = true;
+            hoveredTileString = swatch.tile.id.ToString();
+            selectedTilePropertiesString = swatch.tile.PropertiesToString;
           }
-          else
+
+          if (swatch.Pressed)
           {
-            selectedLayer.PutTile(selectedTile, posX, posY);
+            selectedTile = swatches[i].tile;
+            selectedTileString = selectedTile.id.ToString();
           }
         }
-        if (mouse.RightButton == ButtonState.Pressed)
+
+        if (!hoverSwatches)
         {
-          var tile = selectedLayer.GetTileXY(posX, posY);
+          int posX = (int)Math.Round((mousePosition.X - 8) / 16);
+          int posY = (int)Math.Round((mousePosition.Y - 8) / 16);
 
-          selectedTile = tile;
-          selectedTileString = selectedTile.id.ToString();
-        }
-        //}
-
-        var hoveredTile = selectedLayer.GetTile(mousePosition);
-        hoveredTileString = hoveredTile.id.ToString();
-      }
-
-      if (keyboard.IsKeyDown(Keys.D))
-      {
-        selectedLayer.ShowTileIndices();
-        //selectedLayer.IsVisible = false;
-      }
-      else
-      {
-        //selectedLayer.IsVisible = true;
-      }
-      if (keyboard.IsKeyDown(Keys.K))
-      {
-        selectedLayer.Clear();
-      }
-      if (keyboard.IsKeyDown(Keys.F))
-      {
-        tilemap.showTileProperties = true;
-      }
-      else
-      {
-        tilemap.showTileProperties = false;
-      }
-
-      if (keyboard.IsKeyDown(Keys.W))
-      {
-        if (selectedTile.id != -1)
-        {
-          selectedTile.properties[0] = TileType.Breakable;
-        }
-      }
-      if (keyboard.IsKeyDown(Keys.M))
-      {
-        if (selectedTile.id != -1)
-        {
-          selectedTile.properties[0] = TileType.Solid;
-        }
-      }
-
-      foreach (var tile in selectedLayer.tileArray)
-      {
-        if (tile.id != -1)
-        {
-          if (selectedLayer.GetTileXY(tile.X, tile.Y - 1).id == -1)
+          if (mouse.LeftButton == ButtonState.Pressed)
           {
-            //selectedLayer.PutTile(tileset.brushPalette[0], tile.X, tile.Y);
-            //Debug.Text("X", tile.X * tilemap.tileWidth, tile.Y * tilemap.tileHeight);
+            if (keyboard.IsKeyDown(Keys.E))
+            {
+              selectedLayer.EraseTile(posX, posY);
+            }
+            else
+            {
+              selectedLayer.PutTile(selectedTile, posX, posY);
+            }
           }
-        }
-      }
+          if (mouse.RightButton == ButtonState.Pressed)
+          {
+            var tile = selectedLayer.GetTileXY(posX, posY);
 
-      foreach (var layer in tilemap.Layers)
-      {
-        if (layer != selectedLayer)
+            selectedTile = tile;
+            selectedTileString = selectedTile.id.ToString();
+          }
+
+          var hoveredTile = selectedLayer.GetTile(mousePosition);
+          hoveredTileString = hoveredTile.id.ToString();
+        }
+
+        if (keyboard.IsKeyDown(Keys.D))
         {
-          layer.tint = Color.LightGray;
+          selectedLayer.ShowTileIndices();
+        }
+        if (keyboard.IsKeyDown(Keys.K))
+        {
+          selectedLayer.Clear();
+        }
+        if (keyboard.IsKeyDown(Keys.F))
+        {
+          tilemap.showTileProperties = true;
         }
         else
         {
-          layer.tint = Color.White;
+          tilemap.showTileProperties = false;
         }
+
+        if (keyboard.IsKeyDown(Keys.M))
+        {
+          selectedTile.properties[0] = TileType.Solid;
+        }
+
+        if (keyboard.IsKeyDown(Keys.W))
+        {
+          var t = tileset.AddTile(new ColumnTile(false,
+          new Tile
+          {
+            frame = selectedTile.id
+          },
+          tileset.GetTileFromIndex(60),
+          new Tile { frame = 2 }
+          ));
+
+          swatches.Add(new TileBrushSwatch(t, new Vector2((tileset.Tiles % 8) * 16, 16 + tileset.Tiles / 8 * 16), 16));
+        }
+
+        foreach (var layer in tilemap.Layers)
+        {
+          if (layer != selectedLayer)
+          {
+            layer.tint = Color.LightGray;
+          }
+          else
+          {
+            layer.tint = Color.White;
+          }
+        }
+
+        selectedTileString = selectedTile.id.ToString();
+        selectedTilePropertiesString = selectedTile.PropertiesToString;
+
+        //textField.Update(gameTime, keyboard);
+
+        /*
+        TextWindow tilemapInfo = canvas.GetElement("Tilemap Info") as TextWindow;
+
+        tilemapInfo.SetLines(
+          "Name: " + textField.text,
+          "Coords: " + ((int)mousePosition.X / 16).ToString() + ", " + ((int)mousePosition.Y / 16).ToString(),
+          "Layer: " + selectedLayerIndex + " (" + selectedLayer.Name + ")",
+          "Current: " + hoveredTileString
+          );
+
+        TextWindow tileInfo = canvas.GetElement("Tile Info") as TextWindow;
+
+        tileInfo.SetLines(
+          "Selected: " + selectedTileString,
+          "Name: " + selectedTile.Name,
+          "Type: " + selectedTile.GetType().Name,
+          "Properties: " + selectedTilePropertiesString
+          );
+
+        /*
+        TextWindow palette = canvas.GetElement("Palette") as TextWindow;
+
+        palette.bounds.Height = 16 * 24;
+
+        Button saveButton = canvas.GetElement("Save Tilemap") as Button;
+
+        if (saveButton.Click)
+        {
+          //Console.Clear();
+          tilemapXML.WriteTilemap();
+        }
+
+        Button saveTSButton = canvas.GetElement("Save Tileset") as Button;
+
+        if (saveTSButton.Click)
+        {
+          //Console.Clear();
+          tilemapXML.WriteTileset();
+        }
+        */
       }
-
-      selectedTileString = selectedTile.id.ToString();
-      selectedTilePropertiesString = selectedTile.PropertiesToString;
-
-      //textField.Update(gameTime, keyboard);
-
-      TextWindow tilemapInfo = canvas.GetElement("Tilemap Info") as TextWindow;
-
-      tilemapInfo.SetLines(
-        "Name: " + textField.text,
-        "Coords: " + ((int)mousePosition.X / 16).ToString() + ", " + ((int)mousePosition.Y / 16).ToString(),
-        "Layer: " + selectedLayerIndex + " (" + selectedLayer.Name + ")",
-        "Current: " + hoveredTileString
-        );
-
-      TextWindow tileInfo = canvas.GetElement("Tile Info") as TextWindow;
-
-      tileInfo.SetLines(
-        "Selected: " + selectedTileString,
-        "Name: " + selectedTile.Name,
-        "Type: " + selectedTile.GetType().Name,
-        "Properties: " + selectedTilePropertiesString
-        );
-
-      TextWindow palette = canvas.GetElement("Palette") as TextWindow;
-
-      palette.bounds.Height = 16 * 10;
-
-      Button saveButton = canvas.GetElement("Save Tilemap") as Button;
-
-      if (saveButton.Click)
+      else if (levelEditorView == LevelEditorView.TilemapSet)
       {
-        Console.Clear();
-        tilemapXML.WriteTilemap();
       }
 
-      Button saveTSButton = canvas.GetElement("Save Tileset") as Button;
-
-      if (saveTSButton.Click)
+      /*
+      Button TilemapViewButton = canvas.GetElement("Tilemap View") as Button;
+      if (TilemapViewButton.Click)
       {
-        Console.Clear();
-        tilemapXML.WriteTileset();
+        levelEditorView = LevelEditorView.Tilemap;
       }
+
+      Button TilemapSetViewButton = canvas.GetElement("Tilemap Set View") as Button;
+      if (TilemapSetViewButton.Click)
+      {
+        levelEditorView = LevelEditorView.TilemapSet;
+      }
+      */
 
       Time.Update(gameTime);
       base.Update(gameTime);
@@ -420,6 +452,9 @@ namespace FebGame
 
     protected override void Draw(GameTime gameTime)
     {
+      bool drawTilemap = true;
+      bool drawPalette = true;
+
       GraphicsDevice.SetRenderTarget(renderTarget);
 
       GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -430,71 +465,57 @@ namespace FebGame
       int unitsX = tilesetTexture.Width / size;
       int unitsY = tilesetTexture.Height / size;
 
-      // Draw tilemap layers
-      tilemap.Draw(spriteBatch);
-
       canvas.DrawElements(spriteBatch);
 
-      // Draw brush swatch palette
-      for (int i = 0; i < swatches.Count; i++)
+      if (levelEditorView == LevelEditorView.Tilemap)
       {
-        var tile = tileset.TilePalette[i];
-        //var frame = brush.frames[0];
-
-        //if (brush.IsAnimated)
-        //{
-        //  int timeFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 12) % brush.frames.Length;
-        //  frame = brush.frames[timeFrame];
-        //}
-        int frame = tile.ReturnFrame(tilemap.GetLayer(1), 0, 0);
-        Vector2 framePosition = tileset.GetTilePositionFromIndex(frame);
-        int x = (int)framePosition.X;
-        int y = (int)framePosition.Y;
-
-        spriteBatch.Draw(
-            tileset.Texture,
-            swatches[i].bounds,
-            new Rectangle(x * 16, y * 16, 16, 16),
-            Color.White
-            );
-      }
-
-      // Draw selected tile
-
-      if (selectedTile != null)
-      {
-        if (selectedTile.id != -1)
+        // Draw tilemap layers
+        if (drawTilemap)
         {
-          /*
-          for (int i = 0; i < selectedTile.frames.Length; i++)
+          tilemap.Draw(spriteBatch);
+        }
+
+        // Draw brush swatch palette
+        if (drawPalette)
+        {
+          for (int i = 0; i < swatches.Count; i++)
           {
-            var frame = selectedTile.frames[i];
-
-            Vector2 framePosition = tileset.GetTileFromIndex(frame);
-
+            var tile = tileset.TilePalette[i];
+            int frame = tile.ReturnFrame(tilemap.GetLayer(1), 0, 0);
+            Vector2 framePosition = tileset.GetTilePositionFromIndex(frame);
             int x = (int)framePosition.X;
             int y = (int)framePosition.Y;
 
             spriteBatch.Draw(
                 tileset.Texture,
-                new Rectangle(400 + i * 16, 0, 16, 16),
+                swatches[i].bounds,
                 new Rectangle(x * 16, y * 16, 16, 16),
                 Color.White
                 );
           }
-          */
+        }
+
+        // Draw selector
+        Vector2 mousePosition = Mouse.GetState().Position.ToVector2() / 2;
+        int posX = (int)Math.Round((mousePosition.X - 8) / 16);
+        int posY = (int)Math.Round((mousePosition.Y - 8) / 16);
+
+        if (canvas.GetElement("Palette").bounds.Contains(mousePosition))
+        {
+          spriteBatch.Draw(selector, new Vector2(posX * size, posY * size), Color.White);
         }
       }
-
-      // Draw selector
-      Vector2 mousePosition = Mouse.GetState().Position.ToVector2() / 2;
-      int posX = (int)Math.Round((mousePosition.X - 8) / 16);
-      int posY = (int)Math.Round((mousePosition.Y - 8) / 16);
-
-      if (canvas.GetElement("Palette").bounds.Contains(mousePosition))
+      else if (levelEditorView == LevelEditorView.TilemapSet)
       {
-        spriteBatch.Draw(selector, new Vector2(posX * size, posY * size), Color.White);
+        // Draw tilemap set view
+
+        tilemapSet.Draw(spriteBatch);
       }
+
+      /*
+      canvas.GetElement("Tilemap View").Draw(spriteBatch);
+      canvas.GetElement("Tilemap Set View").Draw(spriteBatch);
+      */
 
       Debug.Draw(spriteBatch);
 

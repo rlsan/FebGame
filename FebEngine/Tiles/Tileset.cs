@@ -36,7 +36,7 @@ namespace FebEngine.Tiles
 
       for (int i = 0; i < rawTiles.Length; i++)
       {
-        AddTile(new Tile { id = i });
+        AddTile(new Tile { id = i, frame = i });
       }
     }
 

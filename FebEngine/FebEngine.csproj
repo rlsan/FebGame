@@ -43,21 +43,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug.cs" />
+    <Compile Include="Manager.cs" />
     <Compile Include="RNG.cs" />
+    <Compile Include="StateManager.cs" />
     <Compile Include="Tiles\AnimatedTile.cs" />
     <Compile Include="Tiles\ColumnTile.cs" />
     <Compile Include="Tiles\Tile.cs" />
     <Compile Include="Tiles\Tilemap.cs" />
+    <Compile Include="Tiles\TilemapSet.cs" />
     <Compile Include="Tiles\TilemapXML.cs" />
     <Compile Include="Tiles\TileProperties.cs" />
     <Compile Include="Tiles\RandomTile.cs" />
     <Compile Include="Tiles\RowTile.cs" />
     <Compile Include="Tiles\TileType.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="UI\Button.cs" />
-    <Compile Include="IState.cs" />
+    <Compile Include="UI\UIButton.cs" />
+    <Compile Include="IGameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderer.cs" />
+    <Compile Include="RenderManager.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="SpriteFactory.cs" />
     <Compile Include="SpriteFont.cs" />
@@ -65,8 +68,9 @@
     <Compile Include="Tiles\TileBrush.cs" />
     <Compile Include="Tiles\TilemapLayer.cs" />
     <Compile Include="Tiles\Tileset.cs" />
-    <Compile Include="UI\TextButton.cs" />
-    <Compile Include="UI\TextWindow.cs" />
+    <Compile Include="UI\UIContainer.cs" />
+    <Compile Include="UI\UITextButton.cs" />
+    <Compile Include="UI\UITextWindow.cs" />
     <Compile Include="UI\TileBrushSwatch.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="UI\UICanvas.cs" />

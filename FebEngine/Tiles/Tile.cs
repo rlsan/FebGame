@@ -68,7 +68,7 @@ namespace FebEngine.Tiles
     {
       if (GetType() == typeof(Tile))
       {
-        return id;
+        return frame;
       }
       else
       {

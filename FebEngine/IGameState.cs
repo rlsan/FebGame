@@ -7,13 +7,14 @@ using Microsoft.Xna.Framework;
 
 namespace FebEngine
 {
-  public class Renderer
+  public interface IGameState
   {
-    Game game;
+    void Load();
 
-    public Renderer(Game game)
-    {
-      this.game = game;
-    }
+    void Unload();
+
+    void Update(GameTime gameTime);
+
+    void Draw(RenderManager renderer);
   }
 }

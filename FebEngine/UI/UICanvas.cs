@@ -19,6 +19,14 @@ namespace FebEngine.UI
       elements = new Dictionary<string, UIElement>();
     }
 
+    public void AddElement(string label, UIElement element)
+    {
+      var e = element;
+      e.label = label;
+      e.canvas = this;
+      elements.Add(label, e);
+    }
+
     public void AddElement(string label, UIElement element, Rectangle bounds)
     {
       var e = element;
@@ -30,7 +38,12 @@ namespace FebEngine.UI
 
     public UIElement GetElement(string label)
     {
-      return elements[label];
+      if (elements.ContainsKey(label))
+      {
+        return elements[label];
+      }
+
+      return null;
     }
 
     public void DrawElements(SpriteBatch sb)

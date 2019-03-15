@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FebEngine
 {
-  class Line
+  internal class Line
   {
     public Vector2 start;
     public Vector2 end;
@@ -62,9 +62,9 @@ namespace FebEngine
     public static Texture2D pixelTexture;
     public static Texture2D fontTexture;
 
-    static List<Rectangle> Rectangles = new List<Rectangle>();
-    static List<Line> Lines = new List<Line>();
-    static List<SpriteFont> Fonts = new List<SpriteFont>();
+    private static List<Tuple<Rectangle, Color>> Rectangles = new List<Tuple<Rectangle, Color>>();
+    private static List<Line> Lines = new List<Line>();
+    private static List<SpriteFont> Fonts = new List<SpriteFont>();
 
     public static void Instantiate()
     {
@@ -103,9 +103,11 @@ namespace FebEngine
       Lines.Add(new Line(start, end));
     }
 
-    public static void DrawRect(Rectangle rect)
+    public static void DrawRect(Rectangle rect, Color? color = null)
     {
-      Rectangles.Add(rect);
+      Color c = color ?? Color.LimeGreen;
+
+      Rectangles.Add(Tuple.Create(rect, c));
     }
 
     public static void DrawPoint(Vector2 position, int size = 4)
@@ -113,19 +115,21 @@ namespace FebEngine
       int halfSize = size / 2;
       Rectangle rect = new Rectangle((int)position.X - halfSize, (int)position.Y - halfSize, size, size);
 
-      Rectangles.Add(rect);
+      //Rectangles.Add(rect);
     }
 
     public static void Draw(SpriteBatch spriteBatch)
     {
       foreach (var rect in Rectangles)
       {
-        //spriteBatch.Draw(texture, rect, Color.LimeGreen);
+        spriteBatch.Draw(pixelTexture, rect.Item1, rect.Item2);
 
+        /*
         spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Top, 1, rect.Height), Color.LimeGreen);
         spriteBatch.Draw(pixelTexture, new Rectangle(rect.Right, rect.Top, 1, rect.Height + 1), Color.LimeGreen);
         spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Top, rect.Width, 1), Color.LimeGreen);
         spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Bottom, rect.Width, 1), Color.LimeGreen);
+        */
       }
       foreach (var line in Lines)
       {

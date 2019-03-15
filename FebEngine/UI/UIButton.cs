@@ -4,15 +4,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.UI
 {
-  public class Button : UIElement
+  public class UIButton : UIElement
   {
+    //public delegate OnClick Func<>;
+
     public bool Hover
     {
       get
       {
         var m = Mouse.GetState();
-
-        return bounds.Contains(m.Position.ToVector2() / 2);
+        if (isVisible)
+        {
+          return bounds.Contains(m.Position.ToVector2() / 2);
+        }
+        else
+        {
+          return false;
+        }
       }
     }
 
@@ -40,7 +48,7 @@ namespace FebEngine.UI
     {
       get
       {
-        return Pressed && Released;
+        return isVisible && Pressed && Released;
       }
     }
 
@@ -57,6 +65,8 @@ namespace FebEngine.UI
         new Rectangle(0, 0, 16, 16),
         color
           );
+
+      base.Draw(sb);
     }
   }
 }

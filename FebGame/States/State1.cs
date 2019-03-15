@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace FebGame.States
 {
-  class State1 : IState
+  internal class State1 : IGameState
   {
     public void Load()
     {
-      Sprite mySprite = SpriteFactory.CreateSprite();
     }
 
     public void Unload()
@@ -23,7 +22,7 @@ namespace FebGame.States
     {
     }
 
-    public void Draw(Renderer renderer)
+    public void Draw(RenderManager renderer)
     {
     }
   }

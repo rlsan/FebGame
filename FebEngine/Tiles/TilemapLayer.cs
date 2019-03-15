@@ -65,9 +65,10 @@ namespace FebEngine.Tiles
       }
 
       Tile t = tile;
+      t.X = x;
+      t.Y = y;
 
       tileArray[x, y] = t;
-
       IsDirty = true;
     }
 
@@ -148,6 +149,20 @@ namespace FebEngine.Tiles
           {
             Debug.Text(tile.id.ToString(), x * Tilemap.tileWidth, y * Tilemap.tileHeight);
             //Debug.Text(hashArray[x, y], x * Tilemap.tileWidth, y * Tilemap.tileHeight);
+          }
+        }
+      }
+    }
+
+    public void RandomizeTiles()
+    {
+      for (int x = 0; x < tileArray.GetLength(0); x++)
+      {
+        for (int y = 0; y < tileArray.GetLength(1); y++)
+        {
+          if (hashArray[x, y] % 2 == 0)
+          {
+            PutTile(new Tile { id = 0 }, x, y);
           }
         }
       }
