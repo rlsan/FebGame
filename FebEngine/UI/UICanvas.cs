@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace FebEngine.UI
     private Dictionary<string, UIElement> elements;
 
     public Texture2D ThemeTexture { get; set; }
+    public ContentManager contentManager;
 
-    public UICanvas()
+    public UICanvas(Texture2D texture)
     {
       elements = new Dictionary<string, UIElement>();
+      ThemeTexture = texture;
     }
 
     public void AddElement(string label, UIElement element)

@@ -84,7 +84,7 @@ namespace FebEngine
         message = "null";
       }
 
-      Fonts.Add(new SpriteFont(fontTexture, new Vector2(x, y), 6, 10, message.ToString()));
+      Fonts.Add(new SpriteFont(fontTexture, new Vector2(x, y), 12, 20, message.ToString()));
     }
 
     public static void Text(object message, Vector2 position)
@@ -95,7 +95,18 @@ namespace FebEngine
         message = "null";
       }
 
-      Fonts.Add(new SpriteFont(fontTexture, position, 6, 10, message.ToString()));
+      Fonts.Add(new SpriteFont(fontTexture, position, 12, 20, message.ToString()));
+    }
+
+    public static void Text(object message, Point position)
+
+    {
+      if (message == null)
+      {
+        message = "null";
+      }
+
+      Fonts.Add(new SpriteFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
     }
 
     public static void DrawLine(Vector2 start, Vector2 end)

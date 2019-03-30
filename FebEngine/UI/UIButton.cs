@@ -15,7 +15,7 @@ namespace FebEngine.UI
         var m = Mouse.GetState();
         if (isVisible)
         {
-          return bounds.Contains(m.Position.ToVector2() / 2);
+          return bounds.Contains(m.Position.ToVector2());
         }
         else
         {
@@ -61,7 +61,7 @@ namespace FebEngine.UI
       }
 
       sb.Draw(canvas.ThemeTexture,
-        new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, bounds.Height - 1),
+        new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height),
         new Rectangle(0, 0, 16, 16),
         color
           );

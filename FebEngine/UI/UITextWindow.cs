@@ -10,17 +10,19 @@ namespace FebEngine.UI
 {
   public class UITextWindow : UIElement
   {
+    public string title;
     public string[] lines;
 
     private int indent = 8;
 
-    private int marginX = 6;
-    private int marginY = 10;
+    private int marginX = 12;
+    private int marginY = 20;
 
     private bool enableBackground;
 
-    public UITextWindow(int x, int y, int width, int height, bool enableBackground = false, params string[] newLines)
+    public UITextWindow(string title, int x, int y, int width, int height, bool enableBackground = false, params string[] newLines)
     {
+      this.title = title;
       lines = newLines;
       bounds = new Rectangle(x, y, width, height);
       this.enableBackground = enableBackground;
@@ -45,18 +47,18 @@ namespace FebEngine.UI
         }
 
         sb.Draw(canvas.ThemeTexture,
-          new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, 10),
+          new Rectangle(bounds.X + 0, bounds.Y + 0, bounds.Width - 0, 20),
           new Rectangle(0, 0, 16, 16),
           Color.White
             );
 
-        Debug.Text(label, X + 2, Y + 2);
+        Debug.Text(title, X + 2, Y + 2);
 
         for (int i = 0; i < lines.Length; i++)
         {
           string line = lines[i];
 
-          Debug.Text(line, indent + X, 18 + Y + i * marginY);
+          Debug.Text(line, indent + X, 26 + Y + i * marginY);
         }
 
         base.Draw(sb);

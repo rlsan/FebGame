@@ -12,10 +12,11 @@ namespace FebEngine.Tiles
   {
     public List<Tilemap> tilemaps = new List<Tilemap>();
 
-    public int scale = 4;
+    public int scale = 6;
 
     public TilemapSet()
     {
+      /*
       for (int i = 1; i < 2; i++)
       {
         tilemaps.Add(new Tilemap(
@@ -38,6 +39,7 @@ namespace FebEngine.Tiles
 
         tilemap.GetLayer(1).RandomizeTiles();
       }
+      */
     }
 
     public void Add(Tilemap tilemap)
