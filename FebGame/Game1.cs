@@ -18,8 +18,9 @@ namespace FebGame
   {
     protected override void Initialize()
     {
-      stateManager.AddState("Level Editor", new LevelEditorState());
-      stateManager.SetActiveState("Level Editor");
+      stateManager.AddState("Gameplay", new GameplayState());
+      stateManager.AddState("Editor", new EditorState());
+      stateManager.SetActiveState("Gameplay");
 
       IsMouseVisible = true;
 
@@ -40,9 +41,6 @@ namespace FebGame
 
     protected override void LoadContent()
     {
-      var t = Content.Load<Texture2D>("foods");
-      t.Name = "foods";
-
       base.LoadContent();
     }
 

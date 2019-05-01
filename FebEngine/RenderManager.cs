@@ -39,11 +39,16 @@ namespace FebEngine
 
     public override void Draw(GameTime gameTime)
     {
-      //SpriteBatch.Begin();
+      SpriteBatch.Begin();
+
+      foreach (var ent in Game.world.entities)
+      {
+        ent.Draw(SpriteBatch, gameTime);
+      }
 
       //Debug.Draw(SpriteBatch);
 
-      //SpriteBatch.End();
+      SpriteBatch.End();
     }
   }
 }

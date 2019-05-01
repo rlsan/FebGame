@@ -73,6 +73,7 @@ namespace FebEngine
     public void AddState(string name, GameState state)
     {
       state.name = name;
+      state.world = Game.world;
       states.Add(name, state);
     }
 

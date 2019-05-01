@@ -16,6 +16,7 @@ namespace FebEngine
 
     public RenderManager renderManager;
     public StateManager stateManager;
+    public World world;
 
     public MainGame()
     {
@@ -29,6 +30,7 @@ namespace FebEngine
 
       renderManager = new RenderManager(this);
       stateManager = new StateManager(this);
+      world = new World(this);
     }
 
     protected override void Initialize()

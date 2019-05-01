@@ -13,6 +13,8 @@ namespace FebEngine
     public string name;
     public bool isActive;
 
+    public World world;
+
     public void Activate()
     {
       isActive = true;

@@ -9,9 +9,9 @@ namespace FebEngine
 {
   public class Transform
   {
-    Vector2 Position { get; set; }
-    float Rotation { get; set; }
-    Vector2 Scale { get; set; }
+    public Vector2 Position { get; set; }
+    public float Rotation { get; set; }
+    public Vector2 Scale { get; set; }
 
     public Transform()
     {

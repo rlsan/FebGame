@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace FebEngine.Tiles
 {
@@ -22,6 +23,8 @@ namespace FebEngine.Tiles
     public int tileWidth;
     public int tileHeight;
 
+    public List<TilemapWarp> Warps { get; set; }
+
     public Rectangle bounds
     {
       get { return new Rectangle(X, Y, width, height); }
@@ -34,6 +37,7 @@ namespace FebEngine.Tiles
     public Tilemap(int width, int height, int tileWidth, int tileHeight)
     {
       Layers = new TilemapLayer[0];
+      Warps = new List<TilemapWarp>();
 
       this.width = width;
       this.height = height;
@@ -42,6 +46,17 @@ namespace FebEngine.Tiles
       this.tileHeight = tileHeight;
     }
 
+    public void AddWarp(int tileX, int tileY)
+    {
+      var warp = new TilemapWarp(tileX, tileY);
+      Warps.Add(warp);
+    }
+
+    /// <summary>
+    /// Replaces the layers with fresh ones.
+    /// Used for initialization, should never really be used twice.
+    /// </summary>
+    /// <param name="names">What to name each layer in order.</param>
     public void SetLayers(params string[] names)
     {
       Layers = new TilemapLayer[names.Length];
@@ -52,6 +67,11 @@ namespace FebEngine.Tiles
       }
     }
 
+    /// <summary>
+    /// Handy method for getting a layer from index.
+    /// </summary>
+    /// <param name="i">Index of the layer you want.</param>
+    /// <returns></returns>
     public TilemapLayer GetLayer(int i)
     {
       return Layers[i];
@@ -95,8 +115,33 @@ namespace FebEngine.Tiles
       }
     }
 
+    public void Draw(SpriteBatch sb)
+    {
+      // Iterate through each layer in the map
+      for (int layerID = 0; layerID < LayerCount; layerID++)
+      {
+        var layer = GetLayer(layerID);
+
+        // Only draw this layer if it's visible
+        if (!layer.IsVisible) return;
+
+        // Iterate through each tile in this layer
+        for (int tileIndex = 0; tileIndex < layer.tileArray.Length; tileIndex++)
+        {
+          int tileX = tileIndex % width;
+          int tileY = tileIndex / width;
+          var tile = layer.tileArray[tileX, tileY];
+
+          DrawTile(sb, tile, layer);
+        }
+      }
+    }
+
     public void DrawTile(SpriteBatch sb, Tile tile, TilemapLayer layer)
     {
+      // Tiles with ID -1 and less are ignored.
+      if (tile.id <= -1) return;
+
       // Debug for coloring the tile based on its property.
       if (isShowingTileProperties) tile.tint = GetTilePropertyTint(tile);
 
@@ -123,58 +168,6 @@ namespace FebEngine.Tiles
         new Rectangle(tilesetX * tileWidth, tilesetY * tileHeight, tileWidth, tileHeight),
         tile.tint
         );
-    }
-
-    public void Draw(SpriteBatch sb)
-    {
-      // Iterate through each layer in the map
-      for (int layerID = 0; layerID < LayerCount; layerID++)
-      {
-        var layer = GetLayer(layerID);
-
-        // Only draw this layer if it's visible
-        if (layer.IsVisible)
-        {
-          // Iterate through each tile in this layer
-          for (int tileIndex = 0; tileIndex < layer.tileArray.Length; tileIndex++)
-          {
-            int tileX = tileIndex % width;
-            int tileY = tileIndex / width;
-            var tile = layer.tileArray[tileX, tileY];
-
-            // Tiles with ID -1 and less are ignored.
-            if (tile.id >= 0)
-            {
-              // Debug for coloring the tile based on its property.
-              if (isShowingTileProperties) tile.tint = GetTilePropertyTint(tile);
-
-              // Cut out the appropriate tile from the tileset.
-              Vector2 tilesetPosition = tileset.GetTilePositionFromIndex(tile.id);
-              int tilesetX = (int)tilesetPosition.X;
-              int tilesetY = (int)tilesetPosition.Y;
-
-              var destinationRectangle = new Rectangle(
-                tileX * tileWidth + layer.X,
-                tileY * tileHeight + layer.Y,
-                tileWidth,
-                tileHeight);
-
-              int frame = tile.ReturnFrame(layer, tileX, tileY);
-
-              tilesetPosition = tileset.GetTilePositionFromIndex(frame);
-              tilesetX = (int)tilesetPosition.X;
-              tilesetY = (int)tilesetPosition.Y;
-
-              sb.Draw(
-                tileset.Texture,
-                destinationRectangle,
-                new Rectangle(tilesetX * tileWidth, tilesetY * tileHeight, tileWidth, tileHeight),
-                tile.tint
-                );
-            }
-          }
-        }
-      }
     }
   }
 }

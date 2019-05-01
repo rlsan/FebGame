@@ -14,34 +14,6 @@ namespace FebEngine.Tiles
 
     public int scale = 6;
 
-    public TilemapSet()
-    {
-      /*
-      for (int i = 1; i < 2; i++)
-      {
-        tilemaps.Add(new Tilemap(
-          RNG.RandIntRange(10, 24),
-          RNG.RandIntRange(10, 24),
-          16,
-          16
-        ));
-      }
-      for (int i = 0; i < tilemaps.Count; i++)
-      {
-        var tilemap = tilemaps[i];
-
-        tilemap.X = RNG.RandIntRange(0, 80);
-        tilemap.Y = RNG.RandIntRange(0, 80);
-
-        tilemap.name = "M" + i;
-
-        tilemap.SetLayers("BG", "FG", "D");
-
-        tilemap.GetLayer(1).RandomizeTiles();
-      }
-      */
-    }
-
     public void Add(Tilemap tilemap)
     {
       tilemaps.Add(tilemap);

@@ -10,16 +10,16 @@ using System;
 
 namespace FebGame.States
 {
-  internal class LevelEditorState : GameState
+  internal class EditorState : GameState
   {
     private class TilemapThumbnail
     {
-      public string name;
+      public Tilemap parentTilemap;
       public Rectangle bounds;
 
-      public TilemapThumbnail(string name, int x, int y, int width, int height)
+      public TilemapThumbnail(Tilemap parent, int x, int y, int width, int height)
       {
-        this.name = name;
+        parentTilemap = parent;
         bounds = new Rectangle(x, y, width, height);
       }
     }
@@ -56,12 +56,18 @@ namespace FebGame.States
       // Generate some random tilemaps for testing
       for (int i = 0; i < 12; i++)
       {
-        tilemapThumbnails.Add(new TilemapThumbnail("Map" + i,
-          10 + 20 * i,
-          50,
-          RNG.RandIntRange(10, 60),
-          RNG.RandIntRange(10, 60)
-        ));
+        int x = 10 + 20 * i;
+        int y = 50;
+        int width = RNG.RandIntRange(10, 60);
+        int height = RNG.RandIntRange(10, 60);
+
+        var tilemap = new Tilemap(width, height, 16, 16);
+        tilemap.name = "Map" + i;
+
+        tilemap.AddWarp(5, 5);
+
+        tilemapSet.Add(tilemap);
+        tilemapThumbnails.Add(new TilemapThumbnail(tilemap, x, y, width, height));
       }
 
       InitUI();
@@ -197,19 +203,27 @@ namespace FebGame.States
       renderer.SpriteBatch.Begin();
 
       canvas.DrawElements(sb);
-      tilemapSet.Draw(sb);
+      //tilemapSet.Draw(sb);
 
       if (levelEditorView == LevelEditorView.Chapter)
       {
         foreach (var thumbnail in tilemapThumbnails)
         {
-          Debug.Text(thumbnail.name, thumbnail.bounds.X * scale, thumbnail.bounds.Y * scale);
+          Debug.Text(thumbnail.parentTilemap.name, thumbnail.bounds.X * scale, thumbnail.bounds.Y * scale);
           Debug.DrawRect(new Rectangle(
             thumbnail.bounds.X * scale,
             thumbnail.bounds.Y * scale,
             thumbnail.bounds.Width * scale,
             thumbnail.bounds.Height * scale
-            ));
+            ),
+            Color.Black);
+
+          Debug.Text(thumbnail.parentTilemap.Warps.Count, 20, 20);
+
+          foreach (var warp in thumbnail.parentTilemap.Warps)
+          {
+            Debug.DrawLine(new Vector2(thumbnail.bounds.X * scale + warp.tileX * scale, thumbnail.bounds.Y * scale + warp.tileY * scale), Vector2.Zero);
+          }
         }
       }
 

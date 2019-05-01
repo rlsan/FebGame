@@ -73,10 +73,13 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Player.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="States\LevelEditorState.cs" />
+    <Compile Include="States\EditorState.cs" />
+    <Compile Include="States\GameplayState.cs" />
+    <Compile Include="States\IntroSceneState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
