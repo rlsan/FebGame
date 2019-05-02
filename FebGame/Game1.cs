@@ -24,18 +24,6 @@ namespace FebGame
 
       IsMouseVisible = true;
 
-      // Setup debug
-      Texture2D pixelTexture = new Texture2D(GraphicsDevice, 4, 4);
-
-      Color[] colorData = new Color[16];
-      for (int i = 0; i < 16; i++)
-      {
-        colorData[i] = new Color(255, 255, 255, 1f);
-      }
-      pixelTexture.SetData(colorData);
-
-      Debug.pixelTexture = pixelTexture;
-
       world.bounds = new Rectangle(0, 0, 2000, 2000);
 
       base.Initialize();

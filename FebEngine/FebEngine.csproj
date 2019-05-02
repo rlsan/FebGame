@@ -42,14 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Debug.cs" />
+    <Compile Include="Utility\Debug.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Core\MainGame.cs" />
     <Compile Include="Core\Manager.cs" />
     <Compile Include="Physics\Body.cs" />
     <Compile Include="Physics\PhysicsHandler.cs" />
     <Compile Include="Physics\QuadTree.cs" />
-    <Compile Include="RNG.cs" />
+    <Compile Include="Utility\RNG.cs" />
     <Compile Include="Core\StateManager.cs" />
     <Compile Include="Tiles\AnimatedTile.cs" />
     <Compile Include="Tiles\ColumnTile.cs" />
@@ -62,7 +62,7 @@
     <Compile Include="Tiles\RandomTile.cs" />
     <Compile Include="Tiles\RowTile.cs" />
     <Compile Include="Tiles\TileType.cs" />
-    <Compile Include="Time.cs" />
+    <Compile Include="Utility\Time.cs" />
     <Compile Include="Entities\Timer.cs" />
     <Compile Include="UI\UIButton.cs" />
     <Compile Include="GameState.cs" />
@@ -82,7 +82,7 @@
     <Compile Include="Transform.cs" />
     <Compile Include="UI\UICanvas.cs" />
     <Compile Include="UI\UIElement.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="Core\World.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

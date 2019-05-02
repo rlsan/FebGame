@@ -15,6 +15,14 @@ namespace FebEngine.Physics
 
     public bool enabled = true;
 
+    //will this body query for other bodies?
+    public bool isDynamic = true;
+
+    public bool collidesLeft = true;
+    public bool collidesRight = true;
+    public bool collidesUp = true;
+    public bool collidesDown = true;
+
     public Sprite Parent { get; }
 
     public Body(Sprite Parent)
@@ -31,6 +39,12 @@ namespace FebEngine.Physics
 
     public bool OnFloor { get { return blocked.Down; } }
     public bool OnWall { get { return blocked.Left || blocked.Right; } }
+
+    public void Reset()
+    {
+      velocity = Vector2.Zero;
+      blocked.Reset();
+    }
   }
 
   public struct Blocked

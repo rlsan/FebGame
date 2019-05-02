@@ -11,7 +11,6 @@ namespace FebEngine
   public class RenderManager : Manager
   {
     public SpriteBatch SpriteBatch { get; private set; }
-    //public Dictionary<string, Texture2D> Textures { get; private set; }
 
     public GraphicsDeviceManager Graphics
     {
@@ -32,7 +31,18 @@ namespace FebEngine
     public override void Initialize()
     {
       SpriteBatch = new SpriteBatch(GraphicsDevice);
-      //Textures = new Dictionary<string, Texture2D>();
+
+      // Setup debug
+      Texture2D pixelTexture = new Texture2D(GraphicsDevice, 4, 4);
+
+      Color[] colorData = new Color[16];
+      for (int i = 0; i < 16; i++)
+      {
+        colorData[i] = new Color(255, 255, 255, 1f);
+      }
+      pixelTexture.SetData(colorData);
+
+      Debug.pixelTexture = pixelTexture;
 
       base.Initialize();
     }

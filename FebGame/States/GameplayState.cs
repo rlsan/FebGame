@@ -47,6 +47,12 @@ namespace FebGame.States
         world.physics.Enable(obsticle);
 
         obsticle.Body.hasGravity = false;
+        obsticle.Body.isDynamic = false;
+
+        obsticle.Body.collidesUp = true;
+        obsticle.Body.collidesDown = false;
+        obsticle.Body.collidesLeft = false;
+        obsticle.Body.collidesRight = false;
       }
     }
 
@@ -67,14 +73,17 @@ namespace FebGame.States
 
       if (ks.IsKeyDown(Keys.W))
       {
-        thing.Body.velocity.Y += -0.2f;
-      }
-      if (ks.IsKeyDown(Keys.S))
-      {
-        thing.Body.velocity.Y += 0.2f;
+        if (thing.Body.OnFloor)
+        {
+          thing.Body.velocity.Y = -5f;
+        }
       }
 
-      Debug.Text(thing.Body.blocked.ToString(), thing.transform.Position);
+      if (thing.transform.Position.Y > 800)
+      {
+        thing.transform.Position = Vector2.Zero;
+        thing.Body.Reset();
+      }
     }
 
     public override void Draw(RenderManager renderer)

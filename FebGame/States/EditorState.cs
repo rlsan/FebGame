@@ -196,6 +196,7 @@ namespace FebGame.States
 
     public override void Draw(RenderManager renderer)
     {
+      /*
       var sb = renderer.SpriteBatch;
 
       renderer.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -230,6 +231,7 @@ namespace FebGame.States
       Debug.Draw(sb);
 
       renderer.SpriteBatch.End();
+      */
     }
   }
 }

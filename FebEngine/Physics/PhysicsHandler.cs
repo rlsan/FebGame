@@ -46,7 +46,7 @@ namespace FebEngine.Physics
 
       foreach (var sprite in world.sprites)
       {
-        if (sprite.Body != null && sprite.Body.enabled)
+        if (sprite.Body != null && sprite.Body.enabled && sprite.Body.isDynamic)
         {
           sprite.Body.blocked.Reset();
 
@@ -85,22 +85,40 @@ namespace FebEngine.Physics
               {
                 float moveX = 0;
 
+                //moving right
                 if (sprite.Body.velocity.X > 0)
                 {
-                  moveX = Math.Min(Math.Abs(sprite.Body.velocity.X), Math.Abs(bb2.Left - bb1.Right) - 1);
-
-                  if (moveX == 0)
+                  //does the object have collision on the left side?
+                  if (body.collidesLeft)
                   {
-                    sprite.Body.blocked.Right = true;
+                    moveX = Math.Min(Math.Abs(sprite.Body.velocity.X), Math.Abs(bb2.Left - bb1.Right) - 1);
+
+                    if (moveX == 0)
+                    {
+                      sprite.Body.blocked.Right = true;
+                    }
+                  }
+                  else
+                  {
+                    moveX = sprite.Body.velocity.X;
                   }
                 }
+                //moving left
                 else if (sprite.Body.velocity.X < 0)
                 {
-                  moveX = -Math.Min(Math.Abs(sprite.Body.velocity.X), Math.Abs(bb2.Right - bb1.Left) - 1);
-
-                  if (moveX == 0)
+                  //does the object have collision on the right side?
+                  if (body.collidesRight)
                   {
-                    sprite.Body.blocked.Left = true;
+                    moveX = -Math.Min(Math.Abs(sprite.Body.velocity.X), Math.Abs(bb2.Right - bb1.Left) - 1);
+
+                    if (moveX == 0)
+                    {
+                      sprite.Body.blocked.Left = true;
+                    }
+                  }
+                  else
+                  {
+                    moveX = sprite.Body.velocity.X;
                   }
                 }
 
@@ -112,22 +130,40 @@ namespace FebEngine.Physics
               {
                 float moveY = 0;
 
+                //moving down
                 if (sprite.Body.velocity.Y > 0)
                 {
-                  moveY = Math.Min(Math.Abs(sprite.Body.velocity.Y), Math.Abs(bb2.Top - bb1.Bottom) - 1);
-
-                  if (moveY == 0)
+                  //does the object have collision on the top?
+                  if (body.collidesUp)
                   {
-                    sprite.Body.blocked.Down = true;
+                    moveY = Math.Min(Math.Abs(sprite.Body.velocity.Y), Math.Abs(bb2.Top - bb1.Bottom) - 1);
+
+                    if (moveY == 0)
+                    {
+                      sprite.Body.blocked.Down = true;
+                    }
+                  }
+                  else
+                  {
+                    moveY = sprite.Body.velocity.Y;
                   }
                 }
+                //moving up
                 else if (sprite.Body.velocity.Y < 0)
                 {
-                  moveY = -Math.Min(Math.Abs(sprite.Body.velocity.Y), Math.Abs(bb2.Bottom - bb1.Top) - 1);
-
-                  if (moveY == 0)
+                  //does the object have collision on the bottom?
+                  if (body.collidesDown)
                   {
-                    sprite.Body.blocked.Up = true;
+                    moveY = -Math.Min(Math.Abs(sprite.Body.velocity.Y), Math.Abs(bb2.Bottom - bb1.Top) - 1);
+
+                    if (moveY == 0)
+                    {
+                      sprite.Body.blocked.Up = true;
+                    }
+                  }
+                  else
+                  {
+                    moveY = sprite.Body.velocity.Y;
                   }
                 }
 
