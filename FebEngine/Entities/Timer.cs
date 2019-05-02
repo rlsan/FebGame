@@ -29,17 +29,26 @@ namespace FebEngine
 
     public void Stop()
     {
-      isRunning = false;
+      if (!isFinished)
+      {
+        isRunning = false;
+      }
     }
 
     public void Resume()
     {
-      isRunning = true;
+      if (!isFinished)
+      {
+        isRunning = true;
+      }
     }
 
     public void Reset()
     {
       time = duration;
+
+      isFinished = false;
+      isRunning = true;
     }
 
     public override string ToString()

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FebEngine.Physics;
 
 namespace FebEngine
 {
@@ -14,10 +15,14 @@ namespace FebEngine
     public List<Sprite> sprites = new List<Sprite>();
 
     public Creator create;
+    public PhysicsHandler physics;
+
+    public Rectangle bounds;
 
     public World(MainGame game) : base(game)
     {
       create = new Creator(this, game.Content);
+      physics = new PhysicsHandler(this);
       base.Initialize();
     }
 
@@ -53,6 +58,8 @@ namespace FebEngine
       {
         ent.Update(gameTime);
       }
+
+      physics.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)

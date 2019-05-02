@@ -33,22 +33,52 @@ namespace FebGame.States
       thing = world.create.Sprite("missing");
 
       timer = world.create.Timer();
-      timer.Start(5, player.Kill);
+      timer.Start(0.2f, player.Kill);
+
+      world.physics.Enable(thing);
+      //thing.Body.hasGravity = false;
+
+      for (int i = 0; i < 40; i++)
+      {
+        var obsticle = world.create.Sprite("missing");
+
+        obsticle.transform.Position = new Vector2(RNG.RandIntRange(0, 800), RNG.RandIntRange(0, 800));
+
+        world.physics.Enable(obsticle);
+
+        obsticle.Body.hasGravity = false;
+      }
     }
 
     public override void Update(GameTime gameTime)
     {
       Debug.Text(timer.ToString(), 1000, 0);
+
+      KeyboardState ks = Keyboard.GetState();
+
+      if (ks.IsKeyDown(Keys.A))
+      {
+        thing.Body.velocity.X += -0.2f;
+      }
+      if (ks.IsKeyDown(Keys.D))
+      {
+        thing.Body.velocity.X += 0.2f;
+      }
+
+      if (ks.IsKeyDown(Keys.W))
+      {
+        thing.Body.velocity.Y += -0.2f;
+      }
+      if (ks.IsKeyDown(Keys.S))
+      {
+        thing.Body.velocity.Y += 0.2f;
+      }
+
+      Debug.Text(thing.Body.blocked.ToString(), thing.transform.Position);
     }
 
     public override void Draw(RenderManager renderer)
     {
-      var sb = renderer.SpriteBatch;
-      renderer.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-      renderer.SpriteBatch.Begin();
-      Debug.Draw(sb);
-      renderer.SpriteBatch.End();
     }
   }
 }

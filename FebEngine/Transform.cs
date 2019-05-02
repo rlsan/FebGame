@@ -17,5 +17,9 @@ namespace FebEngine
     {
       Scale = new Vector2(1, 1);
     }
+
+    public void Translate()
+    {
+    }
   }
 }

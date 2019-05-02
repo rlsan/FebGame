@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FebEngine.Physics;
 
 namespace FebEngine
 {
@@ -15,6 +16,8 @@ namespace FebEngine
     public Texture2D Texture { get; set; }
 
     public string TexturePath { get; set; }
+
+    public Body Body { get; set; }
 
     public bool isVisible = true;
     public bool isDead = false;

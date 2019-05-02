@@ -36,6 +36,8 @@ namespace FebGame
 
       Debug.pixelTexture = pixelTexture;
 
+      world.bounds = new Rectangle(0, 0, 2000, 2000);
+
       base.Initialize();
     }
 

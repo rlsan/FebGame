@@ -39,6 +39,8 @@ namespace FebEngine
 
     public override void Draw(GameTime gameTime)
     {
+      GraphicsDevice.Clear(Color.CornflowerBlue);
+
       SpriteBatch.Begin();
 
       foreach (var ent in Game.world.entities)
@@ -46,7 +48,7 @@ namespace FebEngine
         ent.Draw(SpriteBatch, gameTime);
       }
 
-      //Debug.Draw(SpriteBatch);
+      Debug.Draw(SpriteBatch);
 
       SpriteBatch.End();
     }

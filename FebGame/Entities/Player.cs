@@ -22,7 +22,7 @@ namespace FebGame.Entities
 
       if (kb.IsKeyDown(Keys.A))
       {
-        transform.Position += Vector2.One;
+        //transform.Position += Vector2.One;
       }
     }
   }
