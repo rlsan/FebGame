@@ -32,13 +32,9 @@ namespace FebGame.States
     public override void Start()
     {
       player = world.AddSprite(new Player());
-      thing = world.create.Sprite("missing");
 
       timer = world.create.Timer();
       timer.Start(0.2f, player.Kill);
-
-      world.physics.Enable(thing);
-      //thing.Body.hasGravity = false;
 
       for (int i = 0; i < 40; i++)
       {
@@ -56,6 +52,11 @@ namespace FebGame.States
         obsticle.Body.collidesLeft = false;
         obsticle.Body.collidesRight = false;
       }
+
+      thing = world.create.Sprite("missing");
+
+      world.physics.Enable(thing);
+      thing.Body.gravity = 25;
     }
 
     public override void Update(GameTime gameTime)
@@ -77,7 +78,7 @@ namespace FebGame.States
       {
         if (thing.Body.OnFloor)
         {
-          thing.Body.velocity.Y = -5f;
+          thing.Body.velocity.Y = -8f;
         }
       }
 

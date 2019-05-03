@@ -64,8 +64,17 @@ namespace FebEngine.Physics
           List<Body> Fbodies = quadTree.Query(rangeRect);
 
           //Debug.DrawRect(rangeRect, new Color(Color.Red, 0.05f));
-
-          if (sprite.Body.hasGravity) sprite.Body.velocity += Vector2.UnitY * gravity * delta;
+          if (sprite.Body.hasGravity)
+          {
+            if (sprite.Body.gravity == null)
+            {
+              sprite.Body.velocity += Vector2.UnitY * gravity * delta;
+            }
+            else
+            {
+              sprite.Body.velocity += Vector2.UnitY * sprite.Body.gravity * delta;
+            }
+          }
 
           foreach (var body in Fbodies)
           {

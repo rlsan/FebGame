@@ -16,6 +16,8 @@ namespace FebEngine.Physics
 
     public bool enabled = true;
 
+    public float gravity;
+
     //will this body query for other bodies?
     public bool isDynamic = true;
 
