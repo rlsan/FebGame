@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace FebEngine
+namespace FebEngine.Utility
 {
   public static class Time
   {

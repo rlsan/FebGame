@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FebEngine.Physics;
 
-namespace FebEngine
+namespace FebEngine.Entities
 {
   public class Sprite : Entity
   {

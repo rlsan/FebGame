@@ -1,4 +1,6 @@
-﻿namespace FebEngine.Tiles
+﻿using FebEngine.Utility;
+
+namespace FebEngine.Tiles
 {
   public class AnimatedTile : Tile
   {
@@ -12,7 +14,7 @@
       this.hidden = hidden;
       children = tiles;
 
-      foreach (var child in children)
+      foreach (Tile child in children)
       {
         child.parent = this;
       }
