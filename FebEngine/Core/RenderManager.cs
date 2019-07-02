@@ -45,12 +45,16 @@ namespace FebEngine
 
       Debug.pixelTexture = pixelTexture;
 
+      // Remove these two lines if weird time-based stuff starts happening.
+      Graphics.SynchronizeWithVerticalRetrace = false;
+      Game.IsFixedTimeStep = false;
+
       base.Initialize();
     }
 
     public override void Draw(GameTime gameTime)
     {
-      GraphicsDevice.Clear(Color.CornflowerBlue);
+      //GraphicsDevice.Clear(Color.CornflowerBlue);
 
       SpriteBatch.Begin();
 
@@ -59,7 +63,7 @@ namespace FebEngine
         ent.Draw(SpriteBatch, gameTime);
       }
 
-      Debug.Draw(SpriteBatch);
+      //Debug.Draw(SpriteBatch);
 
       SpriteBatch.End();
     }

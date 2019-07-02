@@ -6,7 +6,7 @@ namespace FebEngine.Tiles
 {
   public class TilemapLayer
   {
-    private Tilemap Tilemap { get; }
+    public Tilemap Tilemap { get; }
     public string Name { get; }
 
     public int X { get; set; }
@@ -65,9 +65,12 @@ namespace FebEngine.Tiles
         return;
       }
 
-      Tile t = tile;
-      t.X = x;
-      t.Y = y;
+      //Tile t = tile;
+      Tile t = GetTileXY(x, y);
+      //t.X = x;
+      //t.Y = y;
+
+      t.id = tile.id;
 
       tileArray[x, y] = t;
       IsDirty = true;
@@ -148,6 +151,7 @@ namespace FebEngine.Tiles
 
           if (showEmptyTiles || tile.id >= 0)
           {
+            //EUREKA
             Debug.Text(tile.id.ToString(), x * Tilemap.tileWidth, y * Tilemap.tileHeight);
             //Debug.Text(hashArray[x, y], x * Tilemap.tileWidth, y * Tilemap.tileHeight);
           }

@@ -60,7 +60,7 @@ namespace FebEngine.Physics
             sprite.Body.velocity.Y = sprite.Body.maxVelocity.Y * Math.Sign(sprite.Body.velocity.Y);
           }
 
-          Rectangle rangeRect = new Rectangle((int)sprite.transform.Position.X - 200, (int)sprite.transform.Position.Y - 200, 400, 400);
+          Rectangle rangeRect = new Rectangle((int)sprite.Transform.Position.X - 200, (int)sprite.Transform.Position.Y - 200, 400, 400);
           List<Body> Fbodies = quadTree.Query(rangeRect);
 
           //Debug.DrawRect(rangeRect, new Color(Color.Red, 0.05f));
@@ -83,8 +83,8 @@ namespace FebEngine.Physics
               var bb1 = sprite.Body.bounds;
               var bb2 = body.bounds;
 
-              bb1.Location = sprite.transform.Position.ToPoint();
-              bb2.Location = body.Parent.transform.Position.ToPoint();
+              bb1.Location = sprite.Transform.Position.ToPoint();
+              bb2.Location = body.Parent.Transform.Position.ToPoint();
 
               //Debug.DrawLine(Vector2.Zero, bb2.Location.ToVector2());
 
@@ -185,7 +185,7 @@ namespace FebEngine.Physics
           //sprite.transform.Position += new Vector2(sprite.Body.velocity.X, 0);
           //sprite.transform.Position += new Vector2(0, sprite.Body.velocity.Y);
 
-          sprite.transform.Position += sprite.Body.velocity;
+          sprite.Transform.Position += sprite.Body.velocity;
         }
       }
     }

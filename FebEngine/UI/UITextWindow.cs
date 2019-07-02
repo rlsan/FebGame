@@ -40,14 +40,14 @@ namespace FebEngine.UI
       {
         if (enableBackground)
         {
-          sb.Draw(canvas.ThemeTexture,
+          sb.Draw(Canvas.ThemeTexture,
             bounds,
             new Rectangle(16, 0, 16, 16),
             Color.White
               );
         }
 
-        sb.Draw(canvas.ThemeTexture,
+        sb.Draw(Canvas.ThemeTexture,
           new Rectangle(bounds.X + 0, bounds.Y + 0, bounds.Width - 0, 20),
           new Rectangle(0, 0, 16, 16),
           Color.White

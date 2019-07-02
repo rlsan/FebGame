@@ -40,7 +40,7 @@ namespace FebGame.States
       {
         var obsticle = world.create.Sprite("missing");
 
-        obsticle.transform.Position = new Vector2(RNG.RandIntRange(0, 800), RNG.RandIntRange(0, 800));
+        obsticle.Transform.Position = new Vector2(RNG.RandIntRange(0, 800), RNG.RandIntRange(0, 800));
 
         world.physics.Enable(obsticle);
 
@@ -82,14 +82,14 @@ namespace FebGame.States
         }
       }
 
-      if (thing.transform.Position.Y > 800)
+      if (thing.Transform.Position.Y > 800)
       {
-        thing.transform.Position = Vector2.Zero;
+        thing.Transform.Position = Vector2.Zero;
         thing.Body.Reset();
       }
     }
 
-    public override void Draw(RenderManager renderer)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
     }
   }

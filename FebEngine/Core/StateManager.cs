@@ -65,7 +65,7 @@ namespace FebEngine
       {
         if (state.isActive)
         {
-          state.Draw(Game.renderManager);
+          state.Draw(Game.renderManager, gameTime);
         }
       }
     }

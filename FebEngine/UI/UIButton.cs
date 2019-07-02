@@ -1,66 +1,54 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using FebEngine.Utility;
 
 namespace FebEngine.UI
 {
   public class UIButton : UIElement
   {
-    //public delegate OnClick Func<>;
+    public string title;
+    public Action onClick;
 
-    public bool Hover
+    private bool isPressed;
+
+    public UIButton(string title = "", Action onClick = null)
     {
-      get
+      this.title = title;
+      this.onClick = onClick;
+    }
+
+    public override void OnPress()
+    {
+      isPressed = true;
+    }
+
+    public override void OnRelease()
+    {
+      isPressed = false;
+
+      if (onClick != null)
       {
-        var m = Mouse.GetState();
-        if (isVisible)
-        {
-          return bounds.Contains(m.Position.ToVector2());
-        }
-        else
-        {
-          return false;
-        }
+        onClick.DynamicInvoke();
       }
     }
 
-    public bool Pressed
+    public override void Update(GameTime gameTime)
     {
-      get
-      {
-        var m = Mouse.GetState();
-
-        return Hover && m.LeftButton == ButtonState.Pressed || Hover && m.RightButton == ButtonState.Pressed;
-      }
-    }
-
-    public bool Released
-    {
-      get
-      {
-        var m = Mouse.GetState();
-
-        return Hover && m.LeftButton == ButtonState.Released || Hover && m.RightButton == ButtonState.Released;
-      }
-    }
-
-    public bool Click
-    {
-      get
-      {
-        return isVisible && Pressed && Released;
-      }
+      base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch sb)
     {
+      Debug.Text(title, X + 2, Y + 2);
+
       Color color = Color.White;
-      if (Pressed)
+      if (isPressed)
       {
         color = Color.Gray;
       }
 
-      sb.Draw(canvas.ThemeTexture,
+      sb.Draw(Canvas.ThemeTexture,
         new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height),
         new Rectangle(0, 0, 16, 16),
         color

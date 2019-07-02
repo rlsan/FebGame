@@ -133,14 +133,12 @@ namespace FebEngine.Utility
     {
       foreach (var rect in Rectangles)
       {
-        spriteBatch.Draw(pixelTexture, rect.Item1, rect.Item2);
+        //spriteBatch.Draw(pixelTexture, rect.Item1, rect.Item2);
 
-        /*
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Top, 1, rect.Height), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Right, rect.Top, 1, rect.Height + 1), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Top, rect.Width, 1), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Left, rect.Bottom, rect.Width, 1), Color.LimeGreen);
-        */
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, 1, rect.Item1.Height), Color.LimeGreen);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Right, rect.Item1.Top, 1, rect.Item1.Height + 1), Color.LimeGreen);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, rect.Item1.Width, 1), Color.LimeGreen);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Bottom, rect.Item1.Width, 1), Color.LimeGreen);
       }
       foreach (var line in Lines)
       {

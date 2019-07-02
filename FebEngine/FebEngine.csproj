@@ -42,6 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\UIFileDialog.cs" />
+    <Compile Include="UI\HorizontalAlignment.cs" />
+    <Compile Include="UI\UIPrompt.cs" />
+    <Compile Include="UI\UIScrollWindow.cs" />
+    <Compile Include="UI\UITextBox.cs" />
+    <Compile Include="UI\UITextField.cs" />
+    <Compile Include="UI\VerticalAlignment.cs" />
+    <Compile Include="UI\UIWindow.cs" />
     <Compile Include="Utility\Debug.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Core\MainGame.cs" />
@@ -76,8 +84,6 @@
     <Compile Include="Tiles\TilemapLayer.cs" />
     <Compile Include="Tiles\Tileset.cs" />
     <Compile Include="UI\UIContainer.cs" />
-    <Compile Include="UI\UITextButton.cs" />
-    <Compile Include="UI\UITextWindow.cs" />
     <Compile Include="UI\TileBrushSwatch.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="UI\UICanvas.cs" />

@@ -11,8 +11,6 @@ namespace FebEngine.Entities
 {
   public class Sprite : Entity
   {
-    public Transform transform = new Transform();
-
     public Texture2D Texture { get; set; }
 
     public string TexturePath { get; set; }
@@ -42,7 +40,7 @@ namespace FebEngine.Entities
     {
       if (Texture != null && isVisible)
       {
-        sb.Draw(Texture, transform.Position, Color.White);
+        sb.Draw(Texture, Transform.Position, Color.White);
       }
     }
   }

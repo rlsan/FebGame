@@ -19,8 +19,9 @@ namespace FebGame
     protected override void Initialize()
     {
       stateManager.AddState("Gameplay", new GameplayState());
-      stateManager.AddState("Editor", new EditorState());
-      stateManager.SetActiveState("Gameplay");
+      //stateManager.AddState("Editor", new EditorState());
+      stateManager.AddState("MapEditor", new MapEditorState());
+      stateManager.SetActiveState("MapEditor");
 
       IsMouseVisible = true;
 

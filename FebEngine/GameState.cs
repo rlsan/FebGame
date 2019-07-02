@@ -43,7 +43,7 @@ namespace FebEngine
     {
     }
 
-    public virtual void Draw(RenderManager renderer)
+    public virtual void Draw(RenderManager renderer, GameTime gameTime)
     {
     }
   }

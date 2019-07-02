@@ -3,10 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using FebEngine.Entities;
+using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
-  public class Tilemap
+  public class Tilemap : Entity
   {
     public TilemapLayer[] Layers { get; set; }
 
@@ -78,7 +80,7 @@ namespace FebEngine.Tiles
     }
 
     /// <summary>
-    /// // Debug for visualizing the property of each tile.
+    /// Debug for visualizing the property of each tile.
     /// This isn't going to work for tiles with 2+ properties.
     /// </summary>
     /// <param name="t">The tile to get the color from.</param>
@@ -115,7 +117,7 @@ namespace FebEngine.Tiles
       }
     }
 
-    public void Draw(SpriteBatch sb)
+    public override void Draw(SpriteBatch sb, GameTime gt)
     {
       // Iterate through each layer in the map
       for (int layerID = 0; layerID < LayerCount; layerID++)
@@ -130,7 +132,7 @@ namespace FebEngine.Tiles
         {
           int tileX = tileIndex % width;
           int tileY = tileIndex / width;
-          var tile = layer.tileArray[tileX, tileY];
+          var tile = layer.GetTileXY(tileX, tileY);
 
           DrawTile(sb, tile, layer);
         }
@@ -168,6 +170,10 @@ namespace FebEngine.Tiles
         new Rectangle(tilesetX * tileWidth, tilesetY * tileHeight, tileWidth, tileHeight),
         tile.tint
         );
+    }
+
+    public override void Update(GameTime gt)
+    {
     }
   }
 }

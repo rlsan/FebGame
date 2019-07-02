@@ -33,7 +33,7 @@ namespace FebEngine.Physics
 
     public bool Insert(Body body)
     {
-      if (!bounds.Contains(body.Parent.transform.Position))
+      if (!bounds.Contains(body.Parent.Transform.Position))
       {
         return false;
       }
@@ -90,7 +90,7 @@ namespace FebEngine.Physics
       {
         foreach (var body in bodies)
         {
-          if (range.Contains(body.Parent.transform.Position))
+          if (range.Contains(body.Parent.Transform.Position))
           {
             foundBodies.Add(body);
           }

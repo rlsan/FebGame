@@ -31,7 +31,7 @@ namespace FebGame.States
     {
     }
 
-    public override void Draw(RenderManager renderer)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
     }
   }
