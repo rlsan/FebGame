@@ -11,6 +11,8 @@ namespace FebEngine
 {
   public class RenderManager : Manager
   {
+    public static RenderManager instance;
+
     public SpriteBatch SpriteBatch { get; private set; }
 
     public GraphicsDeviceManager Graphics
@@ -31,6 +33,11 @@ namespace FebEngine
 
     public override void Initialize()
     {
+      if (instance == null)
+      {
+        instance = this;
+      }
+
       SpriteBatch = new SpriteBatch(GraphicsDevice);
 
       // Setup debug
@@ -54,7 +61,7 @@ namespace FebEngine
 
     public override void Draw(GameTime gameTime)
     {
-      //GraphicsDevice.Clear(Color.CornflowerBlue);
+      GraphicsDevice.Clear(Color.CornflowerBlue);
 
       SpriteBatch.Begin();
 
@@ -63,7 +70,15 @@ namespace FebEngine
         ent.Draw(SpriteBatch, gameTime);
       }
 
-      //Debug.Draw(SpriteBatch);
+      foreach (var state in Game.stateManager.states.Values)
+      {
+        if (state.isActive)
+        {
+          state.Draw(Game.renderManager, gameTime);
+        }
+      }
+
+      Debug.Draw(SpriteBatch);
 
       SpriteBatch.End();
     }

@@ -6,50 +6,44 @@ namespace FebEngine.UI
 {
   public class UIFileDialog : UIContainer
   {
-    private string currentDir;
+    public string currentDir;
+    public UIWindow window;
     private UITextBox directoryBox;
     private UIScrollWindow fileBox;
-    private UIPrompt savePrompt;
+    public UITextField nameField;
 
     public override void Init()
     {
-      var window = AddChild("File Browser", new UIWindow(title: "File Browser", isDraggable: true), 0, 0, 640, 500);
+      window = AddChild("File Browser", new UIWindow(title: "File Browser", isDraggable: true), 0, 0, 640, 500) as UIWindow;
 
       window.AddChild("Back", new UIButton(title: "<", onClick: NavBack), 5, 30, 25, 25);
 
-      currentDir = Directory.GetCurrentDirectory();
+      //currentDir = Directory.GetCurrentDirectory();
+      currentDir = @"C:\Users\Public\Test";
 
       directoryBox = window.AddChild("PathText", new UITextBox(currentDir), 35, 30, 600, 25) as UITextBox;
       fileBox = window.AddChild("ScrollWindow", new UIScrollWindow(20, NavTo), 5, 55, 600, 400) as UIScrollWindow;
 
       Refresh();
 
-      window.AddChild("SaveFile", new UITextField(), 5, 460, 550, 25);
-      window.AddChild("SaveButton", new UIButton(title: "Save", onClick: Foo), 555, 460, 50, 25);
-
-      //savePrompt = AddChild("Prompt", new UIPrompt("Warning", "This file exists. Overwrite?", new UIButton("Save over", Disable), new UIButton("Cancel", ClosePrompt))) as UIPrompt;
+      nameField = window.AddChild("NameField", new UITextField(), 5, 460, 550, 25) as UITextField;
 
       base.Init();
     }
 
-    public void Foo()
+    public void NavTo(string item)
     {
-      Canvas.ShowPrompt(title: "hello", message: "this is message");
-    }
+      var path = currentDir + item;
 
-    public void ClosePrompt()
-    {
-      savePrompt.Disable();
-    }
-
-    public void NavTo(string directory)
-    {
-      var subdirectory = currentDir + directory;
-
-      if (Directory.Exists(subdirectory))
+      if (Directory.Exists(path))
       {
-        currentDir = subdirectory;
+        currentDir = path;
         Refresh();
+      }
+      else
+      {
+        string file = Path.GetFileNameWithoutExtension(currentDir + "\\" + item);
+        nameField.text = file;
       }
     }
 

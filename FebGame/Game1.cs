@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 using FebEngine;
-using FebEngine.UI;
-using FebEngine.Tiles;
-
 using FebGame.States;
-using Microsoft.Xna.Framework.Content;
 
 namespace FebGame
 {
@@ -19,8 +11,7 @@ namespace FebGame
     protected override void Initialize()
     {
       stateManager.AddState("Gameplay", new GameplayState());
-      //stateManager.AddState("Editor", new EditorState());
-      stateManager.AddState("MapEditor", new MapEditorState());
+      stateManager.AddState("MapEditor", new MapEditor());
       stateManager.SetActiveState("MapEditor");
 
       IsMouseVisible = true;

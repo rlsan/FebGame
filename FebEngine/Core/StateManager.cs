@@ -9,6 +9,8 @@ namespace FebEngine
 {
   public class StateManager : Manager
   {
+    public static StateManager instance;
+
     public Dictionary<string, GameState> states = new Dictionary<string, GameState>();
 
     public GameState[] ActiveStates
@@ -38,6 +40,10 @@ namespace FebEngine
 
     public override void Initialize()
     {
+      if (instance == null)
+      {
+        instance = this;
+      }
     }
 
     public override void LoadContent()
@@ -65,7 +71,7 @@ namespace FebEngine
       {
         if (state.isActive)
         {
-          state.Draw(Game.renderManager, gameTime);
+          //state.Draw(Game.renderManager, gameTime);
         }
       }
     }
@@ -73,7 +79,7 @@ namespace FebEngine
     public void AddState(string name, GameState state)
     {
       state.name = name;
-      state.world = Game.world;
+      state.game = Game;
       states.Add(name, state);
     }
 

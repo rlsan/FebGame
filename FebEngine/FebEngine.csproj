@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="UI\UIFileDialog.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
+    <Compile Include="UI\UILoadDialog.cs" />
     <Compile Include="UI\UIPrompt.cs" />
+    <Compile Include="UI\UISaveDialog.cs" />
     <Compile Include="UI\UIScrollWindow.cs" />
     <Compile Include="UI\UITextBox.cs" />
     <Compile Include="UI\UITextField.cs" />

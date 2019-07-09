@@ -14,39 +14,53 @@ namespace FebEngine.UI
 
     private UIWindow window;
     private UITextBox messageBox;
+    private List<UIButton> buttons;
 
-    private UIButton[] buttons;
+    private int amountOfButtons;
 
-    public UIPrompt(string title = "", string message = "", params UIButton[] buttons)
+    public UIPrompt(string title = "", string message = "", int amountOfButtons = 3)
     {
       this.title = title;
       this.message = message;
 
-      this.buttons = buttons;
+      this.amountOfButtons = amountOfButtons;
     }
 
     public override void Init()
     {
+      buttons = new List<UIButton>();
+
       window = AddChild("PromptWindow", new UIWindow(title, isDraggable: true), 0, 0, 400, 200) as UIWindow;
       messageBox = window.AddChild("PromptMessage", new UITextBox(message), 5, 25, 400, 200) as UITextBox;
 
-      if (buttons.Length > 0)
-      {
-        int buttonWidth = window.Width / buttons.Length;
+      int buttonWidth = window.Width / amountOfButtons;
 
-        for (int i = 0; i < buttons.Length; i++)
-        {
-          window.AddChild("Button" + i, new UIButton(buttons[i].title, buttons[i].onClick), buttonWidth * i, window.Height - 40, buttonWidth, 40);
-        }
+      for (int i = 0; i < amountOfButtons; i++)
+      {
+        var button = window.AddChild("Button" + i, new UIButton(), buttonWidth * i, window.Height - 40, buttonWidth, 40) as UIButton;
+        buttons.Add(button);
       }
 
       Disable();
     }
 
-    public void Refresh(string title = "", string message = "")
+    public void Refresh(string title = "", string message = "", params UIButton[] buttonRefs)
     {
       window.title = title;
       messageBox.message = message;
+
+      for (int i = 0; i < buttonRefs.Length; i++)
+      {
+        if (i > amountOfButtons)
+        {
+          break;
+        }
+
+        var button = buttons[i];
+
+        button.title = buttonRefs[i].title;
+        button.onClick = buttonRefs[i].onClick;
+      }
     }
   }
 }

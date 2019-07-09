@@ -24,25 +24,33 @@ namespace FebEngine.UI
     public int offsetX;
     public int offsetY;
 
+    private bool startInvisible;
+
     public UIElement AddChild(string label, UIElement element, int x = 0, int y = 0, int width = 0, int height = 0, bool startInvisible = false)
     {
       UIElement e = element;
 
-      if (startInvisible)
-      {
-        e.isVisible = false;
-      }
+      this.startInvisible = startInvisible;
 
       Canvas.AddElement(this.label + label, e, x, y, width, height);
 
       e.parentElement = this;
       childrenElements.Add(e);
 
+      if (startInvisible)
+      {
+        e.Disable();
+      }
+
       return e;
     }
 
     public virtual void Init()
     {
+      if (startInvisible)
+      {
+        Disable();
+      }
     }
 
     public void Disable()
@@ -101,13 +109,13 @@ namespace FebEngine.UI
 
     public virtual void Draw(SpriteBatch sb)
     {
-      if (isVisible)
+      //if (isVisible)
+      //{
+      foreach (UIElement element in childrenElements)
       {
-        foreach (UIElement element in childrenElements)
-        {
-          element.Draw(sb);
-        }
+        element.Draw(sb);
       }
+      //}
     }
   }
 }

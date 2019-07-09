@@ -31,6 +31,7 @@ namespace FebGame.States
 
     public override void Start()
     {
+      /*
       player = world.AddSprite(new Player());
 
       timer = world.create.Timer();
@@ -57,6 +58,7 @@ namespace FebGame.States
 
       world.physics.Enable(thing);
       thing.Body.gravity = 25;
+      */
     }
 
     public override void Update(GameTime gameTime)

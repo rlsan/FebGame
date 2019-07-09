@@ -67,14 +67,6 @@ namespace FebEngine.UI
         lastKeys = keys;
       }
 
-      if (IsActive)
-      {
-        Debug.Text(text + "|", X + 4, Y + 4);
-      }
-      else
-      {
-        Debug.Text(text, X + 4, Y + 4);
-      }
       base.Update(gameTime);
     }
 
@@ -85,6 +77,18 @@ namespace FebEngine.UI
         new Rectangle(0, 16, 16, 16),
         Color.White
           );
+
+      if (isVisible)
+      {
+        if (IsActive)
+        {
+          Debug.Text(text + "|", X + 4, Y + 4);
+        }
+        else
+        {
+          Debug.Text(text, X + 4, Y + 4);
+        }
+      }
     }
 
     private void HandleKey(GameTime gameTime, Keys currentKey)

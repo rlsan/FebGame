@@ -30,15 +30,15 @@ namespace FebEngine.UI
 
     private UIPrompt globalPrompt;
 
-    public UICanvas()
+    public UICanvas(int width, int height)
     {
       elements = new Dictionary<string, UIElement>();
-      bounds = new Rectangle(0, 0, 400, 400);
+      bounds = new Rectangle(0, 0, width, height);
 
       globalPrompt = AddElement("GlobalPrompt", new UIPrompt(title: "Prompt", message: "None"), 0, 0, 400, 300) as UIPrompt;
     }
 
-    public UIElement AddElement(string label, UIElement element, int x, int y, int width, int height, bool startInvisible = false)
+    public UIElement AddElement(string label, UIElement element, int x = 0, int y = 0, int width = 0, int height = 0, bool startInvisible = false)
     {
       UIElement e = element;
 
@@ -49,14 +49,14 @@ namespace FebEngine.UI
       e.label = label;
       e.Canvas = this;
 
-      if (startInvisible)
-      {
-        e.isVisible = false;
-      }
-
       elements.Add(label, e);
 
       e.Init();
+
+      if (startInvisible)
+      {
+        e.Disable();
+      }
 
       return e;
     }
@@ -78,9 +78,14 @@ namespace FebEngine.UI
 
     public void ShowPrompt(string title = "", string message = "", params UIButton[] buttons)
     {
-      globalPrompt.Refresh(title, message);
+      globalPrompt.Refresh(title, message, buttons);
 
       globalPrompt.Enable();
+    }
+
+    public void ClosePrompt()
+    {
+      globalPrompt.Disable();
     }
 
     public void Update(GameTime gameTime)
