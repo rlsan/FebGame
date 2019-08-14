@@ -15,7 +15,7 @@ namespace FebEngine.Tiles
     public Tile[] children = new Tile[0];
     public Color tint = Color.White;
 
-    public int frame = 0;
+    public int frame;
     public bool hidden = false;
 
     public int X { get; set; }
@@ -56,7 +56,7 @@ namespace FebEngine.Tiles
     {
       if (Name == "Tile")
       {
-        return id;
+        return frame;
       }
       else
       {
@@ -66,9 +66,9 @@ namespace FebEngine.Tiles
 
     public virtual int ReturnFrame(TilemapLayer layer, int x, int y)
     {
-      if (GetType() == typeof(Tile))
+      if (Name == "Tile")
       {
-        return frame;
+        return id;
       }
       else
       {

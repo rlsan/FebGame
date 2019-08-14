@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FebEngine.Utility;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,16 +47,14 @@ namespace FebEngine
       }
     }
 
-    public override void LoadContent()
-    {
-    }
-
     public override void UnloadContent()
     {
     }
 
     public override void Update(GameTime gameTime)
     {
+      Debug.Clear();
+
       foreach (var state in states.Values)
       {
         if (state.isActive)
@@ -65,21 +64,12 @@ namespace FebEngine
       }
     }
 
-    public override void Draw(GameTime gameTime)
-    {
-      foreach (var state in states.Values)
-      {
-        if (state.isActive)
-        {
-          //state.Draw(Game.renderManager, gameTime);
-        }
-      }
-    }
-
     public void AddState(string name, GameState state)
     {
       state.name = name;
       state.game = Game;
+      state.world = Game.world;
+      state.canvas = Game.uiManager.canvas;
       states.Add(name, state);
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FebEngine.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
@@ -12,7 +13,8 @@ namespace FebEngine
   {
     public string name;
     public bool isActive;
-
+    public World world;
+    public UICanvas canvas;
     public Game game;
 
     public void Activate()

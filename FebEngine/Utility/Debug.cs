@@ -121,12 +121,21 @@ namespace FebEngine.Utility
       Rectangles.Add(Tuple.Create(rect, c));
     }
 
-    public static void DrawPoint(Vector2 position, int size = 4)
+    public static void DrawPoint(Vector2 position, int size = 4, Color? color = null)
     {
+      Color c = color ?? Color.LimeGreen;
+
       int halfSize = size / 2;
       Rectangle rect = new Rectangle((int)position.X - halfSize, (int)position.Y - halfSize, size, size);
 
-      //Rectangles.Add(rect);
+      Rectangles.Add(Tuple.Create(rect, c));
+    }
+
+    public static void Clear()
+    {
+      Rectangles.Clear();
+      Lines.Clear();
+      Fonts.Clear();
     }
 
     public static void Draw(SpriteBatch spriteBatch)
@@ -154,10 +163,6 @@ namespace FebEngine.Utility
       {
         font.Draw(spriteBatch);
       }
-
-      Rectangles.Clear();
-      Lines.Clear();
-      Fonts.Clear();
     }
   }
 }

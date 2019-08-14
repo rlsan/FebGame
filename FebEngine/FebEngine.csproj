@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\UIManager.cs" />
+    <Compile Include="Entities\Camera.cs" />
     <Compile Include="UI\UIFileDialog.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="UI\UILoadDialog.cs" />
@@ -50,6 +52,7 @@
     <Compile Include="UI\UIScrollWindow.cs" />
     <Compile Include="UI\UITextBox.cs" />
     <Compile Include="UI\UITextField.cs" />
+    <Compile Include="UI\UITilePalette.cs" />
     <Compile Include="UI\VerticalAlignment.cs" />
     <Compile Include="UI\UIWindow.cs" />
     <Compile Include="Utility\Debug.cs" />

@@ -82,7 +82,7 @@ namespace FebEngine.UI
     {
     }
 
-    public virtual void OnPress()
+    public virtual void OnPress(Point mousePos)
     {
     }
 

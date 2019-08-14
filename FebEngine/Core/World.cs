@@ -20,10 +20,13 @@ namespace FebEngine
 
     public Rectangle bounds;
 
+    public Camera camera;
+
     public World(MainGame game) : base(game)
     {
       create = new Creator(this, game.Content);
       physics = new PhysicsHandler(this);
+      camera = Add(new Camera()) as Camera;
       base.Initialize();
     }
 
@@ -42,10 +45,6 @@ namespace FebEngine
     }
 
     public override void Initialize()
-    {
-    }
-
-    public override void LoadContent()
     {
     }
 

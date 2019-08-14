@@ -15,9 +15,39 @@ namespace FebEngine.Tiles
 
     public int scale = 6;
 
-    public void Add(Tilemap tilemap)
+    public Tilemap currentMap;
+
+    public Tilemap AddMap(Tilemap tilemap)
     {
       tilemaps.Add(tilemap);
+
+      return tilemap;
+    }
+
+    /// <summary>
+    /// Changes the current map to one of the given name.
+    /// </summary>
+    /// <param name="name"></param>
+    public void ChangeMap(string name)
+    {
+      foreach (var map in tilemaps)
+      {
+        if (map.name == name)
+        {
+          currentMap = map;
+
+          break;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Changes the current map to one of the given index.
+    /// </summary>
+    /// <param name="id"></param>
+    public void ChangeMap(int id)
+    {
+      currentMap = tilemaps[id];
     }
 
     public void Draw(SpriteBatch sb)

@@ -18,7 +18,7 @@ namespace FebEngine.UI
       this.onClick = onClick;
     }
 
-    public override void OnPress()
+    public override void OnPress(Point mousePos)
     {
       isPressed = true;
     }

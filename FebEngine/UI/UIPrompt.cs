@@ -47,7 +47,7 @@ namespace FebEngine.UI
     public void Refresh(string title = "", string message = "", params UIButton[] buttonRefs)
     {
       window.title = title;
-      messageBox.message = message;
+      messageBox.SetMessage(message);
 
       for (int i = 0; i < buttonRefs.Length; i++)
       {

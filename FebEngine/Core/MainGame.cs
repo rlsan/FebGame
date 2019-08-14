@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FebEngine.Utility;
+using FebEngine.Core;
 
 namespace FebEngine
 {
@@ -17,6 +18,7 @@ namespace FebEngine
 
     public RenderManager renderManager;
     public StateManager stateManager;
+    public UIManager uiManager;
     public World world;
 
     public MainGame()
@@ -29,22 +31,27 @@ namespace FebEngine
 
       Managers = new List<Manager>();
 
-      renderManager = new RenderManager(this);
       stateManager = new StateManager(this);
       world = new World(this);
+      uiManager = new UIManager(this);
+      renderManager = new RenderManager(this);
     }
 
     protected override void Initialize()
     {
-      renderManager.Initialize();
       stateManager.Initialize();
+      renderManager.Initialize();
+      uiManager.Initialize();
 
       base.Initialize();
     }
 
     protected override void LoadContent()
     {
-      Debug.fontTexture = Content.Load<Texture2D>("debug2");
+      foreach (var manager in Managers)
+      {
+        manager.LoadContent(Content);
+      }
 
       base.LoadContent();
     }

@@ -38,7 +38,7 @@ namespace FebEngine.UI
       base.Init();
     }
 
-    public override void OnPress()
+    public override void OnPress(Point mousePos)
     {
       if (isDraggable)
       {

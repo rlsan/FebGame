@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace FebEngine
 {
@@ -16,7 +17,7 @@ namespace FebEngine
       Game.AddManager(this);
     }
 
-    public virtual void LoadContent()
+    public virtual void LoadContent(ContentManager content)
     {
     }
 

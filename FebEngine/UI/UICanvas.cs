@@ -110,7 +110,7 @@ namespace FebEngine.UI
               {
                 SetActiveElement(element.Value);
 
-                element.Value.OnPress();
+                element.Value.OnPress(mouse.Position);
 
                 wasSomethingClicked = true;
               }

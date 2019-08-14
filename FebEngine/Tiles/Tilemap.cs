@@ -12,9 +12,7 @@ namespace FebEngine.Tiles
   {
     public TilemapLayer[] Layers { get; set; }
 
-    public Tileset tileset;
-
-    public string name;
+    public TileSet tileset;
 
     public int X;
     public int Y;
@@ -163,6 +161,8 @@ namespace FebEngine.Tiles
       tilesetPosition = tileset.GetTilePositionFromIndex(frame);
       tilesetX = (int)tilesetPosition.X;
       tilesetY = (int)tilesetPosition.Y;
+
+      //Debug.Text(tile.id, tile.X, tile.Y);
 
       sb.Draw(
         tileset.Texture,

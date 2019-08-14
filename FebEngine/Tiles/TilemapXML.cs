@@ -12,9 +12,9 @@ namespace FebEngine.Tiles
   {
     public Tilemap tilemap;
 
-    public Tileset tileset;
+    public TileSet tileset;
 
-    public TilemapXML(Tilemap tilemap, Tileset tileset)
+    public TilemapXML(Tilemap tilemap, TileSet tileset)
     {
       this.tilemap = tilemap;
       this.tileset = tileset;

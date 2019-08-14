@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FebEngine.Utility;
+using Microsoft.Xna.Framework.Content;
 
 namespace FebEngine
 {
@@ -59,11 +60,19 @@ namespace FebEngine
       base.Initialize();
     }
 
+    public override void LoadContent(ContentManager content)
+    {
+      Debug.fontTexture = content.Load<Texture2D>("debug2");
+    }
+
     public override void Draw(GameTime gameTime)
     {
       GraphicsDevice.Clear(Color.CornflowerBlue);
+      //Debug.Clear();
 
-      SpriteBatch.Begin();
+      //Initial layer for sprites and other visual gameplay elements
+
+      SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Game.world.camera.TransformMatrix);
 
       foreach (var ent in Game.world.entities)
       {
@@ -78,6 +87,13 @@ namespace FebEngine
         }
       }
 
+      SpriteBatch.End();
+
+      //Post layer for UI and debug
+
+      SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+      Game.uiManager.canvas.DrawElements(SpriteBatch);
       Debug.Draw(SpriteBatch);
 
       SpriteBatch.End();

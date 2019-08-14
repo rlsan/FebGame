@@ -5,11 +5,11 @@ namespace FebEngine.UI
 {
   public class UILoadDialog : UIFileDialog
   {
-    private Action<string> onLoad;
+    private Action<object> onLoad;
     public string textToSave;
     public string extension;
 
-    public UILoadDialog(string extension, Action<string> onLoad = null)
+    public UILoadDialog(string extension, Action<object> onLoad = null)
     {
       this.extension = extension;
       this.onLoad = onLoad;

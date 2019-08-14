@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.Tiles
 {
-  public class Tileset
+  public class TileSet
   {
     public string name = "Tileset";
     public Texture2D Texture { get; }
@@ -16,12 +16,12 @@ namespace FebEngine.Tiles
 
     public int TileHeight { get; }
 
-    private readonly int rows;
-    private readonly int columns;
+    public readonly int rows;
+    public readonly int columns;
 
     public int Tiles { get { return TilePalette.Count; } }
 
-    public Tileset(Texture2D texture, int tileWidth, int tileHeight)
+    public TileSet(Texture2D texture, int tileWidth, int tileHeight)
     {
       Texture = texture;
 
@@ -50,13 +50,22 @@ namespace FebEngine.Tiles
 
     public Tile GetTileFromIndex(int index)
     {
-      return TilePalette[index];
+      if (index <= Tiles)
+      {
+        return TilePalette[index];
+      }
+      else
+      {
+        return TilePalette[Tiles - 1];
+      }
     }
 
     public Tile AddTile(Tile tile, string name = null)
     {
       var t = tile;
       t.id = Tiles;
+
+      System.Console.WriteLine();
 
       if (name != null)
       {

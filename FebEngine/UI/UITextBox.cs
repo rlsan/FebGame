@@ -10,16 +10,24 @@ namespace FebEngine.UI
 {
   public class UITextBox : UIElement
   {
-    public string message = "";
+    public string[] message;
 
-    public UITextBox(string message = "")
+    public UITextBox(params string[] lines)
     {
-      this.message = message;
+      message = lines;
+    }
+
+    public void SetMessage(params string[] lines)
+    {
+      message = lines;
     }
 
     public override void Draw(SpriteBatch sb)
     {
-      Debug.Text(message, X + 2, Y + 2);
+      for (int i = 0; i < message.Length; i++)
+      {
+        Debug.Text(message[i], X + 2, Y + (i * 20) + 2);
+      }
 
       base.Draw(sb);
     }
