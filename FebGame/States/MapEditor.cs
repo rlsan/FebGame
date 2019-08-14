@@ -6,8 +6,10 @@ using Microsoft.Xna.Framework.Input;
 
 using FebEngine;
 using FebEngine.UI;
+using FebEngine.UI.Editor;
 using FebEngine.Utility;
 using FebEngine.Tiles;
+using System.IO;
 
 namespace FebGame.States
 {
@@ -16,9 +18,12 @@ namespace FebGame.States
     private UITilePalette tilePalette;
     private UITextBox tileProperties;
     private UITextBox mapProperties;
+    private UITileMapSetList mapList;
 
     private TileSet tileSet;
     private TilemapSet tileMapSet;
+
+    private TilemapXML tilemapXML;
 
     private Vector2 prevCamPos;
     private bool camHasMoved;
@@ -33,21 +38,13 @@ namespace FebGame.States
     {
       previousScroll = canvas.mouse.ScrollWheelValue;
 
-      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 0, 30, 400, 800) as UITilePalette;
-
-      var saveDialog = canvas.AddElement("FileSave", new UISaveDialog("txt"), startInvisible: true);
-      var loadDialog = canvas.AddElement("FileLoad", new UILoadDialog("txt", onLoad: LoadMap), startInvisible: true);
-
-      canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 0, 100, 30);
-      canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 0, 100, 30);
-
-      canvas.AddElement("AddMapButton", new UIButton("Add Map", onClick: AddTileMap), 200, 0, 100, 30);
-
-      tileProperties = canvas.AddElement("TileProperties", new UITextBox(), 1000, 0, 200, 200) as UITextBox;
-      mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 0, 200, 200) as UITextBox;
+      InitGUI();
 
       LoadTileSet("tileset");
       LoadTileMapSet();
+
+      tilemapXML = new TilemapXML();
+      tilemapXML.ts = tileSet;
     }
 
     public void LoadMap<T>(T map)
@@ -78,6 +75,55 @@ namespace FebGame.States
       tileMapSet.AddMap(map);
 
       tileMapSet.ChangeMap(map.name);
+
+      RefreshMapList();
+    }
+
+    public void ExportTilemap<T>(T path)
+    {
+      string document = tilemapXML.Export(tileMapSet.currentMap);
+
+      File.WriteAllText(path.ToString(), document);
+    }
+
+    public void ImportTilemap<T>(T document)
+    {
+      Tilemap importedTilemap = tilemapXML.Import(document.ToString());
+
+      tileMapSet.AddMap(importedTilemap);
+      tileMapSet.ChangeMap(importedTilemap.name);
+
+      RefreshMapList();
+    }
+
+    public void InitGUI()
+    {
+      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 0, 30, 400, 800) as UITilePalette;
+
+      var saveDialog = canvas.AddElement("FileSave", new UISaveDialog("atm", onSave: ExportTilemap), startInvisible: true);
+      var loadDialog = canvas.AddElement("FileLoad", new UILoadDialog("atm", onLoad: ImportTilemap), startInvisible: true);
+
+      canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 0, 100, 30);
+      canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 0, 100, 30);
+
+      canvas.AddElement("AddMapButton", new UIButton("Add Map", onClick: AddTileMap), 200, 0, 100, 30);
+
+      tileProperties = canvas.AddElement("TileProperties", new UITextBox(), 1000, 0, 200, 200) as UITextBox;
+      mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 0, 200, 200) as UITextBox;
+
+      mapList = canvas.AddElement("MapList", new UITileMapSetList(title: "Maps", isDraggable: true, isCloseable: false), 300, 30, 160, 270) as UITileMapSetList;
+    }
+
+    public void RefreshMapList()
+    {
+      string[] names = new string[tileMapSet.tilemaps.Count];
+
+      for (int i = 0; i < tileMapSet.tilemaps.Count; i++)
+      {
+        names[i] = tileMapSet.tilemaps[i].name;
+      }
+
+      mapList.Refresh(names);
     }
 
     public override void Update(GameTime gameTime)

@@ -81,7 +81,7 @@ namespace FebEngine.UI
         Rectangle sourceRect = new Rectangle(0, 0, tileSet.TileWidth, tileSet.TileHeight);
         Rectangle destRect = new Rectangle(X, Y, tileSet.TileWidth * scale, tileSet.TileHeight * scale);
 
-        for (int i = 0; i < tileSet.Tiles; i++)
+        for (int i = 0; i < tileSet.SwatchCount; i++)
         {
           destRect.X = X + i % rows * tileSet.TileWidth * scale;
           destRect.Y = Y + menuBarHeight + i / rows * tileSet.TileHeight * scale;

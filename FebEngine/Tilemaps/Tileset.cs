@@ -10,7 +10,7 @@ namespace FebEngine.Tiles
     public Texture2D Texture { get; }
 
     private Tile[] rawTiles;
-    public List<Tile> TilePalette { get; }
+    public List<Tile> TileSwatches { get; }
 
     public int TileWidth { get; }
 
@@ -19,7 +19,7 @@ namespace FebEngine.Tiles
     public readonly int rows;
     public readonly int columns;
 
-    public int Tiles { get { return TilePalette.Count; } }
+    public int SwatchCount { get { return TileSwatches.Count; } }
 
     public TileSet(Texture2D texture, int tileWidth, int tileHeight)
     {
@@ -32,7 +32,7 @@ namespace FebEngine.Tiles
       columns = Texture.Height / tileHeight;
 
       rawTiles = new Tile[rows * columns];
-      TilePalette = new List<Tile>();
+      TileSwatches = new List<Tile>();
 
       for (int i = 0; i < rawTiles.Length; i++)
       {
@@ -50,22 +50,20 @@ namespace FebEngine.Tiles
 
     public Tile GetTileFromIndex(int index)
     {
-      if (index <= Tiles)
+      if (index < SwatchCount)
       {
-        return TilePalette[index];
+        return TileSwatches[index];
       }
       else
       {
-        return TilePalette[Tiles - 1];
+        return TileSwatches[SwatchCount - 1];
       }
     }
 
     public Tile AddTile(Tile tile, string name = null)
     {
       var t = tile;
-      t.id = Tiles;
-
-      System.Console.WriteLine();
+      t.id = SwatchCount;
 
       if (name != null)
       {
@@ -73,10 +71,10 @@ namespace FebEngine.Tiles
       }
       else
       {
-        t.Name = t.GetType().Name + Tiles;
+        t.Name = t.GetType().Name + SwatchCount;
       }
 
-      TilePalette.Add(t);
+      TileSwatches.Add(t);
 
       return t;
     }

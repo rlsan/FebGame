@@ -10,7 +10,7 @@ namespace FebEngine.Tiles
 {
   public class Tilemap : Entity
   {
-    public TilemapLayer[] Layers { get; set; }
+    public List<TilemapLayer> Layers { get; set; }
 
     public TileSet tileset;
 
@@ -30,13 +30,13 @@ namespace FebEngine.Tiles
       get { return new Rectangle(X, Y, width, height); }
     }
 
-    public int LayerCount { get { return Layers.Length; } }
+    public int LayerCount { get { return Layers.Count; } }
 
     public bool isShowingTileProperties = false;
 
     public Tilemap(int width, int height, int tileWidth, int tileHeight)
     {
-      Layers = new TilemapLayer[0];
+      Layers = new List<TilemapLayer>();
       Warps = new List<TilemapWarp>();
 
       this.width = width;
@@ -59,12 +59,21 @@ namespace FebEngine.Tiles
     /// <param name="names">What to name each layer in order.</param>
     public void SetLayers(params string[] names)
     {
-      Layers = new TilemapLayer[names.Length];
+      Layers.Clear();
 
       for (int i = 0; i < names.Length; i++)
       {
-        Layers[i] = new TilemapLayer(this, names[i]);
+        Layers.Add(new TilemapLayer(this, names[i]));
       }
+    }
+
+    public TilemapLayer AddLayer(string name)
+    {
+      TilemapLayer addedLayer = new TilemapLayer(this, name);
+
+      Layers.Add(addedLayer);
+
+      return addedLayer;
     }
 
     /// <summary>

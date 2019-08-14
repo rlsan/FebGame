@@ -9,12 +9,14 @@ namespace FebEngine.UI
 {
   public class UISaveDialog : UIFileDialog
   {
+    private Action<object> onSave;
     public string textToSave;
     public string extension;
 
-    public UISaveDialog(string extension)
+    public UISaveDialog(string extension, Action<object> onSave = null)
     {
       this.extension = extension;
+      this.onSave = onSave;
     }
 
     public override void Init()
@@ -43,7 +45,9 @@ namespace FebEngine.UI
     {
       string path = currentDir + "\\" + nameField.text + "." + extension;
 
-      File.WriteAllText(path, textToSave);
+      //File.WriteAllText(path, textToSave);
+
+      onSave.DynamicInvoke(path);
 
       Disable();
       Canvas.ClosePrompt();
