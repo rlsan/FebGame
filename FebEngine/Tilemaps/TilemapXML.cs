@@ -10,7 +10,7 @@ namespace FebEngine.Tiles
 {
   public class TilemapXML
   {
-    public TileSet ts;
+    public Tileset ts;
 
     public string Export(Tilemap tilemapToExport)
     {
@@ -29,15 +29,12 @@ namespace FebEngine.Tiles
       XElement root = parsedTilemap.Root;
 
       Tilemap tilemap = new Tilemap(
+        ts,
         int.Parse(root.Attribute("Width").Value),
-        int.Parse(root.Attribute("Height").Value),
-        int.Parse(root.Attribute("TileWidth").Value),
-        int.Parse(root.Attribute("TileHeight").Value)
+        int.Parse(root.Attribute("Height").Value)
         );
 
-      tilemap.name = root.Attribute("Name").Value;
-
-      tilemap.tileset = ts;
+      tilemap.Name = root.Attribute("Name").Value;
 
       IEnumerable<XElement> layers = root.Elements("Layer");
 
@@ -55,9 +52,7 @@ namespace FebEngine.Tiles
         {
           int index = int.Parse(indices[i]);
 
-          Tile t = new Tile();
-
-          addedLayer.tileArray[i % tilemap.width, i / tilemap.height].id = index;
+          addedLayer.tileArray[i % tilemap.Width, i / tilemap.Height].Brush.id = index;
         }
       }
 
@@ -67,11 +62,11 @@ namespace FebEngine.Tiles
     public string WriteTilemap(Tilemap tilemapToExport)
     {
       XElement root = new XElement("Tilemap",
-        new XAttribute("Name", tilemapToExport.name),
-        new XAttribute("Width", tilemapToExport.width),
-        new XAttribute("Height", tilemapToExport.height),
-        new XAttribute("TileWidth", tilemapToExport.tileWidth),
-        new XAttribute("TileHeight", tilemapToExport.tileHeight)
+        new XAttribute("Name", tilemapToExport.Name),
+        new XAttribute("Width", tilemapToExport.Width),
+        new XAttribute("Height", tilemapToExport.Height),
+        new XAttribute("TileWidth", tilemapToExport.Tileset.TileWidth),
+        new XAttribute("TileHeight", tilemapToExport.Tileset.TileHeight)
         );
 
       for (int i = 0; i < tilemapToExport.LayerCount; i++)
@@ -82,11 +77,11 @@ namespace FebEngine.Tiles
 
         for (int tileIndex = 0; tileIndex < layer.tileArray.Length; tileIndex++)
         {
-          int tileX = tileIndex % tilemapToExport.width;
-          int tileY = tileIndex / tilemapToExport.width;
+          int tileX = tileIndex % tilemapToExport.Width;
+          int tileY = tileIndex / tilemapToExport.Width;
           var tile = layer.tileArray[tileX, tileY];
 
-          indexString += tile.id;
+          indexString += tile.Brush.id;
 
           if (tileIndex < layer.tileArray.Length - 1)
           {
@@ -104,7 +99,7 @@ namespace FebEngine.Tiles
 
       //Console.WriteLine(root);
 
-      root.Save(tilemapToExport.name + ".atm");
+      root.Save(tilemapToExport.Name + ".atm");
 
       return root.ToString();
     }
@@ -146,16 +141,16 @@ namespace FebEngine.Tiles
       */
     }
 
-    public void printNode(Tile tile, XElement container, bool first = true)
+    public void printNode(TileBrush brush, XElement container, bool first = true)
     {
       XElement newContainer;
 
       if (!first)
       {
         newContainer = new XElement("Tile",
-          new XAttribute("Name", tile.Name),
-          new XAttribute("Type", tile.GetType().Name),
-          new XAttribute("ID", tile.id));
+          new XAttribute("Name", brush.Name),
+          new XAttribute("Type", brush.GetType().Name),
+          new XAttribute("ID", brush.FrameId));
 
         container.Add(newContainer);
       }
@@ -164,9 +159,9 @@ namespace FebEngine.Tiles
         newContainer = container;
       }
 
-      for (int i = 0; i < tile.children.Length; i++)
+      for (int i = 0; i < brush.Children.Length; i++)
       {
-        printNode(tile.children[i], newContainer, false);
+        printNode(brush.Children[i], newContainer, false);
       }
     }
   }

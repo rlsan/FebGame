@@ -10,11 +10,12 @@ using FebEngine.Entities;
 
 namespace FebGame.Entities
 {
-  public class Player : Sprite
+  public class Player : Actor
   {
     public Player()
     {
-      TexturePath = "foods";
+      Name = "Player";
+      Id = 1;
     }
 
     public override void Update(GameTime gt)

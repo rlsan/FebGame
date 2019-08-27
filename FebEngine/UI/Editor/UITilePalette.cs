@@ -11,14 +11,14 @@ namespace FebEngine.UI
 {
   public class UITilePalette : UIWindow
   {
-    private TileSet tileSet;
+    private Tileset tileSet;
 
     private int rows = 10;
     private int scale = 2;
     private int scaleMax = 5;
     private int scaleMin = 1;
 
-    public Tile selectedTile = new Tile();
+    public TileBrush selectedTile = new TileBrush();
 
     public UITilePalette(string title = "", bool isDraggable = false, bool isCloseable = true) : base(title, isDraggable, isCloseable)
     {
@@ -35,7 +35,7 @@ namespace FebEngine.UI
       base.Init();
     }
 
-    public void SetTileSet(TileSet tileSet)
+    public void SetTileSet(Tileset tileSet)
     {
       this.tileSet = tileSet;
     }
@@ -59,7 +59,7 @@ namespace FebEngine.UI
 
         int id = swatchX + (swatchY * rows);
 
-        selectedTile = tileSet.GetTileFromIndex(id);
+        selectedTile = tileSet.GetBrushFromIndex(id);
       }
 
       base.OnPress(mousePos);
@@ -89,7 +89,7 @@ namespace FebEngine.UI
           sourceRect.X = i % tileSet.rows * tileSet.TileWidth;
           sourceRect.Y = i / tileSet.rows * tileSet.TileHeight;
 
-          if (i == selectedTile.id)
+          if (i == selectedTile.FrameId)
           {
             sb.Draw(tileSet.Texture, destRect, sourceRect, Color.Green);
           }

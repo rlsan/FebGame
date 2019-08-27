@@ -26,9 +26,9 @@ namespace FebEngine.Physics
     public bool collidesUp = true;
     public bool collidesDown = true;
 
-    public Sprite Parent { get; }
+    public Actor Parent { get; }
 
-    public Body(Sprite Parent)
+    public Body(Actor Parent)
     {
       this.Parent = Parent;
 

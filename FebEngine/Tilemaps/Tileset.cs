@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.Tiles
 {
-  public class TileSet
+  public class Tileset
   {
     public string name = "Tileset";
     public Texture2D Texture { get; }
 
-    private Tile[] rawTiles;
-    public List<Tile> TileSwatches { get; }
+    private TileBrush[] rawTiles;
+    public List<TileBrush> TileBrushes { get; }
 
     public int TileWidth { get; }
 
@@ -19,9 +19,9 @@ namespace FebEngine.Tiles
     public readonly int rows;
     public readonly int columns;
 
-    public int SwatchCount { get { return TileSwatches.Count; } }
+    public int SwatchCount { get { return TileBrushes.Count; } }
 
-    public TileSet(Texture2D texture, int tileWidth, int tileHeight)
+    public Tileset(Texture2D texture, int tileWidth, int tileHeight)
     {
       Texture = texture;
 
@@ -31,12 +31,12 @@ namespace FebEngine.Tiles
       rows = Texture.Width / TileWidth;
       columns = Texture.Height / tileHeight;
 
-      rawTiles = new Tile[rows * columns];
-      TileSwatches = new List<Tile>();
+      rawTiles = new TileBrush[rows * columns];
+      TileBrushes = new List<TileBrush>();
 
       for (int i = 0; i < rawTiles.Length; i++)
       {
-        AddTile(new Tile { id = i, frame = i });
+        AddBrush(new TileBrush("Tile" + i, i));
       }
     }
 
@@ -48,35 +48,25 @@ namespace FebEngine.Tiles
       return new Vector2(tileX, tileY);
     }
 
-    public Tile GetTileFromIndex(int index)
+    public TileBrush GetBrushFromIndex(int index)
     {
       if (index < SwatchCount)
       {
-        return TileSwatches[index];
+        return TileBrushes[index];
       }
       else
       {
-        return TileSwatches[SwatchCount - 1];
+        return TileBrushes[SwatchCount - 1];
       }
     }
 
-    public Tile AddTile(Tile tile, string name = null)
+    public TileBrush AddBrush(TileBrush brush, string name = null)
     {
-      var t = tile;
-      t.id = SwatchCount;
+      brush.id = TileBrushes.Count;
 
-      if (name != null)
-      {
-        t.Name = name;
-      }
-      else
-      {
-        t.Name = t.GetType().Name + SwatchCount;
-      }
+      TileBrushes.Add(brush);
 
-      TileSwatches.Add(t);
-
-      return t;
+      return brush;
     }
   }
 }

@@ -9,7 +9,7 @@ using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
-  public class TilemapSet
+  public class MapGroup
   {
     public List<Tilemap> tilemaps = new List<Tilemap>();
 
@@ -19,6 +19,7 @@ namespace FebEngine.Tiles
 
     public Tilemap AddMap(Tilemap tilemap)
     {
+      //var tilemap = new Tilemap(width, height);
       tilemaps.Add(tilemap);
 
       return tilemap;
@@ -32,7 +33,7 @@ namespace FebEngine.Tiles
     {
       foreach (var map in tilemaps)
       {
-        if (map.name == name)
+        if (map.Name == name)
         {
           currentMap = map;
 
@@ -55,10 +56,10 @@ namespace FebEngine.Tiles
       foreach (var tilemap in tilemaps)
       {
         Debug.DrawRect(new Rectangle(
-          tilemap.X * scale,
-          tilemap.Y * scale,
-          tilemap.width * scale,
-          tilemap.height * scale),
+          (int)tilemap.Position.X * scale,
+          (int)tilemap.Position.Y * scale,
+          tilemap.Width * scale,
+          tilemap.Height * scale),
           Color.Gray);
 
         for (int x = 0; x < tilemap.GetLayer(1).tileArray.GetLength(0); x++)
@@ -67,14 +68,14 @@ namespace FebEngine.Tiles
           {
             var t = tilemap.GetLayer(1).tileArray[x, y];
 
-            if (t.id != -1)
+            if (t.Brush.id != -1)
             {
-              Debug.DrawRect(new Rectangle((tilemap.X * scale) + (x * scale), (tilemap.Y * scale) + (y * scale), scale, scale));
+              Debug.DrawRect(new Rectangle(((int)tilemap.Position.X * scale) + (x * scale), ((int)tilemap.Position.Y * scale) + (y * scale), scale, scale));
             }
           }
         }
 
-        Debug.Text(tilemap.name, new Vector2(tilemap.X * scale, tilemap.Y * scale));
+        Debug.Text(tilemap.Name, new Vector2(tilemap.Position.X * scale, tilemap.Position.Y * scale));
       }
     }
   }

@@ -16,8 +16,8 @@ namespace FebGame.States
 {
   internal class GameplayState : GameState
   {
-    private Sprite player;
-    private Sprite thing;
+    private Actor player;
+    private Actor thing;
     private Timer timer;
 
     public override void Load(ContentManager content)
@@ -84,9 +84,9 @@ namespace FebGame.States
         }
       }
 
-      if (thing.Transform.Position.Y > 800)
+      if (thing.Position.Y > 800)
       {
-        thing.Transform.Position = Vector2.Zero;
+        thing.Position = Vector2.Zero;
         thing.Body.Reset();
       }
     }

@@ -9,11 +9,9 @@ using FebEngine.Physics;
 
 namespace FebEngine.Entities
 {
-  public class Sprite : Entity
+  public class Actor : Entity
   {
     public Texture2D Texture { get; set; }
-
-    public string TexturePath { get; set; }
 
     public Body Body { get; set; }
 
@@ -40,7 +38,7 @@ namespace FebEngine.Entities
     {
       if (Texture != null && isVisible)
       {
-        sb.Draw(Texture, Transform.Position, Color.White);
+        sb.Draw(Texture, Position, Color.White);
       }
     }
   }

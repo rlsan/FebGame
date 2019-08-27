@@ -29,7 +29,7 @@ namespace FebEngine.Entities
 
     public override void Update(GameTime gameTime)
     {
-      var translation = Matrix.CreateTranslation(Transform.Position.X, Transform.Position.Y, 0);
+      var translation = Matrix.CreateTranslation(Position.X, Position.Y, 0);
       var scale = Matrix.CreateScale(scaleFactor, scaleFactor, 1);
 
       TransformMatrix = translation + scale;

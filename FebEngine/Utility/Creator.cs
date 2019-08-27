@@ -20,9 +20,9 @@ namespace FebEngine
       this.content = content;
     }
 
-    public Sprite Sprite(string path)
+    public Actor Sprite(string path)
     {
-      Sprite s = new Sprite();
+      Actor s = new Actor();
 
       s.Texture = content.Load<Texture2D>(path);
 

@@ -13,7 +13,7 @@ namespace FebEngine
   public class World : Manager
   {
     public List<Entity> entities = new List<Entity>();
-    public List<Sprite> sprites = new List<Sprite>();
+    public List<Actor> sprites = new List<Actor>();
 
     public Creator create;
     public PhysicsHandler physics;
@@ -36,9 +36,9 @@ namespace FebEngine
       return ent;
     }
 
-    public Sprite AddSprite(Sprite s)
+    public Actor AddSprite(Actor s)
     {
-      s.Texture = Game.Content.Load<Texture2D>(s.TexturePath);
+      //s.Texture = Game.Content.Load<Texture2D>(s.TexturePath);
       entities.Add(s);
       sprites.Add(s);
       return s;

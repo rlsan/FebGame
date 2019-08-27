@@ -2,7 +2,7 @@
 {
   public enum TileType
   {
-    None = 0,
+    None,
     Solid,
     OneWayUp,
     Half,

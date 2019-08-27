@@ -20,8 +20,8 @@ namespace FebGame.States
     private UITextBox mapProperties;
     private UITileMapSetList mapList;
 
-    private TileSet tileSet;
-    private TilemapSet tileMapSet;
+    private Tileset tileSet;
+    private MapGroup tileMapSet;
 
     private TilemapXML tilemapXML;
 
@@ -56,25 +56,26 @@ namespace FebGame.States
     {
       var tex = game.Content.Load<Texture2D>(tileSetName);
 
-      tileSet = new TileSet(tex, 16, 16);
+      tileSet = new Tileset(tex, 16, 16);
+      tileSet.AddBrush(new RowBrush("Thing", tileSet.TileBrushes[0], tileSet.TileBrushes[1], tileSet.TileBrushes[0]));
       tilePalette.SetTileSet(tileSet);
     }
 
     public void LoadTileMapSet()
     {
-      tileMapSet = new TilemapSet();
+      tileMapSet = new MapGroup();
     }
 
     public void AddTileMap()
     {
-      var map = new Tilemap(32, 32, 16, 16);
-      map.name = "Map" + tileMapSet.tilemaps.Count;
-      map.tileset = tileSet;
+      var map = new Tilemap(tileSet, 32, 32);
+      map.Name = "Map" + tileMapSet.tilemaps.Count;
+      map.Tileset = tileSet;
       map.SetLayers("BG", "FG");
 
       tileMapSet.AddMap(map);
 
-      tileMapSet.ChangeMap(map.name);
+      tileMapSet.ChangeMap(map.Name);
 
       RefreshMapList();
     }
@@ -91,7 +92,7 @@ namespace FebGame.States
       Tilemap importedTilemap = tilemapXML.Import(document.ToString());
 
       tileMapSet.AddMap(importedTilemap);
-      tileMapSet.ChangeMap(importedTilemap.name);
+      tileMapSet.ChangeMap(importedTilemap.Name);
 
       RefreshMapList();
     }
@@ -120,7 +121,7 @@ namespace FebGame.States
 
       for (int i = 0; i < tileMapSet.tilemaps.Count; i++)
       {
-        names[i] = tileMapSet.tilemaps[i].name;
+        names[i] = tileMapSet.tilemaps[i].Name;
       }
 
       mapList.Refresh(names);
@@ -135,7 +136,7 @@ namespace FebGame.States
       if (tileMapSet.currentMap != null)
       {
         mapProperties.SetMessage(
-          "Map Name: " + tileMapSet.currentMap.name,
+          "Map Name: " + tileMapSet.currentMap.Name,
           "Current Layer: " + tileMapSet.currentMap.GetLayer(0).Name
           );
       }
@@ -163,11 +164,11 @@ namespace FebGame.States
       {
         if (!camHasMoved)
         {
-          prevCamPos = world.camera.Transform.Position - canvas.mouse.Position.ToVector2() * 2;
+          prevCamPos = (world.camera.Position - canvas.mouse.Position.ToVector2()) * 2;
           camHasMoved = true;
         }
 
-        world.camera.Transform.Position = canvas.mouse.Position.ToVector2() * 2 + prevCamPos;
+        world.camera.Position = (canvas.mouse.Position.ToVector2() * 2 + prevCamPos);
       }
       else
       {

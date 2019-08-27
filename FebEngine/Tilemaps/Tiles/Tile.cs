@@ -1,29 +1,61 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace FebEngine.Tiles
 {
   public class Tile
   {
-    virtual public string Name { get; set; } = "Tile";
+    /// <summary>
+    /// The layer this tile belongs to.
+    /// </summary>
+    public TilemapLayer Layer { get; }
 
-    public int id = -1;
-    public TileType[] properties;
+    public int X { get; }
+    public int Y { get; }
 
-    public Tile parent;
-    public Tile[] children = new Tile[0];
+    /// <summary>
+    /// The brush that defines how this tile will be drawn.
+    /// </summary>
+    public TileBrush Brush { get; set; }
+
+    /// <summary>
+    /// Properties for this tile.
+    /// </summary>
+    public TileProperties Properties { get; set; }
+
     public Color tint = Color.White;
 
-    public int frame;
-    public bool hidden = false;
-
-    public int X { get; set; }
-    public int Y { get; set; }
-
-    public string PropertiesToString
+    public Tile(TilemapLayer layer, int x, int y)
     {
-      get
+      Layer = layer;
+      X = x;
+      Y = y;
+    }
+
+    public void SetBrush(TileBrush brush)
+    {
+      Brush = brush;
+    }
+
+    /// <summary>
+    /// Sets the brush to null and removes any properties assigned to the tile.
+    /// </summary>
+    public void Reset()
+    {
+      Brush = null;
+      Properties.Clear();
+    }
+
+    public struct TileProperties
+    {
+      private TileType[] properties;
+
+      public void Clear()
+      {
+        Array.Clear(properties, 0, 0);
+      }
+
+      public override string ToString()
       {
         string s = "null";
 
@@ -38,41 +70,6 @@ namespace FebEngine.Tiles
           }
         }
         return s;
-      }
-    }
-
-    public Tile()
-    {
-      properties = new TileType[] { TileType.None };
-    }
-
-    public void Reset()
-    {
-      id = -1;
-      properties = new TileType[] { 0 };
-    }
-
-    public virtual int ReturnFirstFrame()
-    {
-      if (Name == "Tile")
-      {
-        return frame;
-      }
-      else
-      {
-        return children[0].ReturnFirstFrame();
-      }
-    }
-
-    public virtual int ReturnFrame(TilemapLayer layer, int x, int y)
-    {
-      if (Name == "Tile")
-      {
-        return id;
-      }
-      else
-      {
-        return children[0].ReturnFrame(layer, x, y);
       }
     }
   }

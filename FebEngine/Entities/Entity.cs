@@ -1,15 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine.Entities
+namespace FebEngine
 {
   public abstract class Entity
   {
-    public string name;
-    public Transform Transform { get; } = new Transform();
+    public string Name { get; set; }
+    public int Id { get; set; }
 
-    public abstract void Update(GameTime gameTime);
+    public Vector2 Position { get; set; }
+    public Vector2 Scale { get; set; }
+    public float Rotation { get; set; }
 
-    public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+    public virtual void Update(GameTime gameTime)
+    {
+      // Default update code.
+    }
+
+    public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    {
+      // Default drawing code.
+    }
   }
 }

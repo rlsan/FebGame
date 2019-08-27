@@ -6,29 +6,26 @@ namespace FebEngine.Tiles
 {
   public class TilemapLayer
   {
+    /// <summary>
+    /// The map this layer belongs to.
+    /// </summary>
     public Tilemap Tilemap { get; }
+
     public string Name { get; }
 
     public int X { get; set; }
     public int Y { get; set; }
 
-    public Dictionary<int, Tile> tiles;
-    public Tile[,] tileArray;
-    public int[,] hashArray;
-
-    public Color tint = Color.White;
+    public Tile[,] tileArray; // Make this private.
 
     public bool IsVisible { get; set; }
-    public bool IsDirty { get; set; }
 
     public TilemapLayer(Tilemap tilemap, string name)
     {
       Tilemap = tilemap;
       Name = name;
 
-      tiles = new Dictionary<int, Tile>();
-      tileArray = new Tile[Tilemap.width, Tilemap.height];
-      hashArray = new int[Tilemap.width, Tilemap.height];
+      tileArray = new Tile[Tilemap.Width, Tilemap.Height];
 
       IsVisible = true;
 
@@ -38,54 +35,31 @@ namespace FebEngine.Tiles
       {
         for (int y = 0; y < tileArray.GetLength(1); y++)
         {
-          var t = new Tile
-          {
-            properties = new TileType[] { TileType.None },
-            X = x,
-            Y = y,
-          };
-
-          tileArray[x, y] = t;
-          hashArray[x, y] = RNG.RandIntRange(0, 99);
+          tileArray[x, y] = new Tile(this, x, y);
         }
       }
     }
 
-    public void PutTile(Tile tile, int x, int y)
+    public void PutTile(TileBrush brush, int x, int y)
     {
-      if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
+      // Check if the position is outside the bounds of the map.
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
         return;
       }
 
-      hashArray[x, y] = RNG.RandIntRange(0, 99);
-
-      if (tileArray[x, y].id == tile.id)
-      {
-        return;
-      }
-
-      //Tile t = tile;
-      Tile t = GetTileXY(x, y);
-      //t.X = x;
-      //t.Y = y;
-
-      t.id = tile.id;
-
-      tileArray[x, y] = t;
-      IsDirty = true;
+      tileArray[x, y].SetBrush(brush);
     }
 
     public void EraseTile(int x, int y)
     {
-      if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
+      // Check if the position is outside the bounds of the map.
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
         return;
       }
 
-      tileArray[x, y] = new Tile();
-
-      IsDirty = true;
+      tileArray[x, y].Reset();
     }
 
     public void Clear()
@@ -94,38 +68,29 @@ namespace FebEngine.Tiles
       {
         for (int y = 0; y < tileArray.GetLength(1); y++)
         {
-          tileArray[x, y] = new Tile();
+          tileArray[x, y].Reset();
         }
       }
-
-      IsDirty = true;
     }
 
     public Tile GetTile(Vector2 position)
     {
-      Tile t = new Tile();
+      int x = (int)position.X / Tilemap.TileWidth;
+      int y = (int)position.Y / Tilemap.TileHeight;
 
-      int x = (int)position.X / 16;
-      int y = (int)position.Y / 16;
-
-      if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
-        return t;
+        return null;
       }
 
       return tileArray[x, y];
     }
 
-    public Tile GetTileXY(int x, int y)
+    public Tile GetTile(int x, int y)
     {
-      Tile t = new Tile
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
-        id = -1
-      };
-
-      if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
-      {
-        return t;
+        return null;
       }
 
       return tileArray[x, y];
@@ -133,12 +98,16 @@ namespace FebEngine.Tiles
 
     public int GetTileIndexXY(int x, int y)
     {
-      if (x > Tilemap.width - 1 || x < 0 || y > Tilemap.height - 1 || y < 0)
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
         return -1;
       }
+      if (tileArray[x, y].Brush != null)
+      {
+        return tileArray[x, y].Brush.id;
+      }
 
-      return tileArray[x, y].id;
+      return -1;
     }
 
     public void ShowTileIndices(bool showEmptyTiles = false)
@@ -149,16 +118,16 @@ namespace FebEngine.Tiles
         {
           Tile tile = tileArray[x, y];
 
-          if (showEmptyTiles || tile.id >= 0)
+          if (showEmptyTiles || tile.Brush.id >= 0)
           {
-            //EUREKA
-            Debug.Text(tile.id.ToString(), x * Tilemap.tileWidth, y * Tilemap.tileHeight);
+            Debug.Text(tile.Brush.id.ToString(), x * Tilemap.Tileset.TileWidth, y * Tilemap.Tileset.TileHeight);
             //Debug.Text(hashArray[x, y], x * Tilemap.tileWidth, y * Tilemap.tileHeight);
           }
         }
       }
     }
 
+    /*
     public void RandomizeTiles()
     {
       for (int x = 0; x < tileArray.GetLength(0); x++)
@@ -172,5 +141,6 @@ namespace FebEngine.Tiles
         }
       }
     }
+    */
   }
 }
