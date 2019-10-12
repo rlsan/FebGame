@@ -10,13 +10,14 @@ namespace FebGame
   {
     protected override void Initialize()
     {
-      stateManager.AddState("Gameplay", new GameplayState());
-      stateManager.AddState("MapEditor", new MapEditor());
-      stateManager.SetActiveState("MapEditor");
+      stateManager.AddState("TestState", new TestState());
+      stateManager.AddState("Editor", new Editor());
+
+      stateManager.LoadState("Editor", true);
 
       IsMouseVisible = true;
 
-      world.bounds = new Rectangle(0, 0, 2000, 2000);
+      worldManager.bounds = new Rectangle(0, 0, 2000, 2000);
 
       base.Initialize();
     }

@@ -9,17 +9,15 @@ namespace FebEngine.Tiles
     public string name = "Tileset";
     public Texture2D Texture { get; }
 
-    private TileBrush[] rawTiles;
-    public List<TileBrush> TileBrushes { get; }
+    public List<TileBrush> Brushes { get; }
 
     public int TileWidth { get; }
-
     public int TileHeight { get; }
 
-    public readonly int rows;
-    public readonly int columns;
+    public int Rows { get; }
+    public int Columns { get; }
 
-    public int SwatchCount { get { return TileBrushes.Count; } }
+    public int BrushCount { get { return Brushes.Count; } }
 
     public Tileset(Texture2D texture, int tileWidth, int tileHeight)
     {
@@ -28,13 +26,12 @@ namespace FebEngine.Tiles
       TileWidth = tileWidth;
       TileHeight = tileHeight;
 
-      rows = Texture.Width / TileWidth;
-      columns = Texture.Height / tileHeight;
+      Rows = Texture.Width / TileWidth;
+      Columns = Texture.Height / tileHeight;
 
-      rawTiles = new TileBrush[rows * columns];
-      TileBrushes = new List<TileBrush>();
+      Brushes = new List<TileBrush>();
 
-      for (int i = 0; i < rawTiles.Length; i++)
+      for (int i = 0; i < Rows * Columns; i++)
       {
         AddBrush(new TileBrush("Tile" + i, i));
       }
@@ -42,29 +39,31 @@ namespace FebEngine.Tiles
 
     public Vector2 GetTilePositionFromIndex(int index)
     {
-      int tileX = index % rows;
-      int tileY = index / rows;
+      int tileX = index % Rows;
+      int tileY = index / Rows;
 
       return new Vector2(tileX, tileY);
     }
 
     public TileBrush GetBrushFromIndex(int index)
     {
-      if (index < SwatchCount)
+      if (index < BrushCount)
       {
-        return TileBrushes[index];
+        return Brushes[index];
       }
       else
       {
-        return TileBrushes[SwatchCount - 1];
+        return Brushes[BrushCount - 1];
       }
     }
 
-    public TileBrush AddBrush(TileBrush brush, string name = null)
+    public TileBrush AddBrush(TileBrush brush, string name = null, bool isHidden = false)
     {
-      brush.id = TileBrushes.Count;
+      brush.tileset = this;
+      brush.id = Brushes.Count;
+      brush.isHidden = isHidden;
 
-      TileBrushes.Add(brush);
+      Brushes.Add(brush);
 
       return brush;
     }

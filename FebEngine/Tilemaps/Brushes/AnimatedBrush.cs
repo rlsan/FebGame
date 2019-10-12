@@ -9,14 +9,9 @@ namespace FebEngine.Tiles
     public int fps = 12;
     public bool random = false;
 
-    public AnimatedBrush(int fps, bool random, params TileBrush[] tiles)
+    public AnimatedBrush(int fps, bool random, params TileBrush[] inputs)
     {
-      Children = tiles;
-
-      foreach (var child in Children)
-      {
-        child.Parent = this;
-      }
+      Inputs = inputs;
 
       this.fps = fps;
       this.random = random;

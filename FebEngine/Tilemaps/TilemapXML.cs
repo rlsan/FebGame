@@ -1,37 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine.Tiles
 {
-  public class TilemapXML
+  public static class TilemapXML
   {
-    public Tileset ts;
+    public static ContentManager content;
 
-    public string Export(Tilemap tilemapToExport)
+    public static string ExportMap(Tilemap tilemapToExport)
     {
       return WriteTilemap(tilemapToExport);
     }
 
-    public Tilemap Import(string tilemapToImport)
+    public static Tilemap ImportMap(string tilemapToImport)
     {
       return ReadTilemap(tilemapToImport);
     }
 
-    public Tilemap ReadTilemap(string document)
+    public static string ExportTileset(Tileset tilesetToExport)
+    {
+      return WriteTileset(tilesetToExport);
+    }
+
+    public static Tileset ImportTileset(string tilesetToImport)
+    {
+      return ReadTileset(tilesetToImport);
+    }
+
+    private static Tilemap ReadTilemap(string document)
     {
       XDocument parsedTilemap = XDocument.Parse(document);
 
       XElement root = parsedTilemap.Root;
 
       Tilemap tilemap = new Tilemap(
-        ts,
         int.Parse(root.Attribute("Width").Value),
-        int.Parse(root.Attribute("Height").Value)
+        int.Parse(root.Attribute("Height").Value),
+        int.Parse(root.Attribute("TileWidth").Value),
+        int.Parse(root.Attribute("TileHeight").Value)
         );
 
       tilemap.Name = root.Attribute("Name").Value;
@@ -52,21 +61,29 @@ namespace FebEngine.Tiles
         {
           int index = int.Parse(indices[i]);
 
-          addedLayer.tileArray[i % tilemap.Width, i / tilemap.Height].Brush.id = index;
+          var brush = addedLayer.tileArray[i % tilemap.Width, i / tilemap.Height].Brush;
+
+          if (brush != null)
+          {
+            brush.id = index;
+          }
+          else
+          {
+          }
         }
       }
 
       return tilemap;
     }
 
-    public string WriteTilemap(Tilemap tilemapToExport)
+    private static string WriteTilemap(Tilemap tilemapToExport)
     {
       XElement root = new XElement("Tilemap",
         new XAttribute("Name", tilemapToExport.Name),
         new XAttribute("Width", tilemapToExport.Width),
         new XAttribute("Height", tilemapToExport.Height),
-        new XAttribute("TileWidth", tilemapToExport.Tileset.TileWidth),
-        new XAttribute("TileHeight", tilemapToExport.Tileset.TileHeight)
+        new XAttribute("TileWidth", tilemapToExport.TileWidth),
+        new XAttribute("TileHeight", tilemapToExport.TileHeight)
         );
 
       for (int i = 0; i < tilemapToExport.LayerCount; i++)
@@ -97,72 +114,65 @@ namespace FebEngine.Tiles
         root.Add(layerElement);
       }
 
-      //Console.WriteLine(root);
-
       root.Save(tilemapToExport.Name + ".atm");
 
       return root.ToString();
     }
 
-    public void WriteTileset()
+    private static Tileset ReadTileset(string document)
     {
-      /*
-      if (tileset == null) return;
+      XDocument parsedTileset = XDocument.Parse(document);
 
+      XElement root = parsedTileset.Root;
+
+      string texturePath = root.Attribute("TexturePath").Value;
+      Texture2D tilesetTexture = content.Load<Texture2D>(texturePath);
+
+      var tileset = new Tileset(tilesetTexture, int.Parse(root.Attribute("TileWidth").Value), int.Parse(root.Attribute("TileHeight").Value));
+
+      tileset.name = root.Attribute("Name").Value;
+
+      IEnumerable<XElement> brushes = root.Elements("Tile");
+
+      foreach (var brush in brushes)
+      {
+      }
+
+      return tileset;
+    }
+
+    private static string WriteTileset(Tileset tileset)
+    {
       XElement root = new XElement("Tileset",
         new XAttribute("Name", tileset.name),
         new XAttribute("TileWidth", tileset.TileWidth),
-        new XAttribute("TileHeight", tileset.TileHeight)
+        new XAttribute("TileHeight", tileset.TileHeight),
+        new XAttribute("TexturePath", tileset.Texture.Name)
         );
       XElement tilesElement = new XElement("Tiles");
 
-      for (int i = 0; i < tileset.TilePalette.Count; i++)
+      foreach (var brush in tileset.Brushes)
       {
-        var tile = tileset.TilePalette[i];
-
         var tileElement = new XElement("Tile",
-        new XAttribute("Name", tile.Name),
-        new XAttribute("Type", tile.GetType().Name),
-        new XAttribute("ID", tile.id),
-        new XAttribute("Properties", tile.properties[0]));
+          new XAttribute("ID", brush.id),
+        new XAttribute("Name", brush.Name),
+        new XAttribute("Type", brush.GetType().Name)
 
-        if (tile.children.Length > 0)
+        );
+
+        if (brush.HasInputs)
         {
-          printNode(tile, tileElement);
+          var s = string.Join(", ", brush.Inputs.Select(i => i.id));
+
+          tileElement.Add(s);
         }
 
         root.Add(tileElement);
-        //Console.WriteLine();
       }
-
-      //Console.WriteLine(root);
 
       root.Save(tileset.name + ".ats");
-      */
-    }
 
-    public void printNode(TileBrush brush, XElement container, bool first = true)
-    {
-      XElement newContainer;
-
-      if (!first)
-      {
-        newContainer = new XElement("Tile",
-          new XAttribute("Name", brush.Name),
-          new XAttribute("Type", brush.GetType().Name),
-          new XAttribute("ID", brush.FrameId));
-
-        container.Add(newContainer);
-      }
-      else
-      {
-        newContainer = container;
-      }
-
-      for (int i = 0; i < brush.Children.Length; i++)
-      {
-        printNode(brush.Children[i], newContainer, false);
-      }
+      return root.ToString();
     }
   }
 }

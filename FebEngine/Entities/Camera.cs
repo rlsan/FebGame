@@ -5,34 +5,63 @@ namespace FebEngine.Entities
 {
   public class Camera : Entity
   {
-    public Matrix TransformMatrix;
-    public float scaleFactor = 1;
+    public Matrix Transform;
+    public float scaleFactor = 1f;
+    public Rectangle Bounds { get; protected set; }
+    public Rectangle VisibleArea { get; protected set; }
 
     public Camera()
     {
-      TransformMatrix = new Matrix();
+      Transform = new Matrix();
     }
 
     public Vector2 ScreenToWorldTransform(Vector2 vector)
     {
-      return Vector2.Transform(vector, TransformMatrix) / 2;
+      var matrix = Matrix.Invert(Transform);
+      return Vector2.Transform(vector, matrix);
     }
 
     public Vector2 WorldToScreenTransform(Vector2 vector)
     {
-      return Vector2.Transform(vector, Matrix.Invert(TransformMatrix)) / 8;
+      var matrix = Transform;
+      return Vector2.Transform(vector, Transform);
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    private void UpdateVisibleArea()
     {
+      var inverseViewMatrix = Matrix.Invert(Transform);
+
+      var tl = Vector2.Transform(Vector2.Zero, inverseViewMatrix);
+      var tr = Vector2.Transform(new Vector2(Bounds.X, 0), inverseViewMatrix);
+      var bl = Vector2.Transform(new Vector2(0, Bounds.Y), inverseViewMatrix);
+      var br = Vector2.Transform(new Vector2(Bounds.Width, Bounds.Height), inverseViewMatrix);
+
+      var min = new Vector2(
+          MathHelper.Min(tl.X, MathHelper.Min(tr.X, MathHelper.Min(bl.X, br.X))),
+          MathHelper.Min(tl.Y, MathHelper.Min(tr.Y, MathHelper.Min(bl.Y, br.Y))));
+      var max = new Vector2(
+          MathHelper.Max(tl.X, MathHelper.Max(tr.X, MathHelper.Max(bl.X, br.X))),
+          MathHelper.Max(tl.Y, MathHelper.Max(tr.Y, MathHelper.Max(bl.Y, br.Y))));
+      VisibleArea = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
     }
 
-    public override void Update(GameTime gameTime)
+    private void UpdateMatrix()
     {
-      var translation = Matrix.CreateTranslation(Position.X, Position.Y, 0);
-      var scale = Matrix.CreateScale(scaleFactor, scaleFactor, 1);
+      Transform = Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) *
+              Matrix.CreateScale(scaleFactor) *
+              Matrix.CreateTranslation(new Vector3(Bounds.Width * 0.5f, Bounds.Height * 0.5f, 0));
+      UpdateVisibleArea();
+    }
 
-      TransformMatrix = translation + scale;
+    public void Update(Viewport viewport)
+    {
+      Bounds = viewport.Bounds;
+      UpdateMatrix();
+
+      //var translation = Matrix.CreateTranslation(Position.X, Position.Y, 0);
+      //var scale = Matrix.CreateScale(scaleFactor, scaleFactor, 0);
+
+      //Transform = translation + scale;
     }
   }
 }

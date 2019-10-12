@@ -26,6 +26,8 @@ namespace FebEngine.UI
 
     private bool startInvisible;
 
+    public bool toBeDestroyed;
+
     public UIElement AddChild(string label, UIElement element, int x = 0, int y = 0, int width = 0, int height = 0, bool startInvisible = false)
     {
       UIElement e = element;
@@ -75,6 +77,16 @@ namespace FebEngine.UI
       foreach (var child in childrenElements)
       {
         child.Enable();
+      }
+    }
+
+    public void Remove()
+    {
+      toBeDestroyed = true;
+
+      foreach (var child in childrenElements)
+      {
+        child.Remove();
       }
     }
 

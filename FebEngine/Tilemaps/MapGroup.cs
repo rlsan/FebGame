@@ -1,15 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
-  public class MapGroup
+  public class MapGroup : Entity
   {
     public List<Tilemap> tilemaps = new List<Tilemap>();
 
@@ -51,8 +47,14 @@ namespace FebEngine.Tiles
       currentMap = tilemaps[id];
     }
 
-    public void Draw(SpriteBatch sb)
+    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
+      if (currentMap != null)
+      {
+        currentMap.Draw(spriteBatch, gameTime);
+      }
+
+      /*
       foreach (var tilemap in tilemaps)
       {
         Debug.DrawRect(new Rectangle(
@@ -77,6 +79,7 @@ namespace FebEngine.Tiles
 
         Debug.Text(tilemap.Name, new Vector2(tilemap.Position.X * scale, tilemap.Position.Y * scale));
       }
+      */
     }
   }
 }

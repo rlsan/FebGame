@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FebEngine.Utility;
-using FebEngine.Core;
+using FebEngine.Tiles;
 
 namespace FebEngine
 {
@@ -18,30 +18,29 @@ namespace FebEngine
 
     public RenderManager renderManager;
     public StateManager stateManager;
-    public UIManager uiManager;
-    public World world;
+
+    public WorldManager worldManager;
 
     public MainGame()
     {
+      //Window.IsBorderless = true;
+
       Graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
-
-      Graphics.PreferredBackBufferWidth = 1920;
-      Graphics.PreferredBackBufferHeight = 1080;
 
       Managers = new List<Manager>();
 
       stateManager = new StateManager(this);
-      world = new World(this);
-      uiManager = new UIManager(this);
+      worldManager = new WorldManager(this);
       renderManager = new RenderManager(this);
+
+      TilemapXML.content = Content;
     }
 
     protected override void Initialize()
     {
       stateManager.Initialize();
       renderManager.Initialize();
-      uiManager.Initialize();
 
       base.Initialize();
     }

@@ -12,14 +12,24 @@ namespace FebEngine.UI
   {
     public string[] message;
 
-    public UITextBox(params string[] lines)
+    public UITextBox(params object[] lines)
     {
-      message = lines;
+      message = new string[lines.Length];
+
+      for (int i = 0; i < lines.Length; i++)
+      {
+        message[i] = lines[i].ToString();
+      }
     }
 
-    public void SetMessage(params string[] lines)
+    public void SetMessage(params object[] lines)
     {
-      message = lines;
+      message = new string[lines.Length];
+
+      for (int i = 0; i < lines.Length; i++)
+      {
+        message[i] = lines[i].ToString();
+      }
     }
 
     public override void Draw(SpriteBatch sb)

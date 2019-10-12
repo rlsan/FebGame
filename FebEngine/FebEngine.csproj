@@ -42,10 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\UIManager.cs" />
+    <Compile Include="Core\Factory.cs" />
     <Compile Include="Entities\Camera.cs" />
-    <Compile Include="Tilemaps\Tiles\TileBrush.cs" />
+    <Compile Include="Entities\Particle.cs" />
+    <Compile Include="Entities\ParticleEmitter.cs" />
+    <Compile Include="Entities\Sprite.cs" />
+    <Compile Include="Tilemaps\Brushes\TileBrush.cs" />
+    <Compile Include="Tilemaps\Warp.cs" />
     <Compile Include="UI\Base\UIFileDialog.cs" />
+    <Compile Include="UI\Editor\UIBrushEditor.cs" />
     <Compile Include="UI\Editor\UITileMapSetList.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="UI\Base\UILoadDialog.cs" />
@@ -64,17 +69,17 @@
     <Compile Include="Physics\Body.cs" />
     <Compile Include="Physics\PhysicsHandler.cs" />
     <Compile Include="Physics\QuadTree.cs" />
+    <Compile Include="Utility\Mathf.cs" />
     <Compile Include="Utility\RNG.cs" />
     <Compile Include="Core\StateManager.cs" />
-    <Compile Include="Tilemaps\Tiles\AnimatedBrush.cs" />
-    <Compile Include="Tilemaps\Tiles\ColumnBrush.cs" />
-    <Compile Include="Tilemaps\Tiles\Tile.cs" />
+    <Compile Include="Tilemaps\Brushes\AnimatedBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\ColumnBrush.cs" />
+    <Compile Include="Tilemaps\Tile.cs" />
     <Compile Include="Tilemaps\Tilemap.cs" />
     <Compile Include="Tilemaps\MapGroup.cs" />
-    <Compile Include="Tilemaps\TilemapWarp.cs" />
     <Compile Include="Tilemaps\TilemapXML.cs" />
-    <Compile Include="Tilemaps\Tiles\RandomBrush.cs" />
-    <Compile Include="Tilemaps\Tiles\RowBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\RandomBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\RowBrush.cs" />
     <Compile Include="Tilemaps\TileType.cs" />
     <Compile Include="Utility\Time.cs" />
     <Compile Include="Entities\Timer.cs" />
@@ -83,14 +88,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RenderManager.cs" />
     <Compile Include="Entities\Actor.cs" />
-    <Compile Include="Utility\Creator.cs" />
-    <Compile Include="Utility\SpriteFont.cs" />
+    <Compile Include="Utility\RetroFont.cs" />
     <Compile Include="Tilemaps\TilemapLayer.cs" />
     <Compile Include="Tilemaps\Tileset.cs" />
     <Compile Include="UI\Base\UIContainer.cs" />
     <Compile Include="UI\Base\UICanvas.cs" />
     <Compile Include="UI\Base\UIElement.cs" />
-    <Compile Include="Core\World.cs" />
+    <Compile Include="Core\WorldManager.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

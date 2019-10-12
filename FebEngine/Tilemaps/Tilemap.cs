@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
@@ -11,15 +10,22 @@ namespace FebEngine.Tiles
 
     public List<TilemapLayer> Layers { get; } = new List<TilemapLayer>();
 
+    public int LayerCount { get { return Layers.Count; } }
+
+    public int X;
+    public int Y;
+
+    public List<SideWarp> sideWarps;
+
     /// <summary>
     /// The map's width in tiles.
     /// </summary>
-    public int Width { get; }
+    public int Width { get; set; }
 
     /// <summary>
     /// The map's height in tiles.
     /// </summary>
-    public int Height { get; }
+    public int Height { get; set; }
 
     /// <summary>
     /// The width of each tile.
@@ -39,21 +45,21 @@ namespace FebEngine.Tiles
       get { return new Rectangle((int)Position.X, (int)Position.Y, Width, Height); }
     }
 
-    public int LayerCount { get { return Layers.Count; } }
+    public Dictionary<WarpDirection, string> ConnectedMaps { get; set; } = new Dictionary<WarpDirection, string>();
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="tileset">The tileset that the tilemap should draw.</param>
-    public Tilemap(Tileset tileset, int width, int height, int? tileWidth = null, int? tileHeight = null)
+    public Tilemap(int width, int height, int tileWidth, int tileHeight)
     {
-      Tileset = tileset;
-
       Width = width;
       Height = height;
 
-      TileWidth = tileWidth ?? tileset.TileWidth;
-      TileHeight = tileHeight ?? tileset.TileHeight;
+      TileWidth = tileWidth;
+      TileHeight = tileHeight;
+
+      sideWarps = new List<SideWarp>();
     }
 
     /// <summary>
@@ -97,6 +103,9 @@ namespace FebEngine.Tiles
 
     public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
+      // Don't draw if there's no tileset.
+      if (Tileset == null) return;
+
       // Iterate through each layer in the map
       for (int layerID = 0; layerID < LayerCount; layerID++)
       {
@@ -150,6 +159,11 @@ namespace FebEngine.Tiles
             );
         }
       }
+    }
+
+    public enum WarpDirection
+    {
+      Up, Left, Right, Down, Free
     }
   }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FebEngine.UI
 {
-  public class UICanvas
+  public class UICanvas : Entity
   {
     private Dictionary<string, UIElement> elements;
 
@@ -22,6 +22,10 @@ namespace FebEngine.UI
 
     public MouseState mouse;
     public KeyboardState keyboard;
+
+    public bool MousePress { get; set; }
+    public bool MouseDown { get; set; }
+    public bool MouseUp { get; set; }
 
     public UIElement activeElement;
 
@@ -36,6 +40,8 @@ namespace FebEngine.UI
       bounds = new Rectangle(0, 0, width, height);
 
       globalPrompt = AddElement("GlobalPrompt", new UIPrompt(title: "Prompt", message: "None"), 0, 0, 400, 300) as UIPrompt;
+
+      //FollowCamera = false;
     }
 
     public UIElement AddElement(string label, UIElement element, int x = 0, int y = 0, int width = 0, int height = 0, bool startInvisible = false)
@@ -88,12 +94,24 @@ namespace FebEngine.UI
       globalPrompt.Disable();
     }
 
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
       mouse = Mouse.GetState();
       keyboard = Keyboard.GetState();
 
       wasSomethingClicked = false;
+      MousePress = false;
+
+      MouseDown = mouse.LeftButton == ButtonState.Pressed;
+      MouseUp = !MouseDown;
+
+      foreach (var element in elements.ToList())
+      {
+        if (element.Value.toBeDestroyed)
+        {
+          elements.Remove(element.Key);
+        }
+      }
 
       if (!hasClicked)
       {
@@ -120,6 +138,7 @@ namespace FebEngine.UI
           if (!wasSomethingClicked)
           {
             SetActiveElement(null);
+            MousePress = true;
           }
         }
       }
@@ -130,7 +149,7 @@ namespace FebEngine.UI
         {
           hasClicked = false;
 
-          foreach (var element in elements)
+          foreach (var element in elements.ToList())
           {
             if (element.Value.isVisible)
             {
@@ -160,7 +179,7 @@ namespace FebEngine.UI
       }
     }
 
-    public void DrawElements(SpriteBatch sb)
+    public override void Draw(SpriteBatch sb, GameTime gameTime)
     {
       foreach (var element in elements)
       {

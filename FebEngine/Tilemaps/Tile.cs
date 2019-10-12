@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FebEngine.Utility;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace FebEngine.Tiles
@@ -25,11 +26,15 @@ namespace FebEngine.Tiles
 
     public Color tint = Color.White;
 
+    public int Hash { get; set; }
+
     public Tile(TilemapLayer layer, int x, int y)
     {
       Layer = layer;
       X = x;
       Y = y;
+
+      RefreshHash();
     }
 
     public void SetBrush(TileBrush brush)
@@ -44,6 +49,11 @@ namespace FebEngine.Tiles
     {
       Brush = null;
       Properties.Clear();
+    }
+
+    public void RefreshHash()
+    {
+      Hash = RNG.RandInt();
     }
 
     public struct TileProperties

@@ -25,6 +25,11 @@ namespace FebEngine.UI
       this.text = text;
     }
 
+    public void SetMessage(object message)
+    {
+      text = message.ToString();
+    }
+
     public override void Update(GameTime gameTime)
     {
       if (IsActive)

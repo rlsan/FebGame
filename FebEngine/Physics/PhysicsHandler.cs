@@ -15,9 +15,9 @@ namespace FebEngine.Physics
 
     public QuadTree quadTree;
 
-    public World world;
+    public WorldManager world;
 
-    public PhysicsHandler(World world)
+    public PhysicsHandler(WorldManager world)
     {
       this.world = world;
     }

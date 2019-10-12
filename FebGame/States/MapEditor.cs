@@ -16,35 +16,30 @@ namespace FebGame.States
   internal class MapEditor : GameState
   {
     private UITilePalette tilePalette;
-    private UITextBox tileProperties;
     private UITextBox mapProperties;
     private UITileMapSetList mapList;
+    private UIBrushEditor brushEditor;
 
-    private Tileset tileSet;
+    private Tileset tileset;
     private MapGroup tileMapSet;
-
-    private TilemapXML tilemapXML;
 
     private Vector2 prevCamPos;
     private bool camHasMoved;
 
     private int previousScroll;
 
-    public override void Load(ContentManager content)
-    {
-    }
-
     public override void Start()
     {
+      base.Start();
+
       previousScroll = canvas.mouse.ScrollWheelValue;
+
+      LoadTileSet("tilesets/ts_test");
+      LoadTileMapSet();
 
       InitGUI();
 
-      LoadTileSet("tileset");
-      LoadTileMapSet();
-
-      tilemapXML = new TilemapXML();
-      tilemapXML.ts = tileSet;
+      TilemapXML.ExportTileset(tileset);
     }
 
     public void LoadMap<T>(T map)
@@ -56,21 +51,25 @@ namespace FebGame.States
     {
       var tex = game.Content.Load<Texture2D>(tileSetName);
 
-      tileSet = new Tileset(tex, 16, 16);
-      tileSet.AddBrush(new RowBrush("Thing", tileSet.TileBrushes[0], tileSet.TileBrushes[1], tileSet.TileBrushes[0]));
-      tilePalette.SetTileSet(tileSet);
+      tileset = new Tileset(tex, 64, 64);
+
+      TileBrush logEnd = tileset.AddBrush(new RandomBrush("LogEnd", tileset.GetBrushFromIndex(11), tileset.GetBrushFromIndex(12)), isHidden: true);
+
+      TileBrush logMiddle = tileset.AddBrush(new RandomBrush("LogMiddle", tileset.GetBrushFromIndex(8), tileset.GetBrushFromIndex(9), tileset.GetBrushFromIndex(10)), isHidden: true);
+
+      tileset.AddBrush(new RowBrush("Log", tileset.GetBrushFromIndex(7), logMiddle, logEnd, tileset.GetBrushFromIndex(6)));
     }
 
     public void LoadTileMapSet()
     {
-      tileMapSet = new MapGroup();
+      tileMapSet = Create.MapGroup("MapGroup");
     }
 
     public void AddTileMap()
     {
-      var map = new Tilemap(tileSet, 32, 32);
+      var map = new Tilemap(32, 32, 64, 64);
       map.Name = "Map" + tileMapSet.tilemaps.Count;
-      map.Tileset = tileSet;
+      map.Tileset = tileset;
       map.SetLayers("BG", "FG");
 
       tileMapSet.AddMap(map);
@@ -82,14 +81,14 @@ namespace FebGame.States
 
     public void ExportTilemap<T>(T path)
     {
-      string document = tilemapXML.Export(tileMapSet.currentMap);
+      string document = TilemapXML.ExportMap(tileMapSet.currentMap);
 
       File.WriteAllText(path.ToString(), document);
     }
 
     public void ImportTilemap<T>(T document)
     {
-      Tilemap importedTilemap = tilemapXML.Import(document.ToString());
+      Tilemap importedTilemap = TilemapXML.ImportMap(document.ToString());
 
       tileMapSet.AddMap(importedTilemap);
       tileMapSet.ChangeMap(importedTilemap.Name);
@@ -99,20 +98,25 @@ namespace FebGame.States
 
     public void InitGUI()
     {
-      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 0, 30, 400, 800) as UITilePalette;
+      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 800, 30, 400, 400) as UITilePalette;
+      tilePalette.SetTileSet(tileset);
 
       var saveDialog = canvas.AddElement("FileSave", new UISaveDialog("atm", onSave: ExportTilemap), startInvisible: true);
       var loadDialog = canvas.AddElement("FileLoad", new UILoadDialog("atm", onLoad: ImportTilemap), startInvisible: true);
 
-      canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 0, 100, 30);
-      canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 0, 100, 30);
+      canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 30, 100, 30);
+      canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 30, 100, 30);
 
-      canvas.AddElement("AddMapButton", new UIButton("Add Map", onClick: AddTileMap), 200, 0, 100, 30);
+      //canvas.AddElement("SaveTilesetButton", new UIButton("Save Tileset...", onClick: saveDialog.Enable), s0, 60, s0, 30);
+      canvas.AddElement("SetTilesetButton", new UIButton("Set Tileset...", onClick: loadDialog.Enable), 200, 30, 200, 30);
 
-      tileProperties = canvas.AddElement("TileProperties", new UITextBox(), 1000, 0, 200, 200) as UITextBox;
-      mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 0, 200, 200) as UITextBox;
+      //canvas.AddElement("AddMapButton", new UIButton("Add Map", onClick: AddTileMap), s0, 30, 100, 30);
 
-      mapList = canvas.AddElement("MapList", new UITileMapSetList(title: "Maps", isDraggable: true, isCloseable: false), 300, 30, 160, 270) as UITileMapSetList;
+      mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 30, 200, 200) as UITextBox;
+
+      //mapList = canvas.AddElement("MapList", new UITileMapSetList(title: "Maps", isDraggable: true, isCloseable: false), 300, 30, 160, 270) as UITileMapSetList;
+
+      brushEditor = canvas.AddElement("BrushEditor", new UIBrushEditor(title: "Brush", isDraggable: true, isCloseable: false), 1000, 300, 400, 200) as UIBrushEditor;
     }
 
     public void RefreshMapList()
@@ -129,9 +133,7 @@ namespace FebGame.States
 
     public override void Update(GameTime gameTime)
     {
-      tileProperties.SetMessage(
-        "Selected Tile: " + tilePalette.selectedTile.id
-        );
+      brushEditor.SelectedBrush = tilePalette.selectedBrush;
 
       if (tileMapSet.currentMap != null)
       {
@@ -152,10 +154,7 @@ namespace FebGame.States
 
             //Console.WriteLine(ha.frame);
 
-            tileMapSet.currentMap.GetLayer(0).PutTile(tilePalette.selectedTile,
-              (int)pos.X,
-              (int)pos.Y
-              );
+            tileMapSet.currentMap.GetLayer(0).PutTile(tilePalette.selectedBrush, pos);
           }
         }
       }
@@ -164,38 +163,26 @@ namespace FebGame.States
       {
         if (!camHasMoved)
         {
-          prevCamPos = (world.camera.Position - canvas.mouse.Position.ToVector2()) * 2;
+          prevCamPos = (world.camera.Position - canvas.mouse.Position.ToVector2()) * 1;
           camHasMoved = true;
         }
 
-        world.camera.Position = (canvas.mouse.Position.ToVector2() * 2 + prevCamPos);
+        world.camera.Position = (canvas.mouse.Position.ToVector2() * 1 + prevCamPos);
       }
       else
       {
         camHasMoved = false;
       }
 
-      if (canvas.mouse.ScrollWheelValue < previousScroll && world.camera.scaleFactor > 0.5f)
+      if (canvas.mouse.ScrollWheelValue < previousScroll && world.camera.scaleFactor > 0.001f)
       {
-        world.camera.scaleFactor /= 2;
+        world.camera.scaleFactor--;
       }
-      else if (canvas.mouse.ScrollWheelValue > previousScroll && world.camera.scaleFactor < 16)
+      else if (canvas.mouse.ScrollWheelValue > previousScroll && world.camera.scaleFactor < 4)
       {
-        world.camera.scaleFactor *= 2;
+        world.camera.scaleFactor++;
       }
       previousScroll = canvas.mouse.ScrollWheelValue;
-
-      if (canvas.keyboard.IsKeyDown(Keys.Down))
-      {
-      }
-    }
-
-    public override void Draw(RenderManager renderer, GameTime gameTime)
-    {
-      if (tileMapSet.currentMap != null)
-      {
-        tileMapSet.currentMap.Draw(renderer.SpriteBatch, gameTime);
-      }
     }
   }
 }

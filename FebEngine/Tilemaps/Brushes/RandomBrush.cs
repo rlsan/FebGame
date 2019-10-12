@@ -6,25 +6,23 @@
 
     public float[] probabilityValues;
 
-    public RandomBrush(params TileBrush[] tiles)
+    public RandomBrush(string name, params TileBrush[] inputs)
     {
-      foreach (var child in Children)
-      {
-        child.Parent = this;
-      }
+      Name = name;
 
-      Children = tiles;
+      Inputs = inputs;
+    }
+
+    public override int GetFirstFrame()
+    {
+      return Inputs[0].GetFirstFrame();
     }
 
     public override int GetFrame(Tile tile)
     {
-      /*
-      var pickedTile = Children[tile.Layer.hashArray[tile.X, tile.Y] % Children.Length];
+      var pickedTile = Inputs[tile.Hash % Inputs.Length];
 
       return pickedTile.GetFrame(tile);
-      */
-
-      return 0;
     }
   }
 }

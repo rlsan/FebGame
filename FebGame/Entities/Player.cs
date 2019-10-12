@@ -10,22 +10,10 @@ using FebEngine.Entities;
 
 namespace FebGame.Entities
 {
-  public class Player : Actor
+  public class Player
   {
-    public Player()
+    public void Update(GameTime gt)
     {
-      Name = "Player";
-      Id = 1;
-    }
-
-    public override void Update(GameTime gt)
-    {
-      KeyboardState kb = Keyboard.GetState();
-
-      if (kb.IsKeyDown(Keys.A))
-      {
-        //transform.Position += Vector2.One;
-      }
     }
   }
 }

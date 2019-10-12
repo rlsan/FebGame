@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FebEngine
 {
-  public abstract class Entity
+  public class Entity
   {
     public string Name { get; set; }
     public int Id { get; set; }
@@ -11,6 +11,18 @@ namespace FebEngine
     public Vector2 Position { get; set; }
     public Vector2 Scale { get; set; }
     public float Rotation { get; set; }
+
+    public bool IsActive { get; set; } = true;
+
+    public int DrawOrder { get; set; } = 0;
+    public bool FollowCamera { get; set; } = true;
+
+    public WorldManager world;
+
+    public void Destroy()
+    {
+      world.RemoveEntity(this);
+    }
 
     public virtual void Update(GameTime gameTime)
     {

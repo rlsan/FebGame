@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace FebEngine
 {
-  public class SpriteFont
+  public class RetroFont
   {
     public Vector2 position;
 
-    Texture2D texture;
-    string layout;
-    string message;
+    private Texture2D texture;
+    private string layout;
+    private string message;
 
-    int charWidth;
-    int charHeight;
+    private int charWidth;
+    private int charHeight;
 
-    List<int> code = new List<int>();
+    private List<int> code = new List<int>();
 
-    public SpriteFont(Texture2D texture, Vector2 position, int charWidth, int charHeight, string message = "text", RetroFontLayout layout = RetroFontLayout.Basic)
+    public RetroFont(Texture2D texture, Vector2 position, int charWidth, int charHeight, string message = "text", RetroFontLayout layout = RetroFontLayout.Basic)
     {
       this.texture = texture;
       this.position = position;

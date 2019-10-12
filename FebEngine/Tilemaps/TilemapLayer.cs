@@ -40,6 +40,22 @@ namespace FebEngine.Tiles
       }
     }
 
+    public void PutTile(TileBrush brush, Vector2 position)
+    {
+      int x = (int)(position.X / Tilemap.TileWidth);
+      int y = (int)(position.Y / Tilemap.TileHeight);
+
+      // Check if the position is outside the bounds of the map.
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
+      {
+        return;
+      }
+
+      tileArray[x, y].RefreshHash();
+
+      tileArray[x, y].SetBrush(brush);
+    }
+
     public void PutTile(TileBrush brush, int x, int y)
     {
       // Check if the position is outside the bounds of the map.
@@ -47,6 +63,8 @@ namespace FebEngine.Tiles
       {
         return;
       }
+
+      tileArray[x, y].RefreshHash();
 
       tileArray[x, y].SetBrush(brush);
     }

@@ -64,7 +64,7 @@ namespace FebEngine.Utility
 
     private static List<Tuple<Rectangle, Color>> Rectangles = new List<Tuple<Rectangle, Color>>();
     private static List<Line> Lines = new List<Line>();
-    private static List<SpriteFont> Fonts = new List<SpriteFont>();
+    private static List<RetroFont> Fonts = new List<RetroFont>();
 
     public static void Instantiate()
     {
@@ -84,7 +84,7 @@ namespace FebEngine.Utility
         message = "null";
       }
 
-      Fonts.Add(new SpriteFont(fontTexture, new Vector2(x, y), 12, 20, message.ToString()));
+      Fonts.Add(new RetroFont(fontTexture, new Vector2(x, y), 12, 20, message.ToString()));
     }
 
     public static void Text(object message, Vector2 position)
@@ -95,7 +95,7 @@ namespace FebEngine.Utility
         message = "null";
       }
 
-      Fonts.Add(new SpriteFont(fontTexture, position, 12, 20, message.ToString()));
+      Fonts.Add(new RetroFont(fontTexture, position, 12, 20, message.ToString()));
     }
 
     public static void Text(object message, Point position)
@@ -106,7 +106,7 @@ namespace FebEngine.Utility
         message = "null";
       }
 
-      Fonts.Add(new SpriteFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
+      Fonts.Add(new RetroFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
     }
 
     public static void DrawLine(Vector2 start, Vector2 end)
@@ -144,10 +144,10 @@ namespace FebEngine.Utility
       {
         //spriteBatch.Draw(pixelTexture, rect.Item1, rect.Item2);
 
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, 1, rect.Item1.Height), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Right, rect.Item1.Top, 1, rect.Item1.Height + 1), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, rect.Item1.Width, 1), Color.LimeGreen);
-        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Bottom, rect.Item1.Width, 1), Color.LimeGreen);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, 2, rect.Item1.Height), rect.Item2);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Right, rect.Item1.Top, 2, rect.Item1.Height + 2), rect.Item2);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Top, rect.Item1.Width, 2), rect.Item2);
+        spriteBatch.Draw(pixelTexture, new Rectangle(rect.Item1.Left, rect.Item1.Bottom, rect.Item1.Width, 2), rect.Item2);
       }
       foreach (var line in Lines)
       {

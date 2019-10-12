@@ -14,11 +14,11 @@ namespace FebEngine.UI
     private Tileset tileSet;
 
     private int rows = 10;
-    private int scale = 2;
+    private int scale = 1;
     private int scaleMax = 5;
     private int scaleMin = 1;
 
-    public TileBrush selectedTile = new TileBrush();
+    public TileBrush selectedBrush = new TileBrush();
 
     public UITilePalette(string title = "", bool isDraggable = false, bool isCloseable = true) : base(title, isDraggable, isCloseable)
     {
@@ -59,7 +59,7 @@ namespace FebEngine.UI
 
         int id = swatchX + (swatchY * rows);
 
-        selectedTile = tileSet.GetBrushFromIndex(id);
+        selectedBrush = tileSet.GetBrushFromIndex(id);
       }
 
       base.OnPress(mousePos);
@@ -81,15 +81,22 @@ namespace FebEngine.UI
         Rectangle sourceRect = new Rectangle(0, 0, tileSet.TileWidth, tileSet.TileHeight);
         Rectangle destRect = new Rectangle(X, Y, tileSet.TileWidth * scale, tileSet.TileHeight * scale);
 
-        for (int i = 0; i < tileSet.SwatchCount; i++)
+        for (int i = 0; i < tileSet.BrushCount; i++)
         {
+          var brush = tileSet.Brushes[i];
+
+          if (brush.isHidden)
+          {
+            continue;
+          }
+
           destRect.X = X + i % rows * tileSet.TileWidth * scale;
           destRect.Y = Y + menuBarHeight + i / rows * tileSet.TileHeight * scale;
 
-          sourceRect.X = i % tileSet.rows * tileSet.TileWidth;
-          sourceRect.Y = i / tileSet.rows * tileSet.TileHeight;
+          sourceRect.X = brush.GetFirstFrame() % tileSet.Rows * tileSet.TileWidth;
+          sourceRect.Y = brush.GetFirstFrame() / tileSet.Rows * tileSet.TileHeight;
 
-          if (i == selectedTile.FrameId)
+          if (i == selectedBrush.id)
           {
             sb.Draw(tileSet.Texture, destRect, sourceRect, Color.Green);
           }
