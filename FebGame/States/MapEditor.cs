@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 
 using FebEngine;
 using FebEngine.UI;
-using FebEngine.UI.Editor;
 using FebEngine.Utility;
 using FebEngine.Tiles;
 using System.IO;
@@ -15,27 +14,32 @@ namespace FebGame.States
 {
   internal class MapEditor : GameState
   {
+    public Editor editor;
+
     private UITilePalette tilePalette;
     private UITextBox mapProperties;
-    private UITileMapSetList mapList;
     private UIBrushEditor brushEditor;
 
     private Tileset tileset;
-    private MapGroup tileMapSet;
 
-    private Vector2 prevCamPos;
-    private bool camHasMoved;
+    private Texture2D rectTexture;
+    private SpriteFont font;
 
-    private int previousScroll;
+    public override void Load(ContentManager content)
+    {
+      rectTexture = content.Load<Texture2D>("recthandles");
+      font = content.Load<SpriteFont>("default");
+
+      base.Load(content);
+    }
 
     public override void Start()
     {
-      base.Start();
-
-      previousScroll = canvas.mouse.ScrollWheelValue;
+      canvas.bounds.Width = 1920;
+      canvas.bounds.Height = 1080;
+      canvas.bounds.Y = 30;
 
       LoadTileSet("tilesets/ts_test");
-      LoadTileMapSet();
 
       InitGUI();
 
@@ -60,28 +64,9 @@ namespace FebGame.States
       tileset.AddBrush(new RowBrush("Log", tileset.GetBrushFromIndex(7), logMiddle, logEnd, tileset.GetBrushFromIndex(6)));
     }
 
-    public void LoadTileMapSet()
-    {
-      tileMapSet = Create.MapGroup("MapGroup");
-    }
-
-    public void AddTileMap()
-    {
-      var map = new Tilemap(32, 32, 64, 64);
-      map.Name = "Map" + tileMapSet.tilemaps.Count;
-      map.Tileset = tileset;
-      map.SetLayers("BG", "FG");
-
-      tileMapSet.AddMap(map);
-
-      tileMapSet.ChangeMap(map.Name);
-
-      RefreshMapList();
-    }
-
     public void ExportTilemap<T>(T path)
     {
-      string document = TilemapXML.ExportMap(tileMapSet.currentMap);
+      string document = TilemapXML.ExportMap(editor.mapGroup.CurrentMap);
 
       File.WriteAllText(path.ToString(), document);
     }
@@ -90,10 +75,8 @@ namespace FebGame.States
     {
       Tilemap importedTilemap = TilemapXML.ImportMap(document.ToString());
 
-      tileMapSet.AddMap(importedTilemap);
-      tileMapSet.ChangeMap(importedTilemap.Name);
-
-      RefreshMapList();
+      editor.mapGroup.AddMap(importedTilemap);
+      editor.mapGroup.ChangeMap(importedTilemap.Name);
     }
 
     public void InitGUI()
@@ -107,82 +90,109 @@ namespace FebGame.States
       canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 30, 100, 30);
       canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 30, 100, 30);
 
-      //canvas.AddElement("SaveTilesetButton", new UIButton("Save Tileset...", onClick: saveDialog.Enable), s0, 60, s0, 30);
       canvas.AddElement("SetTilesetButton", new UIButton("Set Tileset...", onClick: loadDialog.Enable), 200, 30, 200, 30);
 
-      //canvas.AddElement("AddMapButton", new UIButton("Add Map", onClick: AddTileMap), s0, 30, 100, 30);
+      //mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 30, 200, 200) as UITextBox;
 
-      mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 30, 200, 200) as UITextBox;
-
-      //mapList = canvas.AddElement("MapList", new UITileMapSetList(title: "Maps", isDraggable: true, isCloseable: false), 300, 30, 160, 270) as UITileMapSetList;
-
-      brushEditor = canvas.AddElement("BrushEditor", new UIBrushEditor(title: "Brush", isDraggable: true, isCloseable: false), 1000, 300, 400, 200) as UIBrushEditor;
-    }
-
-    public void RefreshMapList()
-    {
-      string[] names = new string[tileMapSet.tilemaps.Count];
-
-      for (int i = 0; i < tileMapSet.tilemaps.Count; i++)
-      {
-        names[i] = tileMapSet.tilemaps[i].Name;
-      }
-
-      mapList.Refresh(names);
+      //brushEditor = canvas.AddElement("BrushEditor", new UIBrushEditor(title: "Brush", isDraggable: true, isCloseable: false), 1000, 300, 400, 200) as UIBrushEditor;
     }
 
     public override void Update(GameTime gameTime)
     {
-      brushEditor.SelectedBrush = tilePalette.selectedBrush;
+      //brushEditor.SelectedBrush = tilePalette.selectedBrush;
 
-      if (tileMapSet.currentMap != null)
+      /*
+      if (editor.mapGroup.CurrentMap != null)
       {
         mapProperties.SetMessage(
-          "Map Name: " + tileMapSet.currentMap.Name,
-          "Current Layer: " + tileMapSet.currentMap.GetLayer(0).Name
+          "Map Name: " + editor.mapGroup.CurrentMap.Name,
+          "Width: " + editor.mapGroup.CurrentMap.Width,
+          "Height: " + editor.mapGroup.CurrentMap.Height,
+          "Current Layer: " + editor.mapGroup.CurrentMap.GetLayer(0).Name
           );
       }
-      if (tileMapSet.currentMap != null)
+      */
+      if (editor.mapGroup.CurrentMap != null)
       {
-        if (canvas.mouse.LeftButton == ButtonState.Pressed && canvas.keyboard.IsKeyUp(Keys.Space))
+        var map = editor.mapGroup.CurrentMap;
+      }
+    }
+
+    public override void Draw(RenderManager renderer, GameTime gameTime)
+    {
+      var sb = renderer.SpriteBatch;
+
+      if (editor.mapGroup.CurrentMap != null)
+      {
+        var color = Color.White;
+        var gridColor = new Color(0.1f, 0.1f, 0.1f);
+        var warpColor = Color.Magenta;
+        int offset = 10;
+
+        var map = editor.mapGroup.CurrentMap;
+
+        var Bounds = map.Bounds;
+
+        for (int i = 0; i < map.Width; i++)
         {
-          if (canvas.activeElement == null)
+          sb.Draw(rectTexture, new Rectangle(
+            Bounds.Left - offset + i * map.TileWidth,
+            Bounds.Top,
+            20,
+            Bounds.Height * map.TileWidth
+            ), new Rectangle(0, 30, 20, 40), gridColor);
+        }
+        for (int i = 0; i < map.Height; i++)
+        {
+          sb.Draw(rectTexture, new Rectangle(
+            Bounds.Left,
+            Bounds.Top - offset + i * map.TileHeight,
+            Bounds.Width * map.TileHeight,
+            20
+            ), new Rectangle(30, 0, 40, 20), gridColor);
+        }
+
+        //top
+        sb.Draw(rectTexture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width * map.TileHeight, 20), new Rectangle(30, 0, 40, 20), color);
+
+        //left
+        sb.Draw(rectTexture, new Rectangle(Bounds.Left - offset, Bounds.Top, 20, Bounds.Height * map.TileWidth), new Rectangle(0, 30, 20, 40), color);
+
+        //right
+        sb.Draw(rectTexture, new Rectangle(Bounds.Right * map.TileWidth - offset, Bounds.Top, 20, Bounds.Height * map.TileWidth), new Rectangle(0, 30, 20, 40), color);
+
+        //bottom
+        sb.Draw(rectTexture, new Rectangle(Bounds.Left, Bounds.Bottom * map.TileHeight - offset, Bounds.Width * map.TileHeight, 20), new Rectangle(30, 0, 40, 20), color);
+
+        foreach (var warp in map.sideWarps)
+        {
+          int rangeMin = (int)warp.RangeMin * map.TileWidth;
+          int rangeMax = (int)warp.RangeMax * map.TileHeight;
+
+          int size = Math.Abs(rangeMin - rangeMax);
+
+          if (warp.Direction == WarpDirection.Left)
           {
-            var pos = world.camera.WorldToScreenTransform(canvas.mouse.Position.ToVector2());
-
-            //var ha = tileMapSet.currentMap.GetLayer(0).GetTileXY((int)pos.X, (int)pos.Y);
-
-            //Console.WriteLine(ha.frame);
-
-            tileMapSet.currentMap.GetLayer(0).PutTile(tilePalette.selectedBrush, pos);
+            sb.Draw(rectTexture, new Rectangle(Bounds.Left - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+            sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Left, Bounds.Top + rangeMin), Color.White);
+          }
+          else if (warp.Direction == WarpDirection.Right)
+          {
+            sb.Draw(rectTexture, new Rectangle(Bounds.Right * map.TileWidth - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+            sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Right * map.TileWidth - offset, Bounds.Top + rangeMin), Color.White);
+          }
+          if (warp.Direction == WarpDirection.Up)
+          {
+            sb.Draw(rectTexture, new Rectangle(Bounds.Left + rangeMin, Bounds.Top - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+            sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Left + rangeMin, Bounds.Top - offset), Color.White);
+          }
+          else if (warp.Direction == WarpDirection.Down)
+          {
+            sb.Draw(rectTexture, new Rectangle(Bounds.Left + rangeMin, Bounds.Bottom * map.TileHeight - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+            sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Left + rangeMin, Bounds.Bottom * map.TileHeight - offset), Color.White);
           }
         }
       }
-
-      if (canvas.keyboard.IsKeyDown(Keys.Space) && canvas.mouse.LeftButton == ButtonState.Pressed)
-      {
-        if (!camHasMoved)
-        {
-          prevCamPos = (world.camera.Position - canvas.mouse.Position.ToVector2()) * 1;
-          camHasMoved = true;
-        }
-
-        world.camera.Position = (canvas.mouse.Position.ToVector2() * 1 + prevCamPos);
-      }
-      else
-      {
-        camHasMoved = false;
-      }
-
-      if (canvas.mouse.ScrollWheelValue < previousScroll && world.camera.scaleFactor > 0.001f)
-      {
-        world.camera.scaleFactor--;
-      }
-      else if (canvas.mouse.ScrollWheelValue > previousScroll && world.camera.scaleFactor < 4)
-      {
-        world.camera.scaleFactor++;
-      }
-      previousScroll = canvas.mouse.ScrollWheelValue;
     }
   }
 }

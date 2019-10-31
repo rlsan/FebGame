@@ -48,10 +48,9 @@
     <Compile Include="Entities\ParticleEmitter.cs" />
     <Compile Include="Entities\Sprite.cs" />
     <Compile Include="Tilemaps\Brushes\TileBrush.cs" />
+    <Compile Include="Tilemaps\MapGroupIO.cs" />
     <Compile Include="Tilemaps\Warp.cs" />
     <Compile Include="UI\Base\UIFileDialog.cs" />
-    <Compile Include="UI\Editor\UIBrushEditor.cs" />
-    <Compile Include="UI\Editor\UITileMapSetList.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="UI\Base\UILoadDialog.cs" />
     <Compile Include="UI\Base\UIPrompt.cs" />
@@ -59,7 +58,6 @@
     <Compile Include="UI\Base\UIScrollWindow.cs" />
     <Compile Include="UI\Base\UITextBox.cs" />
     <Compile Include="UI\Base\UITextField.cs" />
-    <Compile Include="UI\Editor\UITilePalette.cs" />
     <Compile Include="UI\VerticalAlignment.cs" />
     <Compile Include="UI\Base\UIWindow.cs" />
     <Compile Include="Utility\Debug.cs" />

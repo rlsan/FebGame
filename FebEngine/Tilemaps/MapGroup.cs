@@ -7,18 +7,21 @@ namespace FebEngine.Tiles
 {
   public class MapGroup : Entity
   {
-    public List<Tilemap> tilemaps = new List<Tilemap>();
+    public List<Tilemap> Tilemaps { get; } = new List<Tilemap>();
+    public Tilemap CurrentMap { get; set; }
 
     public int scale = 6;
 
-    public Tilemap currentMap;
-
     public Tilemap AddMap(Tilemap tilemap)
     {
-      //var tilemap = new Tilemap(width, height);
-      tilemaps.Add(tilemap);
+      Tilemaps.Add(tilemap);
 
       return tilemap;
+    }
+
+    public void Reset()
+    {
+      Tilemaps.Clear();
     }
 
     /// <summary>
@@ -27,11 +30,11 @@ namespace FebEngine.Tiles
     /// <param name="name"></param>
     public void ChangeMap(string name)
     {
-      foreach (var map in tilemaps)
+      foreach (var map in Tilemaps)
       {
         if (map.Name == name)
         {
-          currentMap = map;
+          CurrentMap = map;
 
           break;
         }
@@ -44,42 +47,15 @@ namespace FebEngine.Tiles
     /// <param name="id"></param>
     public void ChangeMap(int id)
     {
-      currentMap = tilemaps[id];
+      CurrentMap = Tilemaps[id];
     }
 
     public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
-      if (currentMap != null)
+      if (CurrentMap != null)
       {
-        currentMap.Draw(spriteBatch, gameTime);
+        CurrentMap.Draw(spriteBatch, gameTime);
       }
-
-      /*
-      foreach (var tilemap in tilemaps)
-      {
-        Debug.DrawRect(new Rectangle(
-          (int)tilemap.Position.X * scale,
-          (int)tilemap.Position.Y * scale,
-          tilemap.Width * scale,
-          tilemap.Height * scale),
-          Color.Gray);
-
-        for (int x = 0; x < tilemap.GetLayer(1).tileArray.GetLength(0); x++)
-        {
-          for (int y = 0; y < tilemap.GetLayer(1).tileArray.GetLength(1); y++)
-          {
-            var t = tilemap.GetLayer(1).tileArray[x, y];
-
-            if (t.Brush.id != -1)
-            {
-              Debug.DrawRect(new Rectangle(((int)tilemap.Position.X * scale) + (x * scale), ((int)tilemap.Position.Y * scale) + (y * scale), scale, scale));
-            }
-          }
-        }
-
-        Debug.Text(tilemap.Name, new Vector2(tilemap.Position.X * scale, tilemap.Position.Y * scale));
-      }
-      */
     }
   }
 }

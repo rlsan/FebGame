@@ -24,6 +24,7 @@ namespace FebEngine.UI
     public KeyboardState keyboard;
 
     public bool MousePress { get; set; }
+    public bool DoubleMousePress { get; set; }
     public bool MouseDown { get; set; }
     public bool MouseUp { get; set; }
 
@@ -31,6 +32,8 @@ namespace FebEngine.UI
 
     private bool hasClicked;
     private bool wasSomethingClicked;
+    private int doubleClickTimer = 0;
+    private int doubleClickDelay = 50;
 
     private UIPrompt globalPrompt;
 
@@ -100,62 +103,90 @@ namespace FebEngine.UI
       keyboard = Keyboard.GetState();
 
       wasSomethingClicked = false;
+      DoubleMousePress = false;
       MousePress = false;
 
       MouseDown = mouse.LeftButton == ButtonState.Pressed;
       MouseUp = !MouseDown;
 
-      foreach (var element in elements.ToList())
-      {
-        if (element.Value.toBeDestroyed)
-        {
-          elements.Remove(element.Key);
-        }
-      }
+      doubleClickTimer--;
 
-      if (!hasClicked)
+      if (bounds.Contains(mouse.Position))
       {
-        //Left mouse button has been pressed once
-        if (mouse.LeftButton == ButtonState.Pressed)
+        foreach (var element in elements.ToList())
         {
-          hasClicked = true;
+          if (element.Value.toBeDestroyed)
+          {
+            elements.Remove(element.Key);
+          }
 
-          foreach (var element in elements)
+          if (mouse.LeftButton == ButtonState.Pressed)
           {
             if (element.Value.isVisible)
             {
               if (element.Value.bounds.Contains(mouse.Position))
               {
-                SetActiveElement(element.Value);
-
-                element.Value.OnPress(mouse.Position);
-
-                wasSomethingClicked = true;
+                element.Value.OnHold();
               }
             }
           }
+        }
 
-          if (!wasSomethingClicked)
+        if (!hasClicked)
+        {
+          //Left mouse button has been pressed once
+          if (mouse.LeftButton == ButtonState.Pressed)
           {
-            SetActiveElement(null);
-            MousePress = true;
+            hasClicked = true;
+
+            foreach (var element in elements)
+            {
+              if (element.Value.isVisible)
+              {
+                if (element.Value.bounds.Contains(mouse.Position))
+                {
+                  SetActiveElement(element.Value);
+
+                  element.Value.OnPress(mouse.Position);
+
+                  wasSomethingClicked = true;
+                }
+              }
+            }
+
+            if (!wasSomethingClicked)
+            {
+              SetActiveElement(null);
+
+              if (doubleClickTimer > 0)
+              {
+                //MousePress = true;
+                doubleClickTimer = 0;
+                DoubleMousePress = true;
+              }
+              else
+              {
+                MousePress = true;
+                doubleClickTimer = doubleClickDelay;
+              }
+            }
           }
         }
-      }
-      else
-      {
-        //Left mouse button has been released
-        if (mouse.LeftButton == ButtonState.Released)
+        else
         {
-          hasClicked = false;
-
-          foreach (var element in elements.ToList())
+          //Left mouse button has been released
+          if (mouse.LeftButton == ButtonState.Released)
           {
-            if (element.Value.isVisible)
+            hasClicked = false;
+
+            foreach (var element in elements.ToList())
             {
-              if (element.Value.bounds.Contains(mouse.Position))
+              if (element.Value.isVisible)
               {
-                element.Value.OnRelease();
+                if (element.Value.bounds.Contains(mouse.Position))
+                {
+                  element.Value.OnRelease();
+                }
               }
             }
           }
@@ -164,17 +195,6 @@ namespace FebEngine.UI
 
       foreach (var element in elements)
       {
-        if (mouse.LeftButton == ButtonState.Pressed)
-        {
-          if (element.Value.isVisible)
-          {
-            if (element.Value.bounds.Contains(mouse.Position))
-            {
-              element.Value.OnHold();
-            }
-          }
-        }
-
         element.Value.Update(gameTime);
       }
     }

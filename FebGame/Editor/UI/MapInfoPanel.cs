@@ -12,11 +12,17 @@ namespace FebGame
   {
     private UIWindow window;
     public UITextField mapNameField;
+    public UITextField mapMusicField;
 
     public override void Init()
     {
-      window = AddChild("Window", new UIWindow("Map Info", isDraggable: true, isCloseable: false), 1500, 500, 300, 300) as UIWindow;
-      mapNameField = window.AddChild("MapNameField", new UITextField(), 20, 20, 100, 20) as UITextField;
+      window = AddChild("Window", new UIWindow("Map Info", isDraggable: true, isCloseable: false), 1500, 500, 300, 200) as UIWindow;
+
+      window.AddChild("MapNameLabel", new UITextBox("Name:"), 20, window.menuBarHeight + 20, 0, 0);
+      mapNameField = window.AddChild("MapNameField", new UITextField(), 100, window.menuBarHeight + 20, 200, 20) as UITextField;
+
+      window.AddChild("MapMusicLabel", new UITextBox("Music:"), 20, window.menuBarHeight + 40, 0, 0);
+      mapMusicField = window.AddChild("MapMusicField", new UITextField(), 100, window.menuBarHeight + 40, 200, 20) as UITextField;
 
       base.Init();
     }

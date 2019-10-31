@@ -1,10 +1,11 @@
-﻿using System;
+﻿using FebEngine.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.UI.Editor
+namespace FebGame
 {
   public class UITileMapSetList : UIWindow
   {

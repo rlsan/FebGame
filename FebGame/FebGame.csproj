@@ -73,8 +73,12 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Editor\MapCompiler.cs" />
     <Compile Include="Editor\MapThumbnail.cs" />
     <Compile Include="Editor\UI\MapInfoPanel.cs" />
+    <Compile Include="Editor\UI\UIBrushEditor.cs" />
+    <Compile Include="Editor\UI\UITileMapSetList.cs" />
+    <Compile Include="Editor\UI\UITilePalette.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

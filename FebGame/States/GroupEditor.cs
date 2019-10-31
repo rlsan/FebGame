@@ -13,7 +13,7 @@ namespace FebGame.States
 {
   internal partial class GroupEditor : GameState
   {
-    public MapGroup mapGroup;
+    public Editor editor;
 
     private int GridSize { get; set; } = 12;
 
@@ -27,9 +27,6 @@ namespace FebGame.States
     private RectTransform rectTransform;
     private AnchorPoint selectedAnchor;
 
-    private Vector2 prevCamPos;
-    private bool camHasMoved;
-
     private bool drawing;
     private bool resizing;
 
@@ -38,7 +35,7 @@ namespace FebGame.States
     private Texture2D rectTexture;
     private SpriteFont font;
 
-    private int previousScroll;
+    private TileBrush grohBrush;
 
     public override void Load(ContentManager content)
     {
@@ -52,6 +49,12 @@ namespace FebGame.States
 
     public override void Start()
     {
+      canvas.bounds.Width = 1920;
+      canvas.bounds.Height = 1080;
+      canvas.bounds.Y = 30;
+
+      grohBrush = new TileBrush("groh", 0);
+
       canvas.AddElement("Shortcuts", new UITextBox(
         "Q - Select",
         "D - Draw",
@@ -60,78 +63,28 @@ namespace FebGame.States
       selectedToolUI = canvas.AddElement("SelectedTool", new UITextBox(""), 1920 - 300, 200, 0, 0) as UITextBox;
 
       mapInfoPanel = canvas.AddElement("MapInfo", new MapInfoPanel()) as MapInfoPanel;
-
-      canvas.AddElement("NewGroup", new UIButton("New Group", onClick: CreateGroup), 0, 30, 150, 30);
-      canvas.AddElement("LoadGroup", new UIButton("Load Group..."), 0, 60, 150, 30);
-      canvas.AddElement("SaveGroup", new UIButton("Save Group..."), 0, 90, 150, 30);
-      canvas.AddElement("ImportMap", new UIButton("Import Map..."), 0, 120, 150, 30);
-      canvas.AddElement("RemoveMap", new UIButton("Remove Map", onClick: RemoveMap), 0, 150, 150, 30);
-      canvas.AddElement("Compile", new UIButton("Compile", onClick: Compile), 0, 190, 150, 30);
+      canvas.AddElement("ImportMap", new UIButton("Import Map..."), 0, 30, 150, 30);
+      canvas.AddElement("RemoveMap", new UIButton("Remove Map", onClick: RemoveMap), 0, 60, 150, 30);
+      canvas.AddElement("Compile", new UIButton("Compile", onClick: Compile), 0, 90, 150, 30);
     }
 
     private void Compile()
     {
-      if (mapGroup != null)
+      if (editor.mapGroup != null)
       {
-        Console.WriteLine("Starting compile...");
+        MapCompiler.Compile(editor.mapGroup, thumbnails);
+      }
+    }
 
-        mapGroup.tilemaps.Clear();
+    private void EditMap()
+    {
+      if (editor.mapGroup != null && selectedThumbnail != null)
+      {
+        Compile();
 
-        foreach (var thumbnail in thumbnails)
-        {
-          thumbnail.tilemap.sideWarps.Clear();
-          int connectedMaps = 0;
-          foreach (var other in thumbnails)
-          {
-            if (other != thumbnail)
-            {
-              if (other.tilemap.Name == thumbnail.tilemap.Name)
-              {
-                Console.WriteLine("Identical names detected, aborting.");
-                return;
-              }
-              if (other.Bounds.Intersects(thumbnail.Bounds))
-              {
-                Console.WriteLine("Maps are intersecting, aborting.");
-                return;
-              }
+        editor.mapGroup.ChangeMap(selectedThumbnail.tilemap.Name);
 
-              Rectangle inflated = new Rectangle
-              {
-                Location = thumbnail.Bounds.Location,
-                Size = thumbnail.Bounds.Size
-              };
-
-              inflated.Inflate(GridSize, GridSize);
-
-              if (other.Bounds.Intersects(inflated))
-              {
-                connectedMaps++;
-                //thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name, WarpDirection.Down));
-              }
-            }
-          }
-
-          if (connectedMaps > 0)
-          {
-            Console.WriteLine(thumbnail.tilemap.Name + " is connected to: " + connectedMaps);
-          }
-          else
-          {
-            Console.WriteLine(thumbnail.tilemap.Name + " is orphaned.");
-          }
-
-          thumbnail.RefreshTilemap();
-
-          mapGroup.AddMap(thumbnail.tilemap);
-        }
-
-        for (int i = 0; i < mapGroup.tilemaps.Count; i++)
-        {
-          Console.WriteLine("Added map: " + mapGroup.tilemaps[i].Name);
-        }
-
-        Console.WriteLine("Compiled successfully.");
+        editor.ActivateMapEditor();
       }
     }
 
@@ -144,54 +97,38 @@ namespace FebGame.States
         thumbnails.Remove(thumbToRemove);
         thumbToRemove.Destroy();
         selectedThumbnail = null;
+
+        Compile();
       }
     }
 
-    private void CreateGroup()
-    {
-      if (mapGroup == null)
-      {
-        mapGroup = new MapGroup();
-      }
-    }
-
-    private void AddThumb(Rectangle area)
+    private void AddMap(Rectangle area)
     {
       var t = new Tilemap(0, 0, 64, 64);
       t.Name = "m" + thumbnails.Count;
+
+      t.AddLayer("Background");
+      t.AddLayer("Foreground");
+      t.AddLayer("Detail");
 
       var m = Create.Entity(new MapThumbnail(area, t, GridSize), t.Name + "_thumb") as MapThumbnail;
       m.font = font;
       m.texture = rectTexture;
       m.tilemap = t;
 
+      m.RefreshTilemap();
+
       thumbnails.Add(m);
     }
 
     public override void Update(GameTime gameTime)
     {
-      bool panning = false;
       var mpos = world.camera.ScreenToWorldTransform(canvas.mouse.Position.ToVector2());
 
       if (canvas.keyboard.IsKeyDown(Keys.Q)) selectedTool = GroupEditorTool.Select;
       else if (canvas.keyboard.IsKeyDown(Keys.D)) selectedTool = GroupEditorTool.Draw;
 
       selectedToolUI.SetMessage(selectedTool);
-
-      if (canvas.MouseDown)
-      {
-        if (canvas.keyboard.IsKeyDown(Keys.Space))
-        {
-          DragCamera();
-          panning = true;
-        }
-      }
-      else
-      {
-        camHasMoved = false;
-      }
-
-      if (panning) return;
 
       if (selectedThumbnail != null)
       {
@@ -211,10 +148,15 @@ namespace FebGame.States
           if (canvas.MouseUp)
           {
             resizing = false;
+            Compile();
           }
         }
         else
         {
+          if (canvas.DoubleMousePress)
+          {
+            EditMap();
+          }
           if (canvas.MousePress)
           {
             var m = rectTransform.TestInput(mpos, 20);
@@ -275,36 +217,17 @@ namespace FebGame.States
           {
             if (drawingRect.Width / GridSize > 0 && drawingRect.Height / GridSize > 0)
             {
-              AddThumb(drawingRect);
+              AddMap(drawingRect);
             }
 
             drawingRect = Rectangle.Empty;
 
             drawing = false;
+
+            Compile();
           }
         }
       }
-
-      if (canvas.mouse.ScrollWheelValue < previousScroll && world.camera.scaleFactor > 0.5f)
-      {
-        world.camera.scaleFactor -= 0.1f;
-      }
-      else if (canvas.mouse.ScrollWheelValue > previousScroll && world.camera.scaleFactor < 2)
-      {
-        world.camera.scaleFactor += 0.1f;
-      }
-      previousScroll = canvas.mouse.ScrollWheelValue;
-    }
-
-    private void DragCamera()
-    {
-      if (!camHasMoved)
-      {
-        prevCamPos = world.camera.Position + canvas.mouse.Position.ToVector2() / world.camera.scaleFactor;
-        camHasMoved = true;
-      }
-
-      world.camera.Position = -canvas.mouse.Position.ToVector2() / world.camera.scaleFactor + prevCamPos;
     }
 
     public override void Draw(RenderManager renderer, GameTime gameTime)

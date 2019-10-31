@@ -12,22 +12,25 @@ namespace FebGame
   {
     public int gridSize;
     public Tilemap tilemap;
-    private Point mouseOffset;
-    private bool isDragging;
 
     public Texture2D texture;
     public SpriteFont font;
 
-    public int width;
-    public int height;
+    public Point topLeft;
+    public Point bottomRight;
 
-    public Point TopLeft;
-    public Point BottomRight;
+    public Point TopRight { get { return new Point(topLeft.X + Width, topLeft.Y); } }
+    public Point BottomLeft { get { return new Point(bottomRight.X - Width, bottomRight.Y); } }
+
+    public int Width { get { return bottomRight.X - topLeft.X; } }
+    public int Height { get { return bottomRight.Y - topLeft.Y; } }
+
+    public int X { get { return topLeft.X; } }
+    public int Y { get { return topLeft.Y; } }
 
     public Rectangle Bounds
     {
-      get { return new Rectangle(TopLeft.X, TopLeft.Y, BottomRight.X - TopLeft.X, BottomRight.Y - TopLeft.Y); }
-      //get { return new Rectangle((int)Position.X, (int)Position.Y, width, height); }
+      get { return new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y); }
     }
 
     public MapThumbnail(Rectangle area, Tilemap tilemap, int gridSize)
@@ -35,12 +38,8 @@ namespace FebGame
       this.tilemap = tilemap;
       this.gridSize = gridSize;
 
-      TopLeft = area.Location;
-      BottomRight = area.Location + area.Size;
-
-      Position = tilemap.Position * gridSize;
-      width = tilemap.Width * gridSize;
-      height = tilemap.Height * gridSize;
+      topLeft = area.Location;
+      bottomRight = area.Location + area.Size;
     }
 
     public void Transform(AnchorPoint anchor, Vector2 newPos)
@@ -94,22 +93,22 @@ namespace FebGame
 
     private void StretchUp(Vector2 newPos)
     {
-      TopLeft.Y = Mathf.FloorToGrid(newPos.Y, gridSize);
+      topLeft.Y = Mathf.FloorToGrid(newPos.Y, gridSize);
     }
 
     private void StretchLeft(Vector2 newPos)
     {
-      TopLeft.X = Mathf.FloorToGrid(newPos.X, gridSize);
+      topLeft.X = Mathf.FloorToGrid(newPos.X, gridSize);
     }
 
     private void StretchRight(Vector2 newPos)
     {
-      BottomRight.X = Mathf.FloorToGrid(newPos.X, gridSize);
+      bottomRight.X = Mathf.FloorToGrid(newPos.X, gridSize);
     }
 
     private void StretchDown(Vector2 newPos)
     {
-      BottomRight.Y = Mathf.FloorToGrid(newPos.Y, gridSize);
+      bottomRight.Y = Mathf.FloorToGrid(newPos.Y, gridSize);
     }
 
     public void Drag(Vector2 newPos)
@@ -117,12 +116,12 @@ namespace FebGame
       var width = Bounds.Width;
       var height = Bounds.Height;
 
-      TopLeft = new Point(
+      topLeft = new Point(
       Mathf.FloorToGrid(newPos.X - width / 2, gridSize),
       Mathf.FloorToGrid(newPos.Y - height / 2, gridSize)
       );
 
-      BottomRight = new Point(
+      bottomRight = new Point(
       Mathf.FloorToGrid(newPos.X + width / 2, gridSize),
       Mathf.FloorToGrid(newPos.Y + height / 2, gridSize)
       );
@@ -139,10 +138,22 @@ namespace FebGame
     public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
       Color color = Color.LimeGreen;
+      Color warpColor = Color.DarkGreen;
       int offset = 10;
-      Vector2 nameOffset = new Vector2(3, 3);
+      int nameOffset = 3;
 
       //spriteBatch.Draw(texture, Bounds, new Rectangle(2, 2, 16, 16), Color.Gray);
+
+      foreach (var tile in tilemap.GetLayer(0).tileArray)
+      {
+        if (tile.Brush != null)
+        {
+          if (tile.Brush.id > -1)
+          {
+            spriteBatch.Draw(texture, new Rectangle(X + tile.X * gridSize, Y + tile.Y * gridSize, gridSize, gridSize), new Rectangle(2, 2, 16, 16), Color.Gray);
+          }
+        }
+      }
 
       //top
       spriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
@@ -157,7 +168,39 @@ namespace FebGame
       spriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Bottom - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
 
       //name
-      spriteBatch.DrawString(font, tilemap.Name + ": " + Bounds.Width / gridSize + ", " + Bounds.Height / gridSize, TopLeft.ToVector2() + nameOffset, Color.White);
+      spriteBatch.DrawString(font, tilemap.Name + ": " + Bounds.Width / gridSize + ", " + Bounds.Height / gridSize, topLeft.ToVector2() + Vector2.One * nameOffset, Color.White);
+
+      foreach (var warp in tilemap.sideWarps)
+      {
+        int rangeMin = (int)warp.RangeMin * gridSize;
+        int rangeMax = (int)warp.RangeMax * gridSize;
+
+        int size = Math.Abs(rangeMin - rangeMax);
+
+        if (warp.Direction == WarpDirection.Left)
+        {
+          spriteBatch.Draw(texture, new Rectangle(Bounds.Left - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+        }
+        else if (warp.Direction == WarpDirection.Right)
+        {
+          spriteBatch.Draw(texture, new Rectangle(Bounds.Right - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+        }
+        if (warp.Direction == WarpDirection.Up)
+        {
+          spriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Top - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+        }
+        else if (warp.Direction == WarpDirection.Down)
+        {
+          spriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Bottom - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+        }
+      }
+
+      /*
+      spriteBatch.DrawString(font, topLeft.ToString(), topLeft.ToVector2(), Color.White);
+      spriteBatch.DrawString(font, TopRight.ToString(), TopRight.ToVector2(), Color.White);
+      spriteBatch.DrawString(font, BottomLeft.ToString(), BottomLeft.ToVector2(), Color.White);
+      spriteBatch.DrawString(font, bottomRight.ToString(), bottomRight.ToVector2(), Color.White);
+      */
     }
   }
 }

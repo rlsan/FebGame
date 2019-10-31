@@ -9,5 +9,6 @@ namespace FebGame.States
 {
   internal class TileEditor : GameState
   {
+    public Editor editor;
   }
 }

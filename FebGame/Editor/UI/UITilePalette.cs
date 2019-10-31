@@ -1,4 +1,5 @@
 ﻿using FebEngine.Tiles;
+using FebEngine.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.UI
+namespace FebGame
 {
   public class UITilePalette : UIWindow
   {
