@@ -16,7 +16,7 @@ namespace FebEngine.Tiles
     public int X { get; set; }
     public int Y { get; set; }
 
-    public Tile[,] tileArray; // Make this private.
+    public Grid<int> Tiles { get; set; }
 
     public bool IsVisible { get; set; }
 
@@ -25,22 +25,33 @@ namespace FebEngine.Tiles
       Tilemap = tilemap;
       Name = name;
 
-      tileArray = new Tile[Tilemap.Width, Tilemap.Height];
-
       IsVisible = true;
 
-      //Populate the tile array
-
-      for (int x = 0; x < tileArray.GetLength(0); x++)
-      {
-        for (int y = 0; y < tileArray.GetLength(1); y++)
-        {
-          tileArray[x, y] = new Tile(this, x, y);
-        }
-      }
+      // Populate the tile array.
+      Tiles = new Grid<int>(tilemap.Width, tilemap.Height, -1);
     }
 
-    public void PutTile(TileBrush brush, Vector2 position)
+    public void ExtendUp(int amount)
+    {
+      Tiles.ExtendUp(amount, -1);
+    }
+
+    public void ExtendDown(int amount)
+    {
+      Tiles.ExtendDown(amount, -1);
+    }
+
+    public void ExtendLeft(int amount)
+    {
+      Tiles.ExtendLeft(amount, -1);
+    }
+
+    public void ExtendRight(int amount)
+    {
+      Tiles.ExtendRight(amount, -1);
+    }
+
+    public void PutTile(int id, Vector2 position)
     {
       int x = (int)(position.X / Tilemap.TileWidth);
       int y = (int)(position.Y / Tilemap.TileHeight);
@@ -51,12 +62,13 @@ namespace FebEngine.Tiles
         return;
       }
 
-      tileArray[x, y].RefreshHash();
-
-      tileArray[x, y].SetBrush(brush);
+      var tile = Tiles.Get(x, y);
+      Tiles.Place(x, y, id);
+      //tile.RefreshHash();
+      //tile.SetIndex(id);
     }
 
-    public void PutTile(TileBrush brush, int x, int y)
+    public void PutTile(int id, int x, int y)
     {
       // Check if the position is outside the bounds of the map.
       if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
@@ -64,9 +76,12 @@ namespace FebEngine.Tiles
         return;
       }
 
-      tileArray[x, y].RefreshHash();
+      var tile = Tiles.Get(x, y);
 
-      tileArray[x, y].SetBrush(brush);
+      Tiles.Place(x, y, id);
+
+      //tile.RefreshHash();
+      //tile.SetIndex(id);
     }
 
     public void EraseTile(int x, int y)
@@ -77,41 +92,37 @@ namespace FebEngine.Tiles
         return;
       }
 
-      tileArray[x, y].Reset();
+      var tile = Tiles.Get(x, y);
+      tile = -1;
+      //tile.Reset();
     }
 
     public void Clear()
     {
-      for (int x = 0; x < tileArray.GetLength(0); x++)
-      {
-        for (int y = 0; y < tileArray.GetLength(1); y++)
-        {
-          tileArray[x, y].Reset();
-        }
-      }
+      Tiles.Fill(-1);
     }
 
-    public Tile GetTile(Vector2 position)
+    public int GetTile(Vector2 position)
     {
       int x = (int)position.X / Tilemap.TileWidth;
       int y = (int)position.Y / Tilemap.TileHeight;
 
       if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
-        return null;
+        return -1;
       }
 
-      return tileArray[x, y];
+      return Tiles.Get(x, y);
     }
 
-    public Tile GetTile(int x, int y)
+    public int GetTile(int x, int y)
     {
       if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
       {
-        return null;
+        return -1;
       }
 
-      return tileArray[x, y];
+      return Tiles.Get(x, y);
     }
 
     public int GetTileIndexXY(int x, int y)
@@ -120,14 +131,11 @@ namespace FebEngine.Tiles
       {
         return -1;
       }
-      if (tileArray[x, y].Brush != null)
-      {
-        return tileArray[x, y].Brush.id;
-      }
 
-      return -1;
+      return Tiles.Get(x, y);
     }
 
+    /*
     public void ShowTileIndices(bool showEmptyTiles = false)
     {
       for (int x = 0; x < tileArray.GetLength(0); x++)
@@ -143,22 +151,21 @@ namespace FebEngine.Tiles
           }
         }
       }
-    }
+  }
 
-    /*
-    public void RandomizeTiles()
+  public void RandomizeTiles()
+  {
+    for (int x = 0; x < tileArray.GetLength(0); x++)
     {
-      for (int x = 0; x < tileArray.GetLength(0); x++)
+      for (int y = 0; y < tileArray.GetLength(1); y++)
       {
-        for (int y = 0; y < tileArray.GetLength(1); y++)
+        if (hashArray[x, y] % 2 == 0)
         {
-          if (hashArray[x, y] % 2 == 0)
-          {
-            PutTile(new Tile { id = 0 }, x, y);
-          }
+          PutTile(new Tile { id = 0 }, x, y);
         }
       }
     }
-    */
+  }
+  */
   }
 }

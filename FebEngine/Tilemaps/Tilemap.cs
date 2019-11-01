@@ -42,7 +42,7 @@ namespace FebEngine.Tiles
     /// </summary>
     public Rectangle Bounds
     {
-      get { return new Rectangle((int)Position.X, (int)Position.Y, Width, Height); }
+      get { return new Rectangle(X, Y, Width, Height); }
     }
 
     public Dictionary<WarpDirection, string> ConnectedMaps { get; set; } = new Dictionary<WarpDirection, string>();
@@ -60,6 +60,26 @@ namespace FebEngine.Tiles
       TileHeight = tileHeight;
 
       sideWarps = new List<SideWarp>();
+    }
+
+    public void ExtendUp(int amount)
+    {
+      foreach (var layer in Layers) layer.ExtendUp(amount);
+    }
+
+    public void ExtendDown(int amount)
+    {
+      foreach (var layer in Layers) layer.ExtendDown(amount);
+    }
+
+    public void ExtendLeft(int amount)
+    {
+      foreach (var layer in Layers) layer.ExtendLeft(amount);
+    }
+
+    public void ExtendRight(int amount)
+    {
+      foreach (var layer in Layers) layer.ExtendRight(amount);
     }
 
     /// <summary>
@@ -101,6 +121,14 @@ namespace FebEngine.Tiles
       return Layers[i];
     }
 
+    public void Refresh()
+    {
+      foreach (var layer in Layers)
+      {
+        //layer.Refresh();
+      }
+    }
+
     public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
       // Don't draw if there's no tileset.
@@ -115,17 +143,17 @@ namespace FebEngine.Tiles
         if (!layer.IsVisible) return;
 
         // Iterate through each tile in this layer
-        for (int tileIndex = 0; tileIndex < layer.tileArray.Length; tileIndex++)
+        for (int tileIndex = 0; tileIndex < layer.Tiles.Count; tileIndex++)
         {
           int tileX = tileIndex % Width;
           int tileY = tileIndex / Width;
           var tile = layer.GetTile(tileX, tileY);
 
           // Tiles with ID -1 and less are ignored.
-          if (tile.Brush == null)
-          {
-            continue;
-          }
+          //if (tile.Brush == null)
+          //{
+          //  continue;
+          //}
 
           // Gets the destination rectangle by the tile's raw position,
           // multiplying and offsetting it by the map's bounds and the layer's offset.
@@ -137,7 +165,7 @@ namespace FebEngine.Tiles
 
           // Uses the index to locate the correct region of the tileset's texture.
 
-          int frameId = tile.Brush.GetFrame(tile);
+          int frameId = tile;
           Vector2 tilesetPosition = Tileset.GetTilePositionFromIndex(frameId);
 
           // Divides the position into separate X and Y components, and multiply them by the tileset's grid unit width and height.
@@ -155,7 +183,7 @@ namespace FebEngine.Tiles
             Tileset.Texture,
             destination,
             source,
-            tile.tint
+            Color.White
             );
         }
       }

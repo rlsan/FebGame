@@ -48,7 +48,8 @@
     <Compile Include="Entities\ParticleEmitter.cs" />
     <Compile Include="Entities\Sprite.cs" />
     <Compile Include="Tilemaps\Brushes\TileBrush.cs" />
-    <Compile Include="Tilemaps\MapGroupIO.cs" />
+    <Compile Include="Tilemaps\GroupIO.cs" />
+    <Compile Include="Tilemaps\TilesetIO.cs" />
     <Compile Include="Tilemaps\Warp.cs" />
     <Compile Include="UI\Base\UIFileDialog.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Physics\Body.cs" />
     <Compile Include="Physics\PhysicsHandler.cs" />
     <Compile Include="Physics\QuadTree.cs" />
+    <Compile Include="Utility\Grid.cs" />
     <Compile Include="Utility\Mathf.cs" />
     <Compile Include="Utility\RNG.cs" />
     <Compile Include="Core\StateManager.cs" />
@@ -75,7 +77,7 @@
     <Compile Include="Tilemaps\Tile.cs" />
     <Compile Include="Tilemaps\Tilemap.cs" />
     <Compile Include="Tilemaps\MapGroup.cs" />
-    <Compile Include="Tilemaps\TilemapXML.cs" />
+    <Compile Include="Tilemaps\MapIO.cs" />
     <Compile Include="Tilemaps\Brushes\RandomBrush.cs" />
     <Compile Include="Tilemaps\Brushes\RowBrush.cs" />
     <Compile Include="Tilemaps\TileType.cs" />

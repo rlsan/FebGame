@@ -144,15 +144,20 @@ namespace FebGame
 
       //spriteBatch.Draw(texture, Bounds, new Rectangle(2, 2, 16, 16), Color.Gray);
 
-      foreach (var tile in tilemap.GetLayer(0).tileArray)
+      var tiles = tilemap.GetLayer(1).Tiles;
+
+      int i = 0;
+      foreach (var tile in tiles)
       {
-        if (tile.Brush != null)
+        int tileX = i % tiles.Width;
+        int tileY = i / tiles.Width;
+
+        if (tile != -1)
         {
-          if (tile.Brush.id > -1)
-          {
-            spriteBatch.Draw(texture, new Rectangle(X + tile.X * gridSize, Y + tile.Y * gridSize, gridSize, gridSize), new Rectangle(2, 2, 16, 16), Color.Gray);
-          }
+          spriteBatch.Draw(texture, new Rectangle(X + tileX * gridSize, Y + tileY * gridSize, gridSize, gridSize), new Rectangle(2, 2, 16, 16), Color.Gray);
         }
+
+        i++;
       }
 
       //top

@@ -4,7 +4,7 @@ using System;
 
 namespace FebEngine.Tiles
 {
-  public class Tile
+  public struct Tile
   {
     /// <summary>
     /// The layer this tile belongs to.
@@ -17,29 +17,38 @@ namespace FebEngine.Tiles
     /// <summary>
     /// The brush that defines how this tile will be drawn.
     /// </summary>
-    public TileBrush Brush { get; set; }
+    //public TileBrush Brush { get; set; }
 
     /// <summary>
-    /// Properties for this tile.
+    /// The ID that the tileset will use to draw.
     /// </summary>
-    public TileProperties Properties { get; set; }
+    public int Id { get; set; }
 
-    public Color tint = Color.White;
+    public Color tint;
 
     public int Hash { get; set; }
 
-    public Tile(TilemapLayer layer, int x, int y)
+    public Tile(TilemapLayer layer, int id = -1)
     {
       Layer = layer;
-      X = x;
-      Y = y;
+      X = 0;
+      Y = 0;
 
-      RefreshHash();
+      Id = id;
+
+      tint = Color.White;
+
+      Hash = RNG.RandInt();
     }
 
     public void SetBrush(TileBrush brush)
     {
-      Brush = brush;
+      //Brush = brush;
+    }
+
+    public void SetIndex(int id)
+    {
+      Id = id;
     }
 
     /// <summary>
@@ -47,8 +56,8 @@ namespace FebEngine.Tiles
     /// </summary>
     public void Reset()
     {
-      Brush = null;
-      Properties.Clear();
+      //Brush = null;
+      Id = -1;
     }
 
     public void RefreshHash()
@@ -56,31 +65,9 @@ namespace FebEngine.Tiles
       Hash = RNG.RandInt();
     }
 
-    public struct TileProperties
+    public override string ToString()
     {
-      private TileType[] properties;
-
-      public void Clear()
-      {
-        Array.Clear(properties, 0, 0);
-      }
-
-      public override string ToString()
-      {
-        string s = "null";
-
-        if (properties != null)
-        {
-          s = "";
-
-          for (int i = 0; i < properties.Length; i++)
-          {
-            s += properties[i].ToString();
-            if (i < properties.Length - 1) s += ", ";
-          }
-        }
-        return s;
-      }
+      return Id.ToString();
     }
   }
 }

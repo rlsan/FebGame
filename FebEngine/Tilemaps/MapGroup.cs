@@ -7,10 +7,13 @@ namespace FebEngine.Tiles
 {
   public class MapGroup : Entity
   {
-    public List<Tilemap> Tilemaps { get; } = new List<Tilemap>();
+    public List<Tilemap> Tilemaps { get; set; } = new List<Tilemap>();
     public Tilemap CurrentMap { get; set; }
 
-    public int scale = 6;
+    public void Load(string path)
+    {
+      Tilemaps = GroupIO.Import(path);
+    }
 
     public Tilemap AddMap(Tilemap tilemap)
     {
@@ -47,6 +50,8 @@ namespace FebEngine.Tiles
     /// <param name="id"></param>
     public void ChangeMap(int id)
     {
+      if (id > Tilemaps.Count - 1 || id < 0) return;
+
       CurrentMap = Tilemaps[id];
     }
 

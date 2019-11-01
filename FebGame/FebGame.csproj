@@ -89,7 +89,7 @@
     <Compile Include="States\MapEditor.cs" />
     <Compile Include="States\GroupEditor.cs" />
     <Compile Include="Editor\RectTransform.cs" />
-    <Compile Include="States\TestState.cs" />
+    <Compile Include="States\Sandbox.cs" />
     <Compile Include="States\TileEditor.cs" />
   </ItemGroup>
   <ItemGroup>

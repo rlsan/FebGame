@@ -34,7 +34,7 @@ namespace FebEngine
       worldManager = new WorldManager(this);
       renderManager = new RenderManager(this);
 
-      TilemapXML.content = Content;
+      MapIO.content = Content;
     }
 
     protected override void Initialize()

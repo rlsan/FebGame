@@ -10,10 +10,10 @@ namespace FebGame
   {
     protected override void Initialize()
     {
-      stateManager.AddState("TestState", new TestState());
+      stateManager.AddState("Sandbox", new Sandbox());
       stateManager.AddState("Editor", new Editor());
 
-      stateManager.LoadState("Editor", true);
+      stateManager.LoadState("Sandbox", true);
 
       IsMouseVisible = true;
 

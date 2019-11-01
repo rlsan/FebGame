@@ -160,7 +160,7 @@ namespace FebEngine.UI
 
               if (doubleClickTimer > 0)
               {
-                //MousePress = true;
+                MousePress = true;
                 doubleClickTimer = 0;
                 DoubleMousePress = true;
               }

@@ -13,10 +13,12 @@ namespace FebGame.States
     internal TileEditor tileEditor;
 
     public MapGroup mapGroup;
+    public Tilemap activeTilemap;
 
     private Vector2 prevCamPos;
     private bool camHasMoved;
     private int previousScroll;
+    public bool panning;
 
     public override void Start()
     {
@@ -36,12 +38,27 @@ namespace FebGame.States
       canvas.AddElement("TileEditorTab", new UIButton(title: "Tile Editor", onClick: ActivateTileEditor), 300, 0, 150, 30);
 
       canvas.AddElement("NewGroup", new UIButton(title: "New Group", onClick: NewMapGroup), 450, 0, 150, 30);
-      canvas.AddElement("SaveGroup", new UIButton(title: "Save Group..."), 600, 0, 150, 30);
-      canvas.AddElement("LoadGroup", new UIButton(title: "Load Group..."), 750, 0, 150, 30);
+      canvas.AddElement("SaveGroup", new UIButton(title: "Save Group...", onClick: SaveGroup), 600, 0, 150, 30);
+      canvas.AddElement("LoadGroup", new UIButton(title: "Load Group...", onClick: LoadGroup), 750, 0, 150, 30);
 
       mapEditor.editor = this;
       groupEditor.editor = this;
       tileEditor.editor = this;
+    }
+
+    private void SaveGroup()
+    {
+      GroupIO.Export(mapGroup, "/");
+    }
+
+    private void LoadGroup()
+    {
+      //var group = GroupIO.Import("Group1.amg");
+      //mapGroup = group;
+
+      mapGroup.Load("Group1.amg");
+
+      groupEditor.LoadGroupThumbs();
     }
 
     public override void Update(GameTime gameTime)
@@ -51,7 +68,9 @@ namespace FebGame.States
 
     private void NewMapGroup()
     {
-      mapGroup = new MapGroup();
+      mapGroup = new MapGroup { Name = "Group1" };
+
+      groupEditor.LoadGroupThumbs();
     }
 
     internal void ActivateMapEditor()
@@ -89,6 +108,8 @@ namespace FebGame.States
         {
           if (!camHasMoved)
           {
+            panning = true;
+
             prevCamPos = world.camera.Position + canvas.mouse.Position.ToVector2() / world.camera.scaleFactor;
             camHasMoved = true;
           }
@@ -98,6 +119,8 @@ namespace FebGame.States
       }
       else
       {
+        panning = false;
+
         camHasMoved = false;
       }
 

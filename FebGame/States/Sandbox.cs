@@ -1,29 +1,24 @@
-﻿using System;
+﻿using FebEngine;
+using FebEngine.Entities;
+using FebEngine.Tiles;
+using FebEngine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-using FebEngine;
-using FebEngine.UI;
-using FebEngine.Utility;
-using FebEngine.Tiles;
-using System.IO;
+using System;
+using System.Threading.Tasks;
 
 namespace FebGame.States
 {
-  internal class MapEditor : GameState
+  public class Sandbox : GameState
   {
-    public Editor editor;
-
-    private UITilePalette tilePalette;
-    private UITextBox mapProperties;
-    private UIBrushEditor brushEditor;
-
-    private Tileset tileset;
-
     private Texture2D rectTexture;
     private SpriteFont font;
+
+    private MapGroup mapGroup;
+
+    private Vector2 velocity;
 
     public override void Load(ContentManager content)
     {
@@ -35,116 +30,99 @@ namespace FebGame.States
 
     public override void Start()
     {
-      canvas.bounds.Width = 1920;
-      canvas.bounds.Height = 1080;
-      canvas.bounds.Y = 30;
+      mapGroup = Create.MapGroup("MapGroup");
+      mapGroup.Load("Group1.amg");
+      mapGroup.ChangeMap(0);
 
-      LoadTileSet("tilesets/ts_test");
+      velocity = Vector2.Zero;
 
-      InitGUI();
-
-      //MapIO.ExportTileset(tileset);
-    }
-
-    public void LoadMap<T>(T map)
-    {
-      Console.WriteLine(map);
-    }
-
-    public void LoadTileSet(string tileSetName)
-    {
-      var tex = game.Content.Load<Texture2D>(tileSetName);
-
-      tileset = new Tileset(tex, 64, 64);
-
-      TileBrush logEnd = tileset.AddBrush(new RandomBrush("LogEnd", tileset.GetBrushFromIndex(11), tileset.GetBrushFromIndex(12)), isHidden: true);
-
-      TileBrush logMiddle = tileset.AddBrush(new RandomBrush("LogMiddle", tileset.GetBrushFromIndex(8), tileset.GetBrushFromIndex(9), tileset.GetBrushFromIndex(10)), isHidden: true);
-
-      tileset.AddBrush(new RowBrush("Log", tileset.GetBrushFromIndex(7), logMiddle, logEnd, tileset.GetBrushFromIndex(6)));
-    }
-
-    public void ExportTilemap<T>(T path)
-    {
-      //string document = MapIO.ExportMap(editor.mapGroup.CurrentMap);
-
-      //File.WriteAllText(path.ToString(), document);
-    }
-
-    public void ImportTilemap<T>(T document)
-    {
-      //Tilemap importedTilemap = MapIO.Import(document.ToString());
-
-      //editor.mapGroup.AddMap(importedTilemap);
-      //editor.mapGroup.ChangeMap(importedTilemap.Name);
-    }
-
-    public void InitGUI()
-    {
-      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 800, 30, 400, 400) as UITilePalette;
-      tilePalette.SetTileSet(tileset);
-
-      var saveDialog = canvas.AddElement("FileSave", new UISaveDialog("atm", onSave: ExportTilemap), startInvisible: true);
-      var loadDialog = canvas.AddElement("FileLoad", new UILoadDialog("atm", onLoad: ImportTilemap), startInvisible: true);
-
-      //canvas.AddElement("SaveButton", new UIButton("Save...", onClick: saveDialog.Enable), 0, 30, 100, 30);
-      //canvas.AddElement("LoadButton", new UIButton("Load...", onClick: loadDialog.Enable), 100, 30, 100, 30);
-
-      //canvas.AddElement("SetTilesetButton", new UIButton("Set Tileset...", onClick: loadDialog.Enable), 200, 30, 200, 30);
-
-      //mapProperties = canvas.AddElement("MapProperties", new UITextBox(), 1400, 30, 200, 200) as UITextBox;
-
-      //brushEditor = canvas.AddElement("BrushEditor", new UIBrushEditor(title: "Brush", isDraggable: true, isCloseable: false), 1000, 300, 400, 200) as UIBrushEditor;
+      base.Start();
     }
 
     public override void Update(GameTime gameTime)
     {
-      var mpos = world.camera.ScreenToWorldTransform(canvas.mouse.Position.ToVector2());
+      float speed = 0.1f;
 
-      //brushEditor.SelectedBrush = tilePalette.selectedBrush;
+      var k = Keyboard.GetState();
 
-      /*
-      if (editor.mapGroup.CurrentMap != null)
+      if (k.IsKeyDown(Keys.W))
       {
-        mapProperties.SetMessage(
-          "Map Name: " + editor.mapGroup.CurrentMap.Name,
-          "Width: " + editor.mapGroup.CurrentMap.Width,
-          "Height: " + editor.mapGroup.CurrentMap.Height,
-          "Current Layer: " + editor.mapGroup.CurrentMap.GetLayer(0).Name
-          );
+        velocity += new Vector2(0, -speed);
       }
-      */
-      if (editor.panning) return;
-
-      if (editor.activeTilemap != null)
+      if (k.IsKeyDown(Keys.S))
       {
-        var map = editor.mapGroup.CurrentMap;
+        velocity += new Vector2(0, speed);
+      }
+      if (k.IsKeyDown(Keys.A))
+      {
+        velocity += new Vector2(-speed, 0);
+      }
+      if (k.IsKeyDown(Keys.D))
+      {
+        velocity += new Vector2(speed, 0);
+      }
 
-        var layer = map.GetLayer(1);
+      velocity *= 0.99f;
 
-        if (canvas.MouseDown)
+      world.camera.Position += velocity;
+
+      if (world.camera.Position.X > mapGroup.CurrentMap.Width * 64)
+      {
+        foreach (var warp in mapGroup.CurrentMap.sideWarps)
         {
-          layer.PutTile(0, mpos);
+          int pos = (int)world.camera.Position.Y;
+
+          if (warp.Direction == WarpDirection.Right && pos < warp.RangeMax * 64 && pos > warp.RangeMin * 64)
+          {
+            var map1Y = mapGroup.CurrentMap.Y * 64;
+
+            mapGroup.ChangeMap(warp.DestinationMapName);
+
+            var map2Y = mapGroup.CurrentMap.Y * 64;
+
+            world.camera.Position = new Vector2(0, world.camera.Position.Y + (map1Y - map2Y));
+          }
         }
       }
+      if (world.camera.Position.X < 0)
+      {
+        foreach (var warp in mapGroup.CurrentMap.sideWarps)
+        {
+          int pos = (int)world.camera.Position.Y;
+
+          if (warp.Direction == WarpDirection.Left && pos < warp.RangeMax * 64 && pos > warp.RangeMin * 64)
+          {
+            var map1Y = mapGroup.CurrentMap.Y * 64;
+
+            mapGroup.ChangeMap(warp.DestinationMapName);
+
+            var map2Y = mapGroup.CurrentMap.Y * 64;
+
+            world.camera.Position = new Vector2(mapGroup.CurrentMap.Width * 64, world.camera.Position.Y + (map1Y - map2Y));
+          }
+        }
+      }
+
+      base.Update(gameTime);
     }
 
     public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       var sb = renderer.SpriteBatch;
 
-      if (editor.activeTilemap != null)
+      if (mapGroup.CurrentMap != null)
       {
         var color = Color.White;
         var gridColor = new Color(0.1f, 0.1f, 0.1f);
         var warpColor = Color.Magenta;
         int offset = 10;
 
-        var map = editor.activeTilemap;
+        var map = mapGroup.CurrentMap;
         var layer = map.GetLayer(1);
 
         var Bounds = new Rectangle(0, 0, map.Width, map.Height);
 
+        /*
         for (int i = 0; i < map.Width; i++)
         {
           sb.Draw(rectTexture, new Rectangle(
@@ -163,6 +141,7 @@ namespace FebGame.States
             20
             ), new Rectangle(30, 0, 40, 20), gridColor);
         }
+        */
 
         int j = 0;
         foreach (var tile in layer.Tiles)
@@ -177,7 +156,7 @@ namespace FebGame.States
 
           j++;
         }
-
+        /*
         //top
         sb.Draw(rectTexture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width * map.TileHeight, 20), new Rectangle(30, 0, 40, 20), color);
 
@@ -218,7 +197,10 @@ namespace FebGame.States
             sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Left + rangeMin, Bounds.Bottom * map.TileHeight - offset), Color.White);
           }
         }
+        */
       }
+
+      base.Draw(renderer, gameTime);
     }
   }
 }

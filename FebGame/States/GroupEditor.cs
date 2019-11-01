@@ -68,6 +68,32 @@ namespace FebGame.States
       canvas.AddElement("Compile", new UIButton("Compile", onClick: Compile), 0, 90, 150, 30);
     }
 
+    public void LoadGroupThumbs()
+    {
+      foreach (var t in thumbnails)
+      {
+        t.Destroy();
+      }
+
+      thumbnails.Clear();
+
+      foreach (var map in editor.mapGroup.Tilemaps)
+      {
+        //var t = new MapThumbnail(map.Bounds, map, GridSize);
+
+        var scaledRect = new Rectangle(map.X * GridSize, map.Y * GridSize, map.Width * GridSize, map.Height * GridSize);
+
+        var m = Create.Entity(new MapThumbnail(scaledRect, map, GridSize), map.Name + "_thumb") as MapThumbnail;
+        m.font = font;
+        m.texture = rectTexture;
+        m.tilemap = map;
+
+        thumbnails.Add(m);
+      }
+
+      Compile();
+    }
+
     private void Compile()
     {
       if (editor.mapGroup != null)
@@ -83,6 +109,7 @@ namespace FebGame.States
         Compile();
 
         editor.mapGroup.ChangeMap(selectedThumbnail.tilemap.Name);
+        editor.activeTilemap = selectedThumbnail.tilemap;
 
         editor.ActivateMapEditor();
       }
@@ -104,7 +131,7 @@ namespace FebGame.States
 
     private void AddMap(Rectangle area)
     {
-      var t = new Tilemap(0, 0, 64, 64);
+      var t = new Tilemap(area.Width / GridSize, area.Height / GridSize, 64, 64);
       t.Name = "m" + thumbnails.Count;
 
       t.AddLayer("Background");
@@ -125,7 +152,8 @@ namespace FebGame.States
     {
       var mpos = world.camera.ScreenToWorldTransform(canvas.mouse.Position.ToVector2());
 
-      if (canvas.keyboard.IsKeyDown(Keys.Q)) selectedTool = GroupEditorTool.Select;
+      if (canvas.keyboard.IsKeyDown(Keys.A)) selectedTool = GroupEditorTool.Select;
+      else if (canvas.keyboard.IsKeyDown(Keys.Q)) selectedTool = GroupEditorTool.Transform;
       else if (canvas.keyboard.IsKeyDown(Keys.D)) selectedTool = GroupEditorTool.Draw;
 
       selectedToolUI.SetMessage(selectedTool);
@@ -135,7 +163,46 @@ namespace FebGame.States
         selectedThumbnail.tilemap.Name = mapInfoPanel.mapNameField.text;
       }
 
+      if (editor.panning) return;
+
       if (selectedTool == GroupEditorTool.Select)
+      {
+        if (canvas.DoubleMousePress)
+        {
+          EditMap();
+        }
+        if (canvas.MousePress)
+        {
+          //var m = rectTransform.TestInput(mpos, 10);
+          //if (m != null)
+          //{
+          //  selectedAnchor = m.AnchorPoint;
+          //  resizing = true;
+          //}
+          //else
+          //{
+          bool selectedSomething = false;
+          foreach (var thumbnail in thumbnails)
+          {
+            if (thumbnail.Bounds.Contains(mpos.ToPoint()))
+            {
+              selectedThumbnail = thumbnail;
+              rectTransform.SetHandles(thumbnail.Bounds);
+              selectedSomething = true;
+              mapInfoPanel.mapNameField.SetMessage(selectedThumbnail.tilemap.Name);
+
+              break;
+            }
+          }
+          if (!selectedSomething)
+          {
+            selectedThumbnail = null;
+          }
+          //}
+        }
+      }
+
+      if (selectedTool == GroupEditorTool.Transform)
       {
         if (resizing)
         {
@@ -153,13 +220,9 @@ namespace FebGame.States
         }
         else
         {
-          if (canvas.DoubleMousePress)
-          {
-            EditMap();
-          }
           if (canvas.MousePress)
           {
-            var m = rectTransform.TestInput(mpos, 20);
+            var m = rectTransform.TestInput(mpos, 10);
             if (m != null)
             {
               selectedAnchor = m.AnchorPoint;
@@ -247,7 +310,7 @@ namespace FebGame.States
 
     private enum GroupEditorTool
     {
-      Select, Draw
+      Select, Transform, Draw
     }
   }
 }
