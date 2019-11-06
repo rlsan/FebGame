@@ -51,6 +51,7 @@
     <Compile Include="Tilemaps\GroupIO.cs" />
     <Compile Include="Tilemaps\TilesetIO.cs" />
     <Compile Include="Tilemaps\Warp.cs" />
+    <Compile Include="UI\Base\UIDropDown.cs" />
     <Compile Include="UI\Base\UIFileDialog.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="UI\Base\UILoadDialog.cs" />

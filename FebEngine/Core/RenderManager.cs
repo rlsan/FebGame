@@ -11,6 +11,12 @@ namespace FebEngine
   {
     public static RenderManager instance;
 
+    public ContentManager Content
+    {
+      get { return Game.Content; }
+      set { Game.Content = value; }
+    }
+
     public SpriteBatch SpriteBatch { get; private set; }
 
     private Viewport viewport;

@@ -13,7 +13,7 @@ namespace FebGame.States
 {
   internal partial class GroupEditor : GameState
   {
-    public Editor editor;
+    public EditorState editor;
 
     private int GridSize { get; set; } = 12;
 

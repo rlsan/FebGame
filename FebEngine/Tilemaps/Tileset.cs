@@ -33,7 +33,7 @@ namespace FebEngine.Tiles
 
       for (int i = 0; i < Rows * Columns; i++)
       {
-        AddBrush(new TileBrush("Tile" + i, i));
+        //AddBrush(new TileBrush("Tile" + i, i));
       }
     }
 
@@ -47,25 +47,44 @@ namespace FebEngine.Tiles
 
     public TileBrush GetBrushFromIndex(int index)
     {
-      if (index < BrushCount)
+      foreach (var brush in Brushes)
       {
-        return Brushes[index];
+        if (brush.id == index) return brush;
       }
-      else
+
+      return Brushes[BrushCount - 1];
+    }
+
+    public TileBrush GetBrushFromName(string name)
+    {
+      foreach (var brush in Brushes)
       {
-        return Brushes[BrushCount - 1];
+        if (brush.Name == name) return brush;
       }
+
+      return Brushes[BrushCount - 1];
     }
 
     public TileBrush AddBrush(TileBrush brush, string name = null, bool isHidden = false)
     {
       brush.tileset = this;
-      brush.id = Brushes.Count;
+      //brush.id = Brushes.Count;
       brush.isHidden = isHidden;
 
       Brushes.Add(brush);
 
       return brush;
+    }
+
+    public void RemoveBrush(int id)
+    {
+      foreach (var item in Brushes.ToArray())
+      {
+        if (item.id == id)
+        {
+          Brushes.Remove(item);
+        }
+      }
     }
   }
 }

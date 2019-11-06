@@ -76,20 +76,26 @@
     <Compile Include="Editor\MapCompiler.cs" />
     <Compile Include="Editor\MapThumbnail.cs" />
     <Compile Include="Editor\UI\MapInfoPanel.cs" />
+    <Compile Include="Editor\UI\TileEditorWindow.cs" />
+    <Compile Include="Editor\UI\TileInfo.cs" />
+    <Compile Include="Editor\UI\BrushViewer.cs" />
+    <Compile Include="Editor\UI\TilesetInfo.cs" />
     <Compile Include="Editor\UI\UIBrushEditor.cs" />
+    <Compile Include="Editor\UI\UITilesetInfo.cs" />
     <Compile Include="Editor\UI\UITileMapSetList.cs" />
     <Compile Include="Editor\UI\UITilePalette.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="States\Editor.cs" />
+    <Compile Include="States\EditorState.cs" />
     <Compile Include="States\GameplayState.cs" />
     <Compile Include="States\IntroSceneState.cs" />
     <Compile Include="States\MapEditor.cs" />
     <Compile Include="States\GroupEditor.cs" />
     <Compile Include="Editor\RectTransform.cs" />
     <Compile Include="States\Sandbox.cs" />
+    <Compile Include="States\SandboxB.cs" />
     <Compile Include="States\TileEditor.cs" />
   </ItemGroup>
   <ItemGroup>

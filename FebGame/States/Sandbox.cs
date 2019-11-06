@@ -2,6 +2,7 @@
 using FebEngine.Entities;
 using FebEngine.Tiles;
 using FebEngine.Utility;
+using FebGame.Editor;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -122,7 +123,6 @@ namespace FebGame.States
 
         var Bounds = new Rectangle(0, 0, map.Width, map.Height);
 
-        /*
         for (int i = 0; i < map.Width; i++)
         {
           sb.Draw(rectTexture, new Rectangle(
@@ -141,7 +141,6 @@ namespace FebGame.States
             20
             ), new Rectangle(30, 0, 40, 20), gridColor);
         }
-        */
 
         int j = 0;
         foreach (var tile in layer.Tiles)
@@ -156,7 +155,7 @@ namespace FebGame.States
 
           j++;
         }
-        /*
+
         //top
         sb.Draw(rectTexture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width * map.TileHeight, 20), new Rectangle(30, 0, 40, 20), color);
 
@@ -197,7 +196,6 @@ namespace FebGame.States
             sb.DrawString(font, warp.DestinationMapName, new Vector2(Bounds.Left + rangeMin, Bounds.Bottom * map.TileHeight - offset), Color.White);
           }
         }
-        */
       }
 
       base.Draw(renderer, gameTime);

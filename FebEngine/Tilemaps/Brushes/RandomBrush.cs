@@ -1,8 +1,10 @@
-﻿namespace FebEngine.Tiles
+﻿using System.Linq;
+
+namespace FebEngine.Tiles
 {
   public class RandomBrush : TileBrush
   {
-    public override string Name { get; } = "Random";
+    public override string Name { get; set; } = "Random";
 
     public float[] probabilityValues;
 
@@ -10,17 +12,21 @@
     {
       Name = name;
 
-      Inputs = inputs;
+      Inputs = inputs.ToList();
+
+      brushType = TileBrushType.Random;
     }
 
     public override int GetFirstFrame()
     {
-      return Inputs[0].GetFirstFrame();
+      if (HasInputs) return Inputs[0].GetFirstFrame();
+
+      return 0;
     }
 
     public override int GetFrame(Tile tile)
     {
-      var pickedTile = Inputs[tile.Hash % Inputs.Length];
+      var pickedTile = Inputs[tile.Hash % Inputs.Count];
 
       return pickedTile.GetFrame(tile);
     }

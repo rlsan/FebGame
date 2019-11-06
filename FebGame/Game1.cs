@@ -10,8 +10,8 @@ namespace FebGame
   {
     protected override void Initialize()
     {
-      stateManager.AddState("Sandbox", new Sandbox());
-      stateManager.AddState("Editor", new Editor());
+      stateManager.AddState("Sandbox", new SandboxB());
+      stateManager.AddState("Editor", new EditorState());
 
       stateManager.LoadState("Sandbox", true);
 

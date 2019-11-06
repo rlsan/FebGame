@@ -12,6 +12,7 @@ namespace FebEngine.UI
 {
   public class UITextField : UIButton
   {
+    public bool active = false;
     public string text = "";
 
     private Keys[] lastKeys;
@@ -30,9 +31,21 @@ namespace FebEngine.UI
       text = message.ToString();
     }
 
+    public override void OnPress(Point mousePos)
+    {
+      active = true;
+
+      base.OnPress(mousePos);
+    }
+
+    public override void OnRelease()
+    {
+      base.OnRelease();
+    }
+
     public override void Update(GameTime gameTime)
     {
-      if (IsActive)
+      if (active)
       {
         //Get the current keyboard state and keys that are pressed
         KeyboardState keyboardState = Canvas.keyboard;
@@ -85,7 +98,7 @@ namespace FebEngine.UI
 
       if (isVisible)
       {
-        if (IsActive)
+        if (active)
         {
           Debug.Text(text + "|", X + 4, Y + 4);
         }

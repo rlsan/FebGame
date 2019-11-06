@@ -2,18 +2,25 @@
 {
   public class RowBrush : TileBrush
   {
-    public override string Name { get; } = "Row";
+    public override string Name { get; set; } = "Row";
 
-    public RowBrush(string name, TileBrush left, TileBrush middle, TileBrush right, TileBrush single)
+    public RowBrush(string name, TileBrush single, TileBrush left, TileBrush middle, TileBrush right)
     {
       Name = name;
 
-      Inputs = new TileBrush[4] { left, middle, right, single };
+      //Inputs = new TileBrush[4] { left, middle, right, single };
+
+      AddInput(single);
+      AddInput(left);
+      AddInput(middle);
+      AddInput(right);
+
+      brushType = TileBrushType.Row;
     }
 
     public override int GetFirstFrame()
     {
-      return Inputs[3].GetFirstFrame();
+      return Inputs[0].GetFirstFrame();
     }
 
     public override int GetFrame(Tile tile)

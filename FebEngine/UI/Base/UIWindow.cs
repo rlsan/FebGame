@@ -32,7 +32,7 @@ namespace FebEngine.UI
     {
       if (isCloseable)
       {
-        AddChild(label + "Close", new UIButton(title: "x", onClick: Disable), Width - 20, 0, 20, 20);
+        //AddChild(label + "Close", new UIButton(title: "x", onClick: Disable), Width - 20, 0, 20, 20);
       }
 
       base.Init();
@@ -52,11 +52,15 @@ namespace FebEngine.UI
           }
         }
       }
+
+      base.OnPress(mousePos);
     }
 
     public override void OnRelease()
     {
       isDragging = false;
+
+      base.OnRelease();
     }
 
     public override void Update(GameTime gameTime)
@@ -79,17 +83,19 @@ namespace FebEngine.UI
 
         //Draw window
         sb.Draw(Canvas.ThemeTexture,
-          new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-          new Rectangle(16, 0, 16, 16),
+          new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 1, bounds.Height - 1),
+          new Rectangle(18, 2, 10, 10),
           Color.White
             );
 
         //Draw menu bar
+        /*
         sb.Draw(Canvas.ThemeTexture,
           new Rectangle(bounds.X, bounds.Y, bounds.Width, menuBarHeight),
           new Rectangle(0, 0, 16, 16),
           Color.White
             );
+            */
 
         base.Draw(sb);
       }

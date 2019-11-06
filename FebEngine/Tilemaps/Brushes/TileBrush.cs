@@ -1,14 +1,21 @@
-﻿namespace FebEngine.Tiles
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace FebEngine.Tiles
 {
   public class TileBrush
   {
     public Tileset tileset;
-    virtual public string Name { get; }
+    virtual public string Name { get; set; }
+    public TileBrushType brushType;
 
     public int id;
     public int FrameId { get; }
 
-    public TileBrush[] Inputs { get; set; }
+    public List<TileBrush> Inputs { get; set; } = new List<TileBrush>();
 
     public bool HasInputs
     {
@@ -16,7 +23,7 @@
       {
         if (Inputs != null)
         {
-          return Inputs.Length > 0;
+          return Inputs.Count > 0;
         }
 
         return false;
@@ -27,9 +34,16 @@
 
     public TileBrush(string name = "Tile", int frameId = -1, bool isHidden = false)
     {
+      brushType = TileBrushType.Tile;
+
       Name = name;
       FrameId = frameId;
       this.isHidden = isHidden;
+    }
+
+    public void AddInput(TileBrush brush)
+    {
+      Inputs.Add(brush);
     }
 
     /// <summary>
@@ -44,5 +58,10 @@
     {
       return FrameId;
     }
+  }
+
+  public enum TileBrushType
+  {
+    Tile, Row, Column, Random, Animated
   }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FebGame
 {
-  public class UITilePalette : UIWindow
+  public class UITilePalette : UIElement
   {
     private Tileset tileSet;
 
@@ -19,19 +19,35 @@ namespace FebGame
     private int scaleMax = 5;
     private int scaleMin = 1;
 
+    public bool hideBaseTiles = false;
+
     public TileBrush selectedBrush = new TileBrush();
 
+    /*
     public UITilePalette(string title = "", bool isDraggable = false, bool isCloseable = true) : base(title, isDraggable, isCloseable)
     {
       this.title = title;
       this.isDraggable = isDraggable;
       this.isCloseable = isCloseable;
     }
+    */
 
     public override void Init()
     {
-      AddChild("ZoomOut", new UIButton("-", onClick: ZoomOut), Width - 30, menuBarHeight, 30, 30);
-      AddChild("ZoomIn", new UIButton("+", onClick: ZoomIn), Width - 30, menuBarHeight + 30, 30, 30);
+      division = Division.horizontal;
+
+      AddPanel(1.95f);
+
+      var scrollBar = AddPanel();
+
+      scrollBar.division = Division.vertical;
+
+      scrollBar.AddButton("+", onClick: ZoomIn);
+      scrollBar.AddButton("-", onClick: ZoomOut);
+      scrollBar.AddButton("^");
+      scrollBar.AddButton("v");
+      //AddChild("ZoomOut", new UIButton("-", onClick: ZoomOut), Width - 30, menuBarHeight, 30, 30);
+      //AddChild("ZoomIn", new UIButton("+", onClick: ZoomIn), Width - 30, menuBarHeight + 30, 30, 30);
 
       base.Init();
     }
@@ -53,10 +69,10 @@ namespace FebGame
 
     public override void OnPress(Point mousePos)
     {
-      if (mousePos.Y > Y + menuBarHeight && mousePos.X < X + Width - 30)
+      if (mousePos.Y > Y && mousePos.X < X + Width - 30)
       {
         int swatchX = (mousePos.X - X) / (tileSet.TileWidth * scale);
-        int swatchY = (mousePos.Y - (Y + menuBarHeight)) / (tileSet.TileHeight * scale);
+        int swatchY = (mousePos.Y - Y) / (tileSet.TileHeight * scale);
 
         int id = swatchX + (swatchY * rows);
 
@@ -68,7 +84,10 @@ namespace FebGame
 
     public override void Update(GameTime gameTime)
     {
-      rows = (Width - 30) / (tileSet.TileWidth * scale);
+      if (tileSet != null)
+      {
+        rows = (Width) / (tileSet.TileWidth * scale);
+      }
 
       base.Update(gameTime);
     }
@@ -85,14 +104,21 @@ namespace FebGame
         for (int i = 0; i < tileSet.BrushCount; i++)
         {
           var brush = tileSet.Brushes[i];
+          var color = Color.White;
 
           if (brush.isHidden)
           {
             continue;
           }
 
+          if (hideBaseTiles && brush.brushType == TileBrushType.Tile)
+          {
+            color = Color.Gray;
+            //continue;
+          }
+
           destRect.X = X + i % rows * tileSet.TileWidth * scale;
-          destRect.Y = Y + menuBarHeight + i / rows * tileSet.TileHeight * scale;
+          destRect.Y = Y + i / rows * tileSet.TileHeight * scale;
 
           sourceRect.X = brush.GetFirstFrame() % tileSet.Rows * tileSet.TileWidth;
           sourceRect.Y = brush.GetFirstFrame() / tileSet.Rows * tileSet.TileHeight;
@@ -103,7 +129,7 @@ namespace FebGame
           }
           else
           {
-            sb.Draw(tileSet.Texture, destRect, sourceRect, Color.White);
+            sb.Draw(tileSet.Texture, destRect, sourceRect, color);
           }
         }
       }

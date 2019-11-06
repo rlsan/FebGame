@@ -79,7 +79,7 @@ namespace FebGame
         {
           if (SelectedBrush.HasInputs)
           {
-            for (int i = 0; i < SelectedBrush.Inputs.Length; i++)
+            for (int i = 0; i < SelectedBrush.Inputs.Count; i++)
             {
               var childBrush = SelectedBrush.Inputs[i];
 

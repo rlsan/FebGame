@@ -2,11 +2,19 @@
 {
   public class ColumnBrush : TileBrush
   {
-    public override string Name { get; } = "Column";
+    public override string Name { get; set; } = "Column";
 
-    public ColumnBrush(TileBrush top, TileBrush middle, TileBrush bottom)
+    public ColumnBrush(string name, TileBrush single, TileBrush top, TileBrush middle, TileBrush bottom)
     {
-      Inputs = new TileBrush[3] { top, middle, bottom };
+      Name = name;
+      //Inputs = new TileBrush[3] { top, middle, bottom };
+
+      AddInput(single);
+      AddInput(top);
+      AddInput(middle);
+      AddInput(bottom);
+
+      brushType = TileBrushType.Column;
     }
 
     public override int GetFrame(Tile tile)

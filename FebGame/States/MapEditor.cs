@@ -14,7 +14,7 @@ namespace FebGame.States
 {
   internal class MapEditor : GameState
   {
-    public Editor editor;
+    public EditorState editor;
 
     private UITilePalette tilePalette;
     private UITextBox mapProperties;
@@ -57,11 +57,11 @@ namespace FebGame.States
 
       tileset = new Tileset(tex, 64, 64);
 
-      TileBrush logEnd = tileset.AddBrush(new RandomBrush("LogEnd", tileset.GetBrushFromIndex(11), tileset.GetBrushFromIndex(12)), isHidden: true);
+      //TileBrush logEnd = tileset.AddBrush(new RandomBrush("LogEnd", tileset.GetBrushFromIndex(11), tileset.GetBrushFromIndex(12)), isHidden: true);
 
-      TileBrush logMiddle = tileset.AddBrush(new RandomBrush("LogMiddle", tileset.GetBrushFromIndex(8), tileset.GetBrushFromIndex(9), tileset.GetBrushFromIndex(10)), isHidden: true);
+      //TileBrush logMiddle = tileset.AddBrush(new RandomBrush("LogMiddle", tileset.GetBrushFromIndex(8), tileset.GetBrushFromIndex(9), tileset.GetBrushFromIndex(10)), isHidden: true);
 
-      tileset.AddBrush(new RowBrush("Log", tileset.GetBrushFromIndex(7), logMiddle, logEnd, tileset.GetBrushFromIndex(6)));
+      //tileset.AddBrush(new RowBrush("Log", tileset.GetBrushFromIndex(7), logMiddle, logEnd, tileset.GetBrushFromIndex(6)));
     }
 
     public void ExportTilemap<T>(T path)
@@ -81,7 +81,7 @@ namespace FebGame.States
 
     public void InitGUI()
     {
-      tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 800, 30, 400, 400) as UITilePalette;
+      //tilePalette = canvas.AddElement("TilePalette", new UITilePalette(title: "Palette", isDraggable: true, isCloseable: false), 800, 30, 400, 400) as UITilePalette;
       tilePalette.SetTileSet(tileset);
 
       var saveDialog = canvas.AddElement("FileSave", new UISaveDialog("atm", onSave: ExportTilemap), startInvisible: true);
