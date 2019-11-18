@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-
-using FebEngine;
 using FebGame.States;
+using FebEngine;
 
 namespace FebGame
 {
@@ -10,14 +8,11 @@ namespace FebGame
   {
     protected override void Initialize()
     {
-      stateManager.AddState("Sandbox", new SandboxB());
-      stateManager.AddState("Editor", new EditorState());
-
-      stateManager.LoadState("Sandbox", true);
+      stateManager.AddState("Sandbox", new Sandbox());
+      stateManager.AddState("Editor", new MainEditor());
+      stateManager.LoadState("Sandbox");
 
       IsMouseVisible = true;
-
-      worldManager.bounds = new Rectangle(0, 0, 2000, 2000);
 
       base.Initialize();
     }
@@ -34,8 +29,6 @@ namespace FebGame
 
     protected override void Update(GameTime gameTime)
     {
-      if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
-
       base.Update(gameTime);
     }
 

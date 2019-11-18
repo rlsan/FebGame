@@ -21,9 +21,9 @@ namespace FebEngine
 
       var group = new MapGroup();
 
-      var document = XElement.Load(localPath);
+      var document = XElement.Load(path);
 
-      group.Name = document.Attribute("Name").Value;
+      group.Name = new StringBuilder(document.Attribute("Name").Value);
 
       foreach (var mapElement in document.Elements("Map"))
       {
@@ -39,9 +39,9 @@ namespace FebEngine
     /// <summary>
     /// Exports the map group.
     /// </summary>
-    public static void Export(MapGroup group, string path)
+    public static string Export(MapGroup group)
     {
-      var root = new XElement("Group",
+      XElement root = new XElement("Group",
         new XAttribute("Name", group.Name)
         );
 
@@ -59,9 +59,11 @@ namespace FebEngine
         root.Add(mapElement);
       }
 
-      root.Save(group.Name + ".amg");
+      //root.Save(group.Name + ".amg");
 
       Console.WriteLine("Saved group to " + Directory.GetCurrentDirectory() + "\\" + group.Name + ".amg");
+
+      return root.ToString();
     }
   }
 }

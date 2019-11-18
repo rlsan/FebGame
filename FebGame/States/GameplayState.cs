@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using FebEngine;
 using FebGame.Entities;
 using FebEngine.Entities;
-using FebEngine.Utility;
 
 namespace FebGame.States
 {

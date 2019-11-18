@@ -2,11 +2,11 @@
 {
   public class ColumnBrush : TileBrush
   {
-    public override string Name { get; set; } = "Column";
+    //public override string Name { get; set; } = "Column";
 
     public ColumnBrush(string name, TileBrush single, TileBrush top, TileBrush middle, TileBrush bottom)
     {
-      Name = name;
+      //Name = name;
       //Inputs = new TileBrush[3] { top, middle, bottom };
 
       AddInput(single);

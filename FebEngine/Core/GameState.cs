@@ -1,4 +1,4 @@
-﻿using FebEngine.UI;
+﻿using FebEngine.GUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +16,8 @@ namespace FebEngine
     public bool isLocked;
 
     public WorldManager world;
-    public UICanvas canvas;
+    public Camera Camera { get { return world.camera; } }
+    public GUICanvas canvas;
     public Game game;
 
     public Factory Create { get; set; }
@@ -44,8 +45,9 @@ namespace FebEngine
     {
       IsLoaded = true;
 
-      canvas = new UICanvas(0, 0);
-      canvas.ThemeTexture = content.Load<Texture2D>("theme");
+      canvas = new GUICanvas(1920, 1080);
+      canvas.Font = content.Load<SpriteFont>("ui");
+      canvas.Theme = content.Load<Texture2D>("theme");
 
       Console.WriteLine("Loaded state: {0}", name);
     }
@@ -53,6 +55,10 @@ namespace FebEngine
     public virtual void Unload(ContentManager content)
     {
       IsLoaded = false;
+
+      canvas.Clear();
+      //canvas = null;
+      canvas = new GUICanvas(0, 0);
 
       Console.WriteLine("Unloaded state: {0}", name);
     }

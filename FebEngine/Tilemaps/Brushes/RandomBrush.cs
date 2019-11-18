@@ -4,22 +4,22 @@ namespace FebEngine.Tiles
 {
   public class RandomBrush : TileBrush
   {
-    public override string Name { get; set; } = "Random";
+    //public override string Name { get; set; } = "Random";
 
     public float[] probabilityValues;
 
     public RandomBrush(string name, params TileBrush[] inputs)
     {
-      Name = name;
+      //Name = name;
 
       Inputs = inputs.ToList();
 
       brushType = TileBrushType.Random;
     }
 
-    public override int GetFirstFrame()
+    public override int GetPreviewFrame()
     {
-      if (HasInputs) return Inputs[0].GetFirstFrame();
+      if (HasInputs) return Inputs[0].GetPreviewFrame();
 
       return 0;
     }

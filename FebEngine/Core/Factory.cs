@@ -1,5 +1,5 @@
 ﻿using FebEngine.Entities;
-using FebEngine.UI;
+using FebEngine.GUI;
 using FebEngine.Tiles;
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ namespace FebEngine
     public Entity Entity(Entity entityToAdd, string name)
     {
       var entity = entityToAdd;
-      entity.Name = name;
+      entity.Name = new StringBuilder(name);
       entity.world = World;
 
       World.entities.Add(entity as Entity, State);
@@ -38,7 +38,18 @@ namespace FebEngine
     public Sprite Sprite(string name, string textureName = "missing")
     {
       var entity = new Sprite(Content.Load<Texture2D>(textureName));
-      entity.Name = name;
+      entity.Name = new StringBuilder(name);
+      entity.world = World;
+
+      World.entities.Add(entity as Entity, State);
+
+      return entity;
+    }
+
+    public ParticleEmitter Emitter(string name, int capacity = 1000, bool startEmitting = true, EmitterShape emitterShape = EmitterShape.Circle)
+    {
+      var entity = new ParticleEmitter(capacity, startEmitting, emitterShape);
+      entity.Name = new StringBuilder(name);
       entity.world = World;
 
       World.entities.Add(entity as Entity, State);
@@ -49,7 +60,7 @@ namespace FebEngine
     public MapGroup MapGroup(string name)
     {
       var entity = new MapGroup();
-      entity.Name = name;
+      entity.Name = new StringBuilder(name);
       entity.world = World;
 
       World.entities.Add(entity as Entity, State);
@@ -60,7 +71,7 @@ namespace FebEngine
     public Camera Camera(string name)
     {
       var entity = new Camera();
-      entity.Name = name;
+      entity.Name = new StringBuilder(name);
       entity.world = World;
 
       World.entities.Add(entity as Entity, State);
@@ -68,10 +79,10 @@ namespace FebEngine
       return entity;
     }
 
-    public UICanvas Canvas(string name)
+    public GUICanvas Canvas(string name)
     {
-      var entity = new UICanvas(100, 100);
-      entity.Name = name;
+      var entity = new GUICanvas(100, 100);
+      entity.Name = new StringBuilder(name);
       entity.world = World;
 
       World.entities.Add(entity as Entity, State);

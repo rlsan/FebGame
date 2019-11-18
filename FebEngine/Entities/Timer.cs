@@ -15,13 +15,13 @@ namespace FebEngine.Entities
     public bool isFinished;
     public bool isRunning;
 
-    private Delegate callback;
+    private Delegate onFinish;
 
-    public void Start(float duration, Action callback)
+    public void Start(float duration, Action onFinish)
     {
       time = duration;
       this.duration = duration;
-      this.callback = callback;
+      this.onFinish = onFinish;
 
       isFinished = false;
       isRunning = true;
@@ -29,18 +29,12 @@ namespace FebEngine.Entities
 
     public void Stop()
     {
-      if (!isFinished)
-      {
-        isRunning = false;
-      }
+      if (!isFinished) isRunning = false;
     }
 
     public void Resume()
     {
-      if (!isFinished)
-      {
-        isRunning = true;
-      }
+      if (!isFinished) isRunning = true;
     }
 
     public void Reset()
@@ -61,9 +55,9 @@ namespace FebEngine.Entities
     {
       if (isRunning)
       {
-        var delta = (float)gt.ElapsedGameTime.TotalSeconds;
+        //var delta = (float)gt.ElapsedGameTime.TotalSeconds;
 
-        time -= delta;
+        time -= Time.DeltaTime;
 
         if (time <= 0)
         {
@@ -72,13 +66,9 @@ namespace FebEngine.Entities
 
           time = 0;
 
-          callback.DynamicInvoke();
+          onFinish.DynamicInvoke();
         }
       }
-    }
-
-    public override void Draw(SpriteBatch sb, GameTime gt)
-    {
     }
   }
 }

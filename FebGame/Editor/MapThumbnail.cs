@@ -1,6 +1,5 @@
 ﻿using FebEngine;
 using FebEngine.Tiles;
-using FebEngine.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

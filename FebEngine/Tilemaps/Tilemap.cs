@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace FebEngine.Tiles
@@ -7,6 +8,8 @@ namespace FebEngine.Tiles
   public class Tilemap : Entity
   {
     public Tileset Tileset { get; set; }
+
+    public ObjectLayer ObjectLayer { get; }
 
     public List<TilemapLayer> Layers { get; } = new List<TilemapLayer>();
 
@@ -45,6 +48,14 @@ namespace FebEngine.Tiles
       get { return new Rectangle(X, Y, Width, Height); }
     }
 
+    public void ClearLayers()
+    {
+      foreach (var layer in Layers)
+      {
+        layer.Clear();
+      }
+    }
+
     public Dictionary<WarpDirection, string> ConnectedMaps { get; set; } = new Dictionary<WarpDirection, string>();
 
     /// <summary>
@@ -58,6 +69,8 @@ namespace FebEngine.Tiles
 
       TileWidth = tileWidth;
       TileHeight = tileHeight;
+
+      ObjectLayer = new ObjectLayer();
 
       sideWarps = new List<SideWarp>();
     }
@@ -150,10 +163,10 @@ namespace FebEngine.Tiles
           var tile = layer.GetTile(tileX, tileY);
 
           // Tiles with ID -1 and less are ignored.
-          //if (tile.Brush == null)
-          //{
-          //  continue;
-          //}
+          if (tile == -1)
+          {
+            continue;
+          }
 
           // Gets the destination rectangle by the tile's raw position,
           // multiplying and offsetting it by the map's bounds and the layer's offset.
@@ -165,8 +178,14 @@ namespace FebEngine.Tiles
 
           // Uses the index to locate the correct region of the tileset's texture.
 
+          var tileyes = new Tile(layer, tileX, tileY);
+
+          var foo = Tileset.GetBrushFromIndex(tile);
+          //int frame = foo.GetFirstFrame();
+          int frame = foo.GetFrame(tileyes);
+
           int frameId = tile;
-          Vector2 tilesetPosition = Tileset.GetTilePositionFromIndex(frameId);
+          Vector2 tilesetPosition = Tileset.GetTilePositionFromIndex(frame);
 
           // Divides the position into separate X and Y components, and multiply them by the tileset's grid unit width and height.
           int tilesetX = (int)tilesetPosition.X * Tileset.TileWidth;
@@ -192,6 +211,10 @@ namespace FebEngine.Tiles
     public enum WarpDirection
     {
       Up, Left, Right, Down, Free
+    }
+
+    public struct MapMusic
+    {
     }
   }
 }

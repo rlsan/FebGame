@@ -2,19 +2,30 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using FebEngine.Utility;
 using Microsoft.Xna.Framework.Content;
+using TexturePackerLoader;
 
 namespace FebEngine
 {
   public class RenderManager : Manager
   {
-    public static RenderManager instance;
+    public static RenderManager Instance { get; private set; }
 
     public ContentManager Content
     {
       get { return Game.Content; }
       set { Game.Content = value; }
+    }
+
+    public GraphicsDeviceManager Graphics
+    {
+      get { return Game.Graphics; }
+      set { Game.Graphics = value; }
+    }
+
+    public GraphicsDevice GraphicsDevice
+    {
+      get { return Game.GraphicsDevice; }
     }
 
     public SpriteBatch SpriteBatch { get; private set; }
@@ -32,29 +43,18 @@ namespace FebEngine
 
     private RenderTarget2D ViewRenderTarget;
 
-    public GraphicsDeviceManager Graphics
-    {
-      get { return Game.Graphics; }
-      set { Game.Graphics = value; }
-    }
-
-    public GraphicsDevice GraphicsDevice
-    {
-      get { return Game.GraphicsDevice; }
-    }
-
     public RenderManager(MainGame game) : base(game)
     {
+      if (Instance == null)
+      {
+        Instance = this;
+      }
+
       base.Initialize();
     }
 
     public override void Initialize()
     {
-      if (instance == null)
-      {
-        instance = this;
-      }
-
       SpriteBatch = new SpriteBatch(GraphicsDevice);
 
       ViewRenderTarget = new RenderTarget2D(
@@ -109,7 +109,7 @@ namespace FebEngine
 
       GraphicsDevice.SetRenderTarget(ViewRenderTarget);
 
-      GraphicsDevice.Clear(Color.Black);
+      GraphicsDevice.Clear(new Color(0, 0, 0));
 
       foreach (var state in Game.stateManager.states.Values)
       {
@@ -122,9 +122,12 @@ namespace FebEngine
           foreach (KeyValuePair<Entity, GameState> entity in Game.worldManager.entities)
           {
             // Draw if the entity's state matches the state being iterated on.
-            if (entity.Value == state && entity.Key.FollowCamera == true)
+            if (entity.Value == state)
             {
-              entity.Key.Draw(SpriteBatch, gameTime);
+              if (entity.Key.IsVisible)
+              {
+                entity.Key.Draw(SpriteBatch, gameTime);
+              }
             }
           }
 
@@ -152,6 +155,7 @@ namespace FebEngine
       SpriteBatch.End();
 
       GraphicsDevice.SetRenderTarget(null);
+
       // Draw rendertarget.
 
       SpriteBatch.Begin();

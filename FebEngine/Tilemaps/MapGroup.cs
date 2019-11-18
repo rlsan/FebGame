@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
@@ -35,7 +34,7 @@ namespace FebEngine.Tiles
     {
       foreach (var map in Tilemaps)
       {
-        if (map.Name == name)
+        if (map.Name.ToString() == name)
         {
           CurrentMap = map;
 

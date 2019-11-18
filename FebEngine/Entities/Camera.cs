@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine.Entities
+namespace FebEngine
 {
   public class Camera : Entity
   {
@@ -15,16 +15,26 @@ namespace FebEngine.Entities
       Transform = new Matrix();
     }
 
-    public Vector2 ScreenToWorldTransform(Vector2 vector)
+    public Vector2 ToWorld(Vector2 vector)
     {
       var matrix = Matrix.Invert(Transform);
       return Vector2.Transform(vector, matrix);
     }
 
-    public Vector2 WorldToScreenTransform(Vector2 vector)
+    public Vector2 ToWorld(Point point)
+    {
+      return ToWorld(point.ToVector2());
+    }
+
+    public Vector2 ToScreen(Vector2 vector)
     {
       var matrix = Transform;
       return Vector2.Transform(vector, Transform);
+    }
+
+    public Vector2 ToScreen(Point point)
+    {
+      return ToScreen(point.ToVector2());
     }
 
     private void UpdateVisibleArea()

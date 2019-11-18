@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace FebEngine.Tiles
 {
   public static class MapIO
   {
-    public static ContentManager content;
-
     public static Tilemap Import(XElement map)
     {
-      // Load the document at the path.
-      //var document = XDocument.Load(path);
-
       // Retrieve its root element.
       var root = map;
 
@@ -28,7 +21,7 @@ namespace FebEngine.Tiles
         int.Parse(root.Attribute("TileHeight").Value)
         );
 
-      tilemap.Name = root.Attribute("Name").Value;
+      tilemap.Name = new StringBuilder(root.Attribute("Name").Value);
       tilemap.X = int.Parse(root.Attribute("X").Value);
       tilemap.Y = int.Parse(root.Attribute("Y").Value);
 
@@ -42,6 +35,18 @@ namespace FebEngine.Tiles
           (WarpDirection)Enum.Parse(typeof(WarpDirection), warpElement.Attribute("Dir").Value)
           );
         tilemap.sideWarps.Add(w);
+      }
+
+      // Iterate through each object of the object list.
+      foreach (var objectElement in root.Element("Objects").Elements("Object"))
+      {
+        var x = float.Parse(objectElement.Attribute("X").Value);
+        var y = float.Parse(objectElement.Attribute("Y").Value);
+        var id = int.Parse(objectElement.Attribute("ID").Value);
+
+        var position = new Vector2(x, y);
+
+        tilemap.ObjectLayer.Add(position, id);
       }
 
       // Iterate through each layer of the document.
@@ -91,6 +96,19 @@ namespace FebEngine.Tiles
 
       root.Add(warpElement);
 
+      var objectsElement = new XElement("Objects");
+
+      foreach (var gameObject in tilemapToExport.ObjectLayer.Objects)
+      {
+        objectsElement.Add(new XElement("Object",
+          new XAttribute("ID", gameObject.id),
+          new XAttribute("X", gameObject.position.X),
+          new XAttribute("Y", gameObject.position.Y)
+          ));
+      }
+
+      root.Add(objectsElement);
+
       // Iterate through each layer of the map.
       foreach (var layer in tilemapToExport.Layers)
       {
@@ -106,9 +124,6 @@ namespace FebEngine.Tiles
         // Add the layer element to the root.
         root.Add(layerElement);
       }
-
-      // Save the file to the given path.
-      //root.Save(tilemapToExport.Name + ".atm");
 
       return root;
     }

@@ -10,11 +10,11 @@ namespace FebEngine
     public Manager(MainGame game)
     {
       Game = game;
+      Game.AddManager(this);
     }
 
     public virtual void Initialize()
     {
-      Game.AddManager(this);
     }
 
     public virtual void LoadContent(ContentManager content)

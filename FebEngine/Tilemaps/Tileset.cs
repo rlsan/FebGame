@@ -30,11 +30,6 @@ namespace FebEngine.Tiles
       Columns = Texture.Height / tileHeight;
 
       Brushes = new List<TileBrush>();
-
-      for (int i = 0; i < Rows * Columns; i++)
-      {
-        //AddBrush(new TileBrush("Tile" + i, i));
-      }
     }
 
     public Vector2 GetTilePositionFromIndex(int index)
@@ -59,7 +54,7 @@ namespace FebEngine.Tiles
     {
       foreach (var brush in Brushes)
       {
-        if (brush.Name == name) return brush;
+        if (brush.Name.ToString() == name) return brush;
       }
 
       return Brushes[BrushCount - 1];
@@ -68,7 +63,7 @@ namespace FebEngine.Tiles
     public TileBrush AddBrush(TileBrush brush, string name = null, bool isHidden = false)
     {
       brush.tileset = this;
-      //brush.id = Brushes.Count;
+      brush.id = Brushes.Count;
       brush.isHidden = isHidden;
 
       Brushes.Add(brush);

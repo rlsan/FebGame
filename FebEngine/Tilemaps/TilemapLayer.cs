@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using FebEngine.Utility;
 
 namespace FebEngine.Tiles
 {
@@ -92,9 +91,25 @@ namespace FebEngine.Tiles
         return;
       }
 
-      var tile = Tiles.Get(x, y);
-      tile = -1;
-      //tile.Reset();
+      //var tile = Tiles.Get(x, y);
+      Tiles.Place(x, y, -1);
+      //tile = -1;
+    }
+
+    public void EraseTile(Vector2 position)
+    {
+      int x = (int)(position.X / Tilemap.TileWidth);
+      int y = (int)(position.Y / Tilemap.TileHeight);
+
+      // Check if the position is outside the bounds of the map.
+      if (x > Tilemap.Width - 1 || x < 0 || y > Tilemap.Height - 1 || y < 0)
+      {
+        return;
+      }
+
+      Tiles.Place(x, y, -1);
+      //var tile = Tiles.Get(x, y);
+      //tile = -1;
     }
 
     public void Clear()

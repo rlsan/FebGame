@@ -1,10 +1,9 @@
-﻿using FebEngine.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 
 namespace FebEngine.Tiles
 {
-  public struct Tile
+  public class Tile
   {
     /// <summary>
     /// The layer this tile belongs to.
@@ -28,17 +27,18 @@ namespace FebEngine.Tiles
 
     public int Hash { get; set; }
 
-    public Tile(TilemapLayer layer, int id = -1)
+    public Tile(TilemapLayer layer, int x, int y, int id = -1)
     {
       Layer = layer;
-      X = 0;
-      Y = 0;
+      X = x;
+      Y = y;
 
       Id = id;
 
       tint = Color.White;
 
-      Hash = RNG.RandInt();
+      RefreshHash();
+      //Hash = RNG.RandInt();
     }
 
     public void SetBrush(TileBrush brush)
@@ -62,7 +62,7 @@ namespace FebEngine.Tiles
 
     public void RefreshHash()
     {
-      Hash = RNG.RandInt();
+      Hash = RNG.RandInt(X + Y);
     }
 
     public override string ToString()

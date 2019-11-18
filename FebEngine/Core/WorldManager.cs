@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FebEngine.Physics;
 using FebEngine.Entities;
-using FebEngine.UI;
+using FebEngine.GUI;
 
 namespace FebEngine
 {
@@ -21,18 +21,17 @@ namespace FebEngine
     public Rectangle bounds;
 
     public Camera camera;
-    public UICanvas canvas;
+    public GUICanvas canvas;
 
     public WorldManager(MainGame game) : base(game)
     {
-      physics = new PhysicsHandler(this);
-      camera = new Camera();
-
       base.Initialize();
     }
 
     public override void Initialize()
     {
+      physics = new PhysicsHandler(this);
+      camera = new Camera();
     }
 
     public override void UnloadContent()
@@ -46,6 +45,10 @@ namespace FebEngine
 
     public override void Update(GameTime gameTime)
     {
+      //Time.Update(gameTime);
+
+      var activeObjects = new StringBuilder();
+
       foreach (var state in Game.stateManager.states.Values)
       {
         if (state.IsActive)
@@ -56,6 +59,8 @@ namespace FebEngine
             if (entity.Value == state)
             {
               entity.Key.Update(gameTime);
+
+              activeObjects.AppendLine(entity.Key.ToString() + " - " + entity.Value.name);
             }
           }
 
@@ -64,6 +69,9 @@ namespace FebEngine
           state.canvas.Update(gameTime);
         }
       }
+
+      //Console.Clear();
+      //Console.WriteLine(activeObjects);
 
       camera.Update(Game.GraphicsDevice.Viewport);
       physics.Update(gameTime);

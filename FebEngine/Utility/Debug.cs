@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.Utility
+namespace FebEngine
 {
   internal class Line
   {

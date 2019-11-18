@@ -73,7 +73,7 @@ namespace FebGame
         start = (start - thumbnail.Y) / thumbnail.gridSize;
         end = (end - thumbnail.Y) / thumbnail.gridSize;
 
-        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name, start, end, direction));
+        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name.ToString(), start, end, direction));
       }
       else
       {
@@ -84,7 +84,7 @@ namespace FebGame
         start = (start - thumbnail.X) / thumbnail.gridSize;
         end = (end - thumbnail.X) / thumbnail.gridSize;
 
-        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name, start, end, direction));
+        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name.ToString(), start, end, direction));
       }
     }
   }

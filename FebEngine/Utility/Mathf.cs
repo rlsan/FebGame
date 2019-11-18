@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.Utility
+namespace FebEngine
 {
   public static class Mathf
   {
@@ -25,6 +25,11 @@ namespace FebEngine.Utility
     public static bool ApproxVec(Vector2 a, Vector2 b, float e)
     {
       return Math.Abs(a.X - b.X) <= e && Math.Abs(a.Y - b.Y) <= e;
+    }
+
+    public static float lerp(float a, float b, float f)
+    {
+      return (a * (1f - f)) + (b * f);
     }
 
     public static int RoundToGrid(float input, int gridSize, float offset = 0)
