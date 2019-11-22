@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.Physics
+namespace FebEngine
 {
   public class QuadTree
   {
@@ -40,6 +40,7 @@ namespace FebEngine.Physics
       if (bodies.Count < capacity)
       {
         bodies.Add(body);
+        //body.Parent.Tint = Color.Green;
         return true;
       }
       if (!isDivided)
@@ -47,7 +48,11 @@ namespace FebEngine.Physics
         Subdivide();
       }
 
-      if (nw.Insert(body) || ne.Insert(body) || sw.Insert(body) || se.Insert(body)) return true;
+      if (nw.Insert(body) || ne.Insert(body) || sw.Insert(body) || se.Insert(body))
+      {
+        //body.Parent.Tint = Color.Green;
+        return true;
+      }
 
       return false;
     }
@@ -91,7 +96,10 @@ namespace FebEngine.Physics
         {
           if (range.Contains(body.Parent.Position))
           {
-            foundBodies.Add(body);
+            if (body.enabled && body.Parent.isAlive)
+            {
+              foundBodies.Add(body);
+            }
           }
         }
 
@@ -107,16 +115,31 @@ namespace FebEngine.Physics
       }
     }
 
+    public void Reset()
+    {
+      bodies.Clear();
+
+      nw = null;
+      ne = null;
+      sw = null;
+      se = null;
+
+      isDivided = false;
+    }
+
     public void Draw()
     {
-      Debug.DrawRect(bounds);
-
       if (isDivided)
       {
         nw.Draw();
         ne.Draw();
         sw.Draw();
         se.Draw();
+      }
+      else
+      {
+        Debug.DrawRect(bounds);
+        Debug.Text(bodies.Count + "/" + capacity, bounds.Location);
       }
     }
   }

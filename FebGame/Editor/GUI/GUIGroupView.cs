@@ -1,8 +1,8 @@
-﻿using FebEngine.Tiles;
-using FebEngine.GUI;
+﻿using FebEngine.GUI;
 using FebGame.States;
 using Microsoft.Xna.Framework;
 using System;
+using FebEngine;
 
 namespace FebGame.Editor
 {
@@ -114,7 +114,7 @@ namespace FebGame.Editor
         base.Update(gameTime);
 
         text.SetMessage(
-          "Name: " + mapGroup.Name,
+          "Name: " + mapGroup.name,
           "Maps: " + mapGroup.Tilemaps.Count
           );
       }
@@ -138,7 +138,7 @@ namespace FebGame.Editor
         if (thumbnail != null)
         {
           text.SetMessage(
-            "Name: " + thumbnail.tilemap.Name
+            "Name: " + thumbnail.tilemap.name
             );
         }
         else

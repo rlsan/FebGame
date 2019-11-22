@@ -10,6 +10,9 @@ namespace FebEngine
     public Rectangle Bounds { get; protected set; }
     public Rectangle VisibleArea { get; protected set; }
 
+    private float shakeAmount;
+    private float shakeTimer;
+
     public Camera()
     {
       Transform = new Matrix();
@@ -35,6 +38,12 @@ namespace FebEngine
     public Vector2 ToScreen(Point point)
     {
       return ToScreen(point.ToVector2());
+    }
+
+    public void Shake(float intensity, float duration = 0.5f)
+    {
+      shakeTimer = duration;
+      shakeAmount = intensity;
     }
 
     private void UpdateVisibleArea()
@@ -65,6 +74,13 @@ namespace FebEngine
 
     public void Update(Viewport viewport)
     {
+      shakeTimer -= Time.DeltaTime;
+
+      if (shakeTimer > 0)
+      {
+        Position += RNG.PointInsideUnitCircle() * shakeAmount * shakeTimer;
+      }
+
       Bounds = viewport.Bounds;
       UpdateMatrix();
 

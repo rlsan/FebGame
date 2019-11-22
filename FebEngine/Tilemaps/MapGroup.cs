@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using TexturePackerLoader;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public class MapGroup : Entity
   {
@@ -34,7 +35,7 @@ namespace FebEngine.Tiles
     {
       foreach (var map in Tilemaps)
       {
-        if (map.Name.ToString() == name)
+        if (map.name.ToString() == name)
         {
           CurrentMap = map;
 
@@ -54,11 +55,11 @@ namespace FebEngine.Tiles
       CurrentMap = Tilemaps[id];
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       if (CurrentMap != null)
       {
-        CurrentMap.Draw(spriteBatch, gameTime);
+        CurrentMap.Draw(renderer, gameTime);
       }
     }
   }

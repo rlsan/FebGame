@@ -73,6 +73,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Content\Defs.cs" />
     <Compile Include="Editor\MapCompiler.cs" />
     <Compile Include="Editor\MapThumbnail.cs" />
     <Compile Include="Editor\GUI\GUIMapView.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="Entities\DummyA.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="helix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="States\EditorStates\MainEditor.cs" />
@@ -98,6 +98,9 @@
     <Compile Include="States\Sandbox.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ChaiFoxes.FMODAudio.Desktop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChaiFoxes.FMODAudio.Desktop.1.0.3\lib\net45\ChaiFoxes.FMODAudio.Desktop.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -152,6 +155,7 @@
     </None>
     <None Include="app.manifest" />
     <None Include="FebGame_TemporaryKey.pfx" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FebEngine\FebEngine.csproj">
@@ -173,11 +177,11 @@
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\helix\helix.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="x64\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\helix\helix.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="x86\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

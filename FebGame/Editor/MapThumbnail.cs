@@ -134,7 +134,7 @@ namespace FebGame
       tilemap.Height = Bounds.Height / gridSize;
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       Color color = Color.LimeGreen;
       Color warpColor = Color.DarkGreen;
@@ -153,26 +153,26 @@ namespace FebGame
 
         if (tile != -1)
         {
-          spriteBatch.Draw(texture, new Rectangle(X + tileX * gridSize, Y + tileY * gridSize, gridSize, gridSize), new Rectangle(2, 2, 16, 16), Color.Gray);
+          renderer.SpriteBatch.Draw(texture, new Rectangle(X + tileX * gridSize, Y + tileY * gridSize, gridSize, gridSize), new Rectangle(2, 2, 16, 16), Color.Gray);
         }
 
         i++;
       }
 
       //top
-      spriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
+      renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Top - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
 
       //left
-      spriteBatch.Draw(texture, new Rectangle(Bounds.Left - offset, Bounds.Top, 20, Bounds.Height), new Rectangle(0, 30, 20, 40), color);
+      renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left - offset, Bounds.Top, 20, Bounds.Height), new Rectangle(0, 30, 20, 40), color);
 
       //right
-      spriteBatch.Draw(texture, new Rectangle(Bounds.Right - offset, Bounds.Top, 20, Bounds.Height), new Rectangle(0, 30, 20, 40), color);
+      renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Right - offset, Bounds.Top, 20, Bounds.Height), new Rectangle(0, 30, 20, 40), color);
 
       //bottom
-      spriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Bottom - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
+      renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left, Bounds.Bottom - offset, Bounds.Width, 20), new Rectangle(30, 0, 40, 20), color);
 
       //name
-      spriteBatch.DrawString(font, tilemap.Name + ": " + Bounds.Width / gridSize + ", " + Bounds.Height / gridSize, topLeft.ToVector2() + Vector2.One * nameOffset, Color.White);
+      renderer.SpriteBatch.DrawString(font, tilemap.name + ": " + Bounds.Width / gridSize + ", " + Bounds.Height / gridSize, topLeft.ToVector2() + Vector2.One * nameOffset, Color.White);
 
       foreach (var warp in tilemap.sideWarps)
       {
@@ -183,19 +183,19 @@ namespace FebGame
 
         if (warp.Direction == WarpDirection.Left)
         {
-          spriteBatch.Draw(texture, new Rectangle(Bounds.Left - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+          renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
         }
         else if (warp.Direction == WarpDirection.Right)
         {
-          spriteBatch.Draw(texture, new Rectangle(Bounds.Right - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
+          renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Right - offset, Bounds.Top + rangeMin, 20, size), new Rectangle(0, 30, 20, 40), warpColor);
         }
         if (warp.Direction == WarpDirection.Up)
         {
-          spriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Top - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+          renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Top - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
         }
         else if (warp.Direction == WarpDirection.Down)
         {
-          spriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Bottom - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
+          renderer.SpriteBatch.Draw(texture, new Rectangle(Bounds.Left + rangeMin, Bounds.Bottom - offset, size, 20), new Rectangle(30, 0, 40, 20), warpColor);
         }
       }
 

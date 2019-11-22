@@ -14,7 +14,7 @@ namespace FebEngine
 
     private Texture2D texture;
     private string layout;
-    private string message;
+    public string message;
 
     private int charWidth;
     private int charHeight;

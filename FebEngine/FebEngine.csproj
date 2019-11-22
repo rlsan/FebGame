@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChaiFoxes.FMODAudio.Desktop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChaiFoxes.FMODAudio.Desktop.1.0.3\lib\net45\ChaiFoxes.FMODAudio.Desktop.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,12 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animator.cs" />
+    <Compile Include="Core\AudioHandler.cs" />
     <Compile Include="Core\Factory.cs" />
-    <Compile Include="Entities\Actor.cs" />
     <Compile Include="Entities\Camera.cs" />
     <Compile Include="Entities\ParticleEmitter.cs" />
     <Compile Include="Entities\Sprite.cs" />
-    <Compile Include="Physics\PhysicsHandler.cs" />
+    <Compile Include="Physics\Physics.cs" />
+    <Compile Include="Physics\Ray.cs" />
+    <Compile Include="Physics\RaycastHit.cs" />
     <Compile Include="TexturePackerLoader\SpriteFrame.cs" />
     <Compile Include="TexturePackerLoader\SpriteRender.cs" />
     <Compile Include="TexturePackerLoader\SpriteSheet.cs" />
@@ -69,12 +75,14 @@
     <Compile Include="GUI\GUITextField.cs" />
     <Compile Include="GUI\GUIWindow.cs" />
     <Compile Include="Utility\Debug.cs" />
-    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\MainGame.cs" />
     <Compile Include="Core\Manager.cs" />
     <Compile Include="Physics\Body.cs" />
     <Compile Include="Physics\QuadTree.cs" />
+    <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\Grid.cs" />
+    <Compile Include="Utility\Line.cs" />
     <Compile Include="Utility\Mathf.cs" />
     <Compile Include="Utility\RNG.cs" />
     <Compile Include="Core\StateManager.cs" />
@@ -86,7 +94,6 @@
     <Compile Include="Tilemaps\MapIO.cs" />
     <Compile Include="Tilemaps\Brushes\RandomBrush.cs" />
     <Compile Include="Tilemaps\Brushes\RowBrush.cs" />
-    <Compile Include="Tilemaps\TileType.cs" />
     <Compile Include="Utility\Time.cs" />
     <Compile Include="Entities\Timer.cs" />
     <Compile Include="GUI\GUIButton.cs" />
@@ -101,6 +108,8 @@
     <Compile Include="GUI\GUIElement.cs" />
     <Compile Include="Core\WorldManager.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

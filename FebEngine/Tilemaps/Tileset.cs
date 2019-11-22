@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using FebEngine.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public class Tileset
   {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TexturePackerLoader;
 
 namespace FebEngine.GUI
 {
@@ -296,13 +297,13 @@ namespace FebEngine.GUI
       elements.Clear();
     }
 
-    public override void Draw(SpriteBatch sb, GameTime gameTime)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       foreach (var element in elements)
       {
         if (element.isVisible)
         {
-          element.Draw(sb);
+          element.Draw(renderer.SpriteBatch);
         }
       }
 

@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public static class MapIO
   {
@@ -21,7 +21,7 @@ namespace FebEngine.Tiles
         int.Parse(root.Attribute("TileHeight").Value)
         );
 
-      tilemap.Name = new StringBuilder(root.Attribute("Name").Value);
+      tilemap.name = new StringBuilder(root.Attribute("Name").Value);
       tilemap.X = int.Parse(root.Attribute("X").Value);
       tilemap.Y = int.Parse(root.Attribute("Y").Value);
 
@@ -38,6 +38,7 @@ namespace FebEngine.Tiles
       }
 
       // Iterate through each object of the object list.
+      /*
       foreach (var objectElement in root.Element("Objects").Elements("Object"))
       {
         var x = float.Parse(objectElement.Attribute("X").Value);
@@ -48,6 +49,7 @@ namespace FebEngine.Tiles
 
         tilemap.ObjectLayer.Add(position, id);
       }
+      */
 
       // Iterate through each layer of the document.
       foreach (var layer in root.Elements("Layer"))
@@ -73,7 +75,7 @@ namespace FebEngine.Tiles
     {
       // Create the root element.
       XElement root = new XElement("Map",
-        new XAttribute("Name", tilemapToExport.Name),
+        new XAttribute("Name", tilemapToExport.name),
         new XAttribute("X", tilemapToExport.X),
         new XAttribute("Y", tilemapToExport.Y),
         new XAttribute("Width", tilemapToExport.Width),

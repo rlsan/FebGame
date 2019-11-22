@@ -38,7 +38,7 @@ namespace FebGame.Editor
       tools.AddElement(new MapEditorInfo(mapEditor), 1, 100, ScalingType.percentage, ScalingType.absolute);
 
       var menu = tools.AddPanel(1, 200, ScalingType.percentage, ScalingType.absolute);
-      a = () => { Canvas.RenamePrompt(ref mapEditor.editor.mapGroup.CurrentMap.Name); };
+      a = () => { Canvas.RenamePrompt(ref mapEditor.editor.mapGroup.CurrentMap.name); };
       menu.AddButton("Rename", a);
       menu.AddButton("Set Tileset...");
       menu.AddButton("Set BG...");
@@ -165,7 +165,7 @@ namespace FebGame.Editor
           }
 
           text.SetMessage(
-            "Name: " + map.Name,
+            "Name: " + map.name,
             "Size: " + map.Width + "x" + map.Height,
             //"Tileset: " + map.Tileset.name,
             //"Music: " + map.Music

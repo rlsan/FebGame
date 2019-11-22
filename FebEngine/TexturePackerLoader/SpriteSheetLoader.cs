@@ -43,9 +43,10 @@
       var imageFile = Path.Combine(contentManager.RootDirectory, imageResource);
       var dataFile = Path.ChangeExtension(imageFile, "txt");
 
-      FileStream fileStream = new FileStream(imageFile, FileMode.Open);
-      var texture = Texture2D.FromStream(graphicsDevice, fileStream);
-      fileStream.Dispose();
+      //FileStream fileStream = new FileStream(imageFile, FileMode.Open);
+      //var texture = Texture2D.FromStream(graphicsDevice, fileStream);
+      var texture = contentManager.Load<Texture2D>(imageResource);
+      //fileStream.Dispose();
 
       var dataFileLines = ReadDataFile(dataFile);
 

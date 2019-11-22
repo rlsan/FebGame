@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using TexturePackerLoader;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public class Tilemap : Entity
   {
@@ -142,7 +143,7 @@ namespace FebEngine.Tiles
       }
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       // Don't draw if there's no tileset.
       if (Tileset == null) return;
@@ -198,7 +199,7 @@ namespace FebEngine.Tiles
             Tileset.TileHeight);
 
           // Draw the tile.
-          spriteBatch.Draw(
+          renderer.SpriteBatch.Draw(
             Tileset.Texture,
             destination,
             source,

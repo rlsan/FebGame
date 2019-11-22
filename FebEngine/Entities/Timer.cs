@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine.Entities
+namespace FebEngine
 {
   public class Timer : Entity
   {
@@ -66,7 +61,10 @@ namespace FebEngine.Entities
 
           time = 0;
 
-          onFinish.DynamicInvoke();
+          if (onFinish != null)
+          {
+            onFinish.DynamicInvoke();
+          }
         }
       }
     }

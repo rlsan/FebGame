@@ -41,6 +41,7 @@ namespace FebEngine
     protected override void Update(GameTime gameTime)
     {
       Time.Update(gameTime);
+      Debug.Clear();
 
       foreach (var manager in Managers) manager.Update(gameTime);
 

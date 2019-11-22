@@ -8,15 +8,11 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using FebEngine;
-using FebGame.Entities;
-using FebEngine.Entities;
 
 namespace FebGame.States
 {
   internal class GameplayState : GameState
   {
-    private Actor player;
-    private Actor thing;
     private Timer timer;
 
     public override void Load(ContentManager content)
@@ -62,32 +58,6 @@ namespace FebGame.States
 
     public override void Update(GameTime gameTime)
     {
-      Debug.Text(timer.ToString(), 1000, 0);
-
-      KeyboardState ks = Keyboard.GetState();
-
-      if (ks.IsKeyDown(Keys.A))
-      {
-        thing.Body.velocity.X += -0.2f;
-      }
-      if (ks.IsKeyDown(Keys.D))
-      {
-        thing.Body.velocity.X += 0.2f;
-      }
-
-      if (ks.IsKeyDown(Keys.W))
-      {
-        if (thing.Body.OnFloor)
-        {
-          thing.Body.velocity.Y = -8f;
-        }
-      }
-
-      if (thing.Position.Y > 800)
-      {
-        thing.Position = Vector2.Zero;
-        thing.Body.Reset();
-      }
     }
 
     public override void Draw(RenderManager renderer, GameTime gameTime)

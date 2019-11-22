@@ -4,13 +4,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FebEngine.Entities;
 
-namespace FebEngine.Physics
+namespace FebEngine
 {
+  public class CollisionArgs : EventArgs
+  {
+    public Sprite Primary { get; set; }
+    public Sprite Other { get; set; }
+  }
+
   public class Body
   {
-    public Rectangle bounds;
+    public delegate void CollisionEventHandler(object sender, CollisionArgs e);
+
+    public event CollisionEventHandler Collision;
+
+    public virtual void OnCollision(CollisionArgs e)
+    {
+      var handler = Collision;
+      handler?.Invoke(this, e);
+    }
+
+    public int xOffset;
+    public int yOffset;
+    public int width;
+    public int height;
+
+    public Rectangle Bounds
+    {
+      get
+      {
+        int scaledXOffset = xOffset * (int)Parent.Scale.X;
+        int scaledYOffset = yOffset * (int)Parent.Scale.Y;
+        int scaledWidth = width * (int)Parent.Scale.X;
+        int scaledHeight = height * (int)Parent.Scale.Y;
+
+        return new Rectangle(
+          scaledXOffset + (int)Parent.Position.X - scaledWidth / 2,
+          scaledYOffset + (int)Parent.Position.Y - scaledHeight / 2,
+          scaledWidth, scaledHeight);
+      }
+    }
+
     public Vector2 velocity;
     public Vector2 maxVelocity = new Vector2(float.PositiveInfinity);
 
@@ -26,13 +61,22 @@ namespace FebEngine.Physics
     public bool collidesUp = true;
     public bool collidesDown = true;
 
-    public Actor Parent { get; }
+    public List<int> collisionLayers = new List<int>();
 
-    public Body(Actor Parent)
+    public Sprite Parent { get; }
+
+    public bool isTrigger = false;
+
+    public Body(Sprite Parent)
     {
       this.Parent = Parent;
 
-      bounds = new Rectangle(0, 0, Parent.Texture.Width, Parent.Texture.Height);
+      xOffset = 0;
+      yOffset = 0;
+      width = Parent.Texture.Width;
+      height = Parent.Texture.Height;
+
+      SetLayers(0);
     }
 
     public bool hasGravity = true;
@@ -42,6 +86,29 @@ namespace FebEngine.Physics
 
     public bool OnFloor { get { return blocked.Down; } }
     public bool OnWall { get { return blocked.Left || blocked.Right; } }
+
+    public void SetBounds(int xOffset, int yOffset, int width, int height)
+    {
+      this.xOffset = xOffset;
+      this.yOffset = yOffset;
+      this.width = width;
+      this.height = height;
+    }
+
+    public void SetLayers(params int[] layers)
+    {
+      collisionLayers.Clear();
+
+      for (int i = 0; i < layers.Length; i++)
+      {
+        collisionLayers.Add(layers[i]);
+      }
+    }
+
+    public void AddToLayer(int layer)
+    {
+      collisionLayers.Add(layer);
+    }
 
     public void Reset()
     {

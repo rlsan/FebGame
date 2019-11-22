@@ -29,6 +29,7 @@ namespace FebEngine
     }
 
     public SpriteBatch SpriteBatch { get; private set; }
+    public SpriteRender SpriteRender { get; private set; }
 
     private Viewport viewport;
 
@@ -56,6 +57,7 @@ namespace FebEngine
     public override void Initialize()
     {
       SpriteBatch = new SpriteBatch(GraphicsDevice);
+      SpriteRender = new SpriteRender(SpriteBatch);
 
       ViewRenderTarget = new RenderTarget2D(
         GraphicsDevice,
@@ -98,13 +100,12 @@ namespace FebEngine
 
     public override void LoadContent(ContentManager content)
     {
-      Debug.fontTexture = content.Load<Texture2D>("debug2");
+      Debug.spriteFont = content.Load<SpriteFont>("ui");
+      //Debug.fontTexture = content.Load<Texture2D>("debug2");
     }
 
     public override void Draw(GameTime gameTime)
     {
-      Debug.Clear();
-
       // Initial layer for sprites and other visual gameplay elements.
 
       GraphicsDevice.SetRenderTarget(ViewRenderTarget);
@@ -126,12 +127,14 @@ namespace FebEngine
             {
               if (entity.Key.IsVisible)
               {
-                entity.Key.Draw(SpriteBatch, gameTime);
+                entity.Key.Draw(this, gameTime);
               }
             }
           }
 
           state.Draw(Game.renderManager, gameTime);
+
+          Debug.Draw(SpriteBatch);
 
           SpriteBatch.End();
 
@@ -141,7 +144,7 @@ namespace FebEngine
 
           if (state.canvas != null)
           {
-            state.canvas.Draw(SpriteBatch, gameTime);
+            state.canvas.Draw(this, gameTime);
           }
 
           SpriteBatch.End();
@@ -150,9 +153,9 @@ namespace FebEngine
 
       // Post debug layer.
 
-      SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-      Debug.Draw(SpriteBatch);
-      SpriteBatch.End();
+      //SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+      //Debug.Draw(SpriteBatch);
+      //SpriteBatch.End();
 
       GraphicsDevice.SetRenderTarget(null);
 

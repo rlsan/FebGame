@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public class TilemapLayer
   {

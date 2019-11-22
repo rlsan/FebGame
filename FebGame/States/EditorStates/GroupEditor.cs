@@ -68,7 +68,7 @@ namespace FebGame.States
       {
         var scaledRect = new Rectangle(map.X * GridSize, map.Y * GridSize, map.Width * GridSize, map.Height * GridSize);
 
-        var m = Create.Entity(new MapThumbnail(scaledRect, map, GridSize), map.Name + "_thumb") as MapThumbnail;
+        var m = Create.Entity(new MapThumbnail(scaledRect, map, GridSize), map.name + "_thumb") as MapThumbnail;
         m.font = font;
         m.texture = rectTexture;
         m.tilemap = map;
@@ -101,7 +101,7 @@ namespace FebGame.States
     internal void SaveGroup()
     {
       string groupFile = GroupIO.Export(editor.mapGroup);
-      canvas.OpenSavePrompt(groupFile, "amg", editor.mapGroup.Name.ToString());
+      canvas.OpenSavePrompt(groupFile, "amg", editor.mapGroup.name.ToString());
     }
 
     internal void LoadGroup(string file)
@@ -116,7 +116,7 @@ namespace FebGame.States
       {
         Compile();
 
-        editor.mapGroup.ChangeMap(selectedThumbnail.tilemap.Name.ToString());
+        editor.mapGroup.ChangeMap(selectedThumbnail.tilemap.name.ToString());
         editor.activeTilemap = selectedThumbnail.tilemap;
 
         editor.ActivateMapEditor();
@@ -140,7 +140,7 @@ namespace FebGame.States
     internal void AddMap(Rectangle area)
     {
       var t = new Tilemap(area.Width / GridSize, area.Height / GridSize, 64, 64);
-      t.Name = new StringBuilder("m" + thumbnails.Count);
+      t.name = new StringBuilder("m" + thumbnails.Count);
 
       t.AddLayer("Background");
       t.AddLayer("Foreground");
@@ -148,7 +148,7 @@ namespace FebGame.States
 
       t.Tileset = editor.tileset;
 
-      var m = Create.Entity(new MapThumbnail(area, t, GridSize), t.Name + "_thumb") as MapThumbnail;
+      var m = Create.Entity(new MapThumbnail(area, t, GridSize), t.name + "_thumb") as MapThumbnail;
       m.font = font;
       m.texture = rectTexture;
       m.tilemap = t;

@@ -1,6 +1,7 @@
 ﻿using FebEngine.Tiles;
 using FebEngine.GUI;
 using Microsoft.Xna.Framework;
+using FebEngine;
 
 namespace FebGame.Editor
 {

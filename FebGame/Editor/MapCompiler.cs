@@ -27,7 +27,7 @@ namespace FebGame
           // Do not test against itself.
           if (other == thumbnail) continue;
           // Names should not be identical.
-          if (other.tilemap.Name == thumbnail.tilemap.Name) return;
+          if (other.tilemap.name == thumbnail.tilemap.name) return;
           // Maps should not intersect each other.
           if (other.Bounds.Intersects(thumbnail.Bounds)) return;
 
@@ -73,7 +73,7 @@ namespace FebGame
         start = (start - thumbnail.Y) / thumbnail.gridSize;
         end = (end - thumbnail.Y) / thumbnail.gridSize;
 
-        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name.ToString(), start, end, direction));
+        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.name.ToString(), start, end, direction));
       }
       else
       {
@@ -84,7 +84,7 @@ namespace FebGame
         start = (start - thumbnail.X) / thumbnail.gridSize;
         end = (end - thumbnail.X) / thumbnail.gridSize;
 
-        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.Name.ToString(), start, end, direction));
+        thumbnail.tilemap.sideWarps.Add(new SideWarp(other.tilemap.name.ToString(), start, end, direction));
       }
     }
   }

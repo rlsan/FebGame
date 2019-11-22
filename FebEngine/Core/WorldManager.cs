@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FebEngine.Physics;
-using FebEngine.Entities;
 using FebEngine.GUI;
 
 namespace FebEngine
@@ -14,14 +12,15 @@ namespace FebEngine
   public class WorldManager : Manager
   {
     public Dictionary<Entity, GameState> entities = new Dictionary<Entity, GameState>();
-    public List<Actor> sprites = new List<Actor>();
 
-    public PhysicsHandler physics;
+    public Physics physics;
 
     public Rectangle bounds;
 
     public Camera camera;
     public GUICanvas canvas;
+
+    public AudioHandler audio;
 
     public WorldManager(MainGame game) : base(game)
     {
@@ -30,7 +29,7 @@ namespace FebEngine
 
     public override void Initialize()
     {
-      physics = new PhysicsHandler(this);
+      physics = new Physics(this);
       camera = new Camera();
     }
 
@@ -74,11 +73,29 @@ namespace FebEngine
       //Console.WriteLine(activeObjects);
 
       camera.Update(Game.GraphicsDevice.Viewport);
-      physics.Update(gameTime);
+      physics.Update();
     }
 
     public override void Draw(GameTime gameTime)
     {
+    }
+
+    /// <summary>
+    /// Returns a list of entities of the type specified.
+    /// </summary>
+    public List<T> GetEntities<T>()
+    {
+      List<T> foundEntities = new List<T>();
+
+      foreach (object ent in entities.Keys)
+      {
+        if (ent is T)
+        {
+          foundEntities.Add((T)ent);
+        }
+      }
+
+      return foundEntities;
     }
   }
 }

@@ -8,59 +8,12 @@ using System.Threading.Tasks;
 
 namespace FebEngine
 {
-  internal class Line
-  {
-    public Vector2 start;
-    public Vector2 end;
-
-    public float Distance
-    {
-      get
-      {
-        float p1 = end.X - start.X;
-        float p2 = end.Y - start.Y;
-        p1 *= p1;
-        p2 *= p2;
-        return (float)Math.Sqrt(p1 + p2);
-      }
-    }
-
-    public float Slope
-    {
-      get
-      {
-        float p1 = end.X - start.X;
-        float p2 = end.Y - start.Y;
-
-        return p2 / p1;
-      }
-    }
-
-    public float Angle
-    {
-      get
-      {
-        float dy = end.Y - start.Y;
-        float dx = end.X - start.X;
-        float theta = (float)Math.Atan2(dy, dx); // range (-PI, PI]
-        //theta *= 180 / (float)Math.PI; // rads to degs, range (-180, 180]
-
-        //if (theta < 0) theta = 360 + theta; // range [0, 360)
-        return theta;
-      }
-    }
-
-    public Line(Vector2 start, Vector2 end)
-    {
-      this.start = start;
-      this.end = end;
-    }
-  }
-
   static public class Debug
   {
     public static Texture2D pixelTexture;
     public static Texture2D fontTexture;
+
+    public static SpriteFont spriteFont;
 
     private static List<Tuple<Rectangle, Color>> Rectangles = new List<Tuple<Rectangle, Color>>();
     private static List<Line> Lines = new List<Line>();
@@ -114,6 +67,16 @@ namespace FebEngine
       Lines.Add(new Line(start, end));
     }
 
+    public static void DrawLine(Line line)
+    {
+      Lines.Add(line);
+    }
+
+    public static void DrawRay(Vector2 origin, Vector2 direction)
+    {
+      Lines.Add(new Line(origin, origin + direction));
+    }
+
     public static void DrawRect(Rectangle rect, Color? color = null)
     {
       Color c = color ?? Color.LimeGreen;
@@ -161,7 +124,8 @@ namespace FebEngine
       }
       foreach (var font in Fonts)
       {
-        font.Draw(spriteBatch);
+        spriteBatch.DrawString(spriteFont, font.message, font.position, Color.White);
+        //font.Draw(spriteBatch);
       }
     }
   }

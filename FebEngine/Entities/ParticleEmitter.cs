@@ -16,10 +16,11 @@ namespace FebEngine
     public Texture2D texture;
 
     public SpriteSheet spriteSheet;
+    public List<SpriteFrame> frames;
 
     // Shape
 
-    public EmitterShape emitterShape;
+    public EmitterShape shape;
     public float radius = 200;
     public float width = 200;
     public float height = 200;
@@ -49,6 +50,8 @@ namespace FebEngine
     public Color endColor = Color.White;
     public float startAlpha = 1f;
     public float endAlpha = 1f;
+
+    public EmitterAnimation animationPlayback = EmitterAnimation.Lifetime;
     public float animationSpeed = 1;
 
     // Flags
@@ -57,12 +60,12 @@ namespace FebEngine
 
     private float emissionTimer;
 
-    public ParticleEmitter(int capacity, bool startEmitting, EmitterShape emitterShape)
+    public ParticleEmitter(int capacity, bool startEmitting, EmitterShape shape)
     {
       Capacity = capacity;
       Particles = new List<Particle>(Capacity);
 
-      this.emitterShape = emitterShape;
+      this.shape = shape;
 
       for (int i = 0; i < Capacity; i++)
       {
@@ -81,10 +84,11 @@ namespace FebEngine
     public void SetTexture(SpriteSheet texture)
     {
       spriteSheet = texture;
+    }
 
-      foreach (var item in spriteSheet.spriteList)
-      {
-      }
+    public void SetFrames(List<SpriteFrame> frames)
+    {
+      this.frames = frames;
     }
 
     public void Start()
@@ -123,8 +127,10 @@ namespace FebEngine
     /// <summary>
     /// Emits a specific amount of particles.
     /// </summary>
-    public void Emit(int amount = 1)
+    public void Emit(int amount = 1, Vector2? origin = null)
     {
+      Vector2 emitFrom = origin ?? Position;
+
       for (int i = 0; i < amount; i++)
       {
         var p = GetFirstDead();
@@ -144,11 +150,11 @@ namespace FebEngine
         p.velocity = Vector2.Lerp(v, RNG.PointInsideUnitCircle() * velocity.Length(), randomAmount);
         p.rotationRate = RNG.Normal() * rotation;
 
-        if (emitterShape == EmitterShape.Circle)
+        if (shape == EmitterShape.Circle)
         {
-          p.position = Position + RNG.PointInsideUnitCircle() * radius;
+          p.position = emitFrom + RNG.PointInsideUnitCircle() * radius;
         }
-        if (emitterShape == EmitterShape.Rectangle)
+        if (shape == EmitterShape.Rectangle)
         {
           p.position = RNG.PointInRectangle(Bounds);
         }
@@ -178,13 +184,13 @@ namespace FebEngine
 
           particle.lifetime -= Time.DeltaTime;
 
-          particle.scale = Mathf.lerp(endScale, startScale, particle.NormalizedLifetime);
+          particle.scale = Mathf.lerp(startScale, endScale, particle.NormalizedLifetime);
           particle.rotation += particle.rotationRate * Time.DeltaTime;
 
           Color start = new Color(startColor, startAlpha);
           Color end = new Color(endColor, endAlpha);
 
-          particle.color = Color.Lerp(end, start, particle.NormalizedLifetime);
+          particle.color = Color.Lerp(start, end, particle.NormalizedLifetime);
 
           if (particle.lifetime <= 0)
           {
@@ -194,20 +200,21 @@ namespace FebEngine
       }
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    public override void Draw(RenderManager renderer, GameTime gameTime)
     {
       int framerate = 30;
-      var spriteRender = new SpriteRender(spriteBatch);
+      //var spriteRender = new SpriteRender(spriteBatch);
 
-      int frames = (int)(Time.CurrentTime * framerate % spriteSheet.spriteList.Count);
+      //int frames = (int)(Time.CurrentTime * framerate % spriteSheet.spriteList.Count);
 
       foreach (var particle in Particles)
       {
         if (particle.isAlive)
         {
-          //int time = (int)(particle.NormalizedLifetime * animationSpeed * (spriteSheet.spriteList.Count - 1)) % spriteSheet.spriteList.Count;
-          //spriteRender.Draw(spriteSheet.spriteList.ElementAt(time).Value, particle.position, particle.color, particle.rotation, particle.scale);
-          spriteBatch.Draw(texture, particle.position, particle.color);
+          int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
+
+          renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
+          //spriteBatch.Draw(texture, particle.position, particle.color);
         }
       }
     }
@@ -225,7 +232,7 @@ namespace FebEngine
 
       public float lifetime;
       public float totalLifetime;
-      public float NormalizedLifetime { get { return lifetime / totalLifetime; } }
+      public float NormalizedLifetime { get { return 1 - lifetime / totalLifetime; } }
 
       public static Particle nullParticle = new Particle();
 
@@ -249,5 +256,10 @@ namespace FebEngine
   public enum EmitterSpace
   {
     World, Local
+  }
+
+  public enum EmitterAnimation
+  {
+    Sequence, Lifetime, Random
   }
 }

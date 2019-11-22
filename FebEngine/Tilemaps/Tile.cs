@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FebEngine.Tiles;
+using Microsoft.Xna.Framework;
 using System;
 
-namespace FebEngine.Tiles
+namespace FebEngine
 {
   public class Tile
   {

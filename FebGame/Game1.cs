@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using FebGame.States;
 using FebEngine;
+using ChaiFoxes.FMODAudio;
 
 namespace FebGame
 {
@@ -8,6 +9,8 @@ namespace FebGame
   {
     protected override void Initialize()
     {
+      AudioMgr.Init("Content");
+
       stateManager.AddState("Sandbox", new Sandbox());
       stateManager.AddState("Editor", new MainEditor());
       stateManager.LoadState("Sandbox");

@@ -1,5 +1,4 @@
 ﻿using FebEngine;
-using FebEngine.Entities;
 using FebEngine.Tiles;
 using FebGame.Editor;
 using Microsoft.Xna.Framework;
