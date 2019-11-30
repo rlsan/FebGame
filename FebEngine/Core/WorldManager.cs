@@ -24,22 +24,30 @@ namespace FebEngine
 
     public WorldManager(MainGame game) : base(game)
     {
+      physics = new Physics(this);
+      camera = new Camera();
       base.Initialize();
     }
 
     public override void Initialize()
     {
-      physics = new Physics(this);
-      camera = new Camera();
     }
 
     public override void UnloadContent()
     {
     }
 
+    public Entity AddEntity(Entity entity, GameState state)
+    {
+      entity.world = this;
+      entities.Add(entity, state);
+      return entity;
+    }
+
     public void RemoveEntity(Entity entity)
     {
       entities.Remove(entity);
+      entity = null;
     }
 
     public override void Update(GameTime gameTime)
@@ -48,7 +56,7 @@ namespace FebEngine
 
       var activeObjects = new StringBuilder();
 
-      foreach (var state in Game.stateManager.states.Values)
+      foreach (var state in Game.stateManager.states.Values.ToList())
       {
         if (state.IsActive)
         {
@@ -57,9 +65,16 @@ namespace FebEngine
             // Update if the entity's state matches the state being iterated on.
             if (entity.Value == state)
             {
-              entity.Key.Update(gameTime);
+              if (!state.IsLoaded)
+              {
+                RemoveEntity(entity.Key);
+              }
+              else
+              {
+                entity.Key.Update(gameTime);
 
-              activeObjects.AppendLine(entity.Key.ToString() + " - " + entity.Value.name);
+                activeObjects.AppendLine(entity.Key.ToString() + " - " + entity.Value.name);
+              }
             }
           }
 

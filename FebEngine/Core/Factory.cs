@@ -36,7 +36,8 @@ namespace FebEngine
 
     public Sprite Sprite(string name, string path)
     {
-      var entity = new Sprite(Content.Load<Texture2D>("missing"));
+      var entity = new Sprite();
+      //entity.Texture
       entity.name = new StringBuilder(name);
       entity.world = World;
 

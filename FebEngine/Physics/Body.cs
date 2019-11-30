@@ -15,16 +15,6 @@ namespace FebEngine
 
   public class Body
   {
-    public delegate void CollisionEventHandler(object sender, CollisionArgs e);
-
-    public event CollisionEventHandler Collision;
-
-    public virtual void OnCollision(CollisionArgs e)
-    {
-      var handler = Collision;
-      handler?.Invoke(this, e);
-    }
-
     public int xOffset;
     public int yOffset;
     public int width;
@@ -73,8 +63,8 @@ namespace FebEngine
 
       xOffset = 0;
       yOffset = 0;
-      width = Parent.Texture.Width;
-      height = Parent.Texture.Height;
+      width = Parent.Bounds.Width;
+      height = Parent.Bounds.Height;
 
       SetLayers(0);
     }

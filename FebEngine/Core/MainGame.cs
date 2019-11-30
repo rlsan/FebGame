@@ -9,8 +9,11 @@ namespace FebEngine
     public List<Manager> Managers;
 
     public RenderManager renderManager;
+    public InputManager inputManager;
     public StateManager stateManager;
     public WorldManager worldManager;
+
+    public Config config;
 
     public MainGame()
     {
@@ -20,8 +23,11 @@ namespace FebEngine
       Managers = new List<Manager>();
 
       renderManager = new RenderManager(this);
-      stateManager = new StateManager(this);
+      inputManager = new InputManager(this);
       worldManager = new WorldManager(this);
+      stateManager = new StateManager(this);
+
+      config = new Config(this);
     }
 
     protected override void Initialize()

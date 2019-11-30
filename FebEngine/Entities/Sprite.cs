@@ -6,6 +6,14 @@ namespace FebEngine
 {
   public class Sprite : Entity
   {
+    public delegate void CollisionEventHandler(object sender, CollisionArgs e);
+
+    public event CollisionEventHandler Collision;
+
+    public event CollisionEventHandler TriggerEnter;
+
+    public event CollisionEventHandler TriggerStay;
+
     public Texture2D Texture { get; set; }
     public Color Tint { get; set; }
     public Vector2 Origin { get; set; }
@@ -18,13 +26,11 @@ namespace FebEngine
 
     public SpriteSheet spriteSheet;
 
-    public Sprite(Texture2D texture)
+    public Sprite()
     {
       Tint = Color.White;
 
-      Texture = texture;
-
-      Bounds = texture.Bounds;
+      Bounds = new Rectangle(0, 0, 32, 32);
 
       Body = new Body(this);
     }
@@ -54,15 +60,36 @@ namespace FebEngine
     {
       if (isAlive)
       {
-        int time = (int)(Time.CurrentTime * 1 * Animations.current.frames.Count) % Animations.current.frames.Count;
-        renderer.SpriteRender.Draw(Animations.current.frames[time], Position, Tint, 0, Scale.X, Scale.Y);
-        //renderer.SpriteBatch.Draw(Texture, Position - (Origin * Bounds.Size.ToVector2()), Tint);
-        //renderer.SpriteBatch.Draw(Texture, new Rectangle(Position.ToPoint(), Scale.ToPoint()), Tint);
+        if (Animations != null && Animations.current != null)
+        {
+          int time = (int)(Time.CurrentTime * 1 * Animations.current.frames.Count) % Animations.current.frames.Count;
+          renderer.SpriteRender.Draw(Animations.current.frames[time], Position, Tint, 0, Scale.X, Scale.Y);
+          //renderer.SpriteBatch.Draw(Texture, Position - (Origin * Bounds.Size.ToVector2()), Tint);
+          //renderer.SpriteBatch.Draw(Texture, new Rectangle(Position.ToPoint(), Scale.ToPoint()), Tint);
+        }
       }
     }
 
     public override void Update(GameTime gameTime)
     {
+    }
+
+    public virtual void OnCollision(CollisionArgs e)
+    {
+      var handler = Collision;
+      handler?.Invoke(this, e);
+    }
+
+    public virtual void OnTriggerEnter(CollisionArgs e)
+    {
+      var handler = TriggerEnter;
+      handler?.Invoke(this, e);
+    }
+
+    public virtual void OnTriggerStay(CollisionArgs e)
+    {
+      var handler = TriggerStay;
+      handler?.Invoke(this, e);
     }
   }
 }

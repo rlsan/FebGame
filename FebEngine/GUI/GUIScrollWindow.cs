@@ -127,16 +127,19 @@ namespace FebEngine.GUI
     public override void Draw(SpriteBatch sb)
     {
       base.Draw(sb);
-      for (int i = 0; i < visibleItems.Count; i++)
+      if (visibleItems != null)
       {
-        string itemName = visibleItems[i].ToString();
-
-        if (itemName.Length > 50)
+        for (int i = 0; i < visibleItems.Count; i++)
         {
-          itemName = itemName.Remove(50);
-        }
+          string itemName = visibleItems[i].ToString();
 
-        sb.DrawString(Canvas.Font, "   " + itemName, new Vector2(X, Y + i * spacing), Color.White);
+          if (itemName.Length > 50)
+          {
+            itemName = itemName.Remove(50);
+          }
+
+          sb.DrawString(Canvas.Font, "   " + itemName, new Vector2(X, Y + i * spacing), Color.White);
+        }
       }
     }
   }

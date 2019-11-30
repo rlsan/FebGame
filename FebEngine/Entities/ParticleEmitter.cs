@@ -184,7 +184,7 @@ namespace FebEngine
 
           particle.lifetime -= Time.DeltaTime;
 
-          particle.scale = Mathf.lerp(startScale, endScale, particle.NormalizedLifetime);
+          particle.scale = Mathf.Lerp(startScale, endScale, particle.NormalizedLifetime);
           particle.rotation += particle.rotationRate * Time.DeltaTime;
 
           Color start = new Color(startColor, startAlpha);

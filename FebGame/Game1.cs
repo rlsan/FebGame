@@ -13,9 +13,11 @@ namespace FebGame
 
       stateManager.AddState("Sandbox", new Sandbox());
       stateManager.AddState("Editor", new MainEditor());
-      stateManager.LoadState("Sandbox");
+      stateManager.ChangeState("Sandbox");
 
       IsMouseVisible = true;
+
+      config.RefreshConfig();
 
       base.Initialize();
     }

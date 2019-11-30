@@ -45,12 +45,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animator.cs" />
+    <Compile Include="Commands\Empty.cs" />
+    <Compile Include="Core\Animator.cs" />
+    <Compile Include="Core\Command.cs" />
     <Compile Include="Core\AudioHandler.cs" />
+    <Compile Include="Core\Config.cs" />
     <Compile Include="Core\Factory.cs" />
+    <Compile Include="Core\InputManager.cs" />
+    <Compile Include="Entities\Actor.cs" />
     <Compile Include="Entities\Camera.cs" />
+    <Compile Include="Entities\Group.cs" />
     <Compile Include="Entities\ParticleEmitter.cs" />
     <Compile Include="Entities\Sprite.cs" />
+    <Compile Include="Commands\Jump.cs" />
+    <Compile Include="Commands\Move.cs" />
     <Compile Include="Physics\Physics.cs" />
     <Compile Include="Physics\Ray.cs" />
     <Compile Include="Physics\RaycastHit.cs" />
@@ -100,7 +108,6 @@
     <Compile Include="Core\GameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RenderManager.cs" />
-    <Compile Include="Utility\RetroFont.cs" />
     <Compile Include="Tilemaps\TilemapLayer.cs" />
     <Compile Include="Tilemaps\Tileset.cs" />
     <Compile Include="GUI\GUIContainer.cs" />

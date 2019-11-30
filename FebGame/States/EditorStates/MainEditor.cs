@@ -72,7 +72,7 @@ namespace FebGame.States
     {
       UpdateCameraControl();
 
-      if (Keyboard.GetState().IsKeyDown(Keys.Up)) world.Game.stateManager.LoadState("Sandbox", true);
+      if (Keyboard.GetState().IsKeyDown(Keys.Up)) world.Game.stateManager.ChangeState("Sandbox", true);
     }
 
     internal void ActivateMapEditor()

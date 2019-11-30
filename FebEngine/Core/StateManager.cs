@@ -53,7 +53,7 @@ namespace FebEngine
 
     public override void Update(GameTime gameTime)
     {
-      foreach (var state in states.Values)
+      foreach (var state in states.Values.ToList())
       {
         if (state.IsActive)
         {
@@ -132,7 +132,7 @@ namespace FebEngine
         {
           if (!state.Value.isLocked || ignoreLocked)
           {
-            state.Value.Unload(Game.Content);
+            UnloadState(state.Key);
           }
         }
       }
@@ -142,7 +142,7 @@ namespace FebEngine
     /// Deactivate any active states and set a new state to be the sole active state.
     /// </summary>
     /// <param loadInactive="loadInactive">If the state should load without becoming active.</param>
-    public void LoadState(string name, bool locked = false, bool loadInactive = false)
+    public void ChangeState(string name, bool locked = false, bool loadInactive = false)
     {
       states.TryGetValue(name, out var state);
 

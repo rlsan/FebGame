@@ -10,6 +10,8 @@ namespace FebEngine
     public Rectangle Bounds { get; protected set; }
     public Rectangle VisibleArea { get; protected set; }
 
+    public Entity Target { get; set; }
+
     private float shakeAmount;
     private float shakeTimer;
 
@@ -46,6 +48,16 @@ namespace FebEngine
       shakeAmount = intensity;
     }
 
+    public void Follow(Entity target)
+    {
+      Target = target;
+    }
+
+    public void Unfollow()
+    {
+      Target = null;
+    }
+
     private void UpdateVisibleArea()
     {
       var inverseViewMatrix = Matrix.Invert(Transform);
@@ -80,14 +92,13 @@ namespace FebEngine
       {
         Position += RNG.PointInsideUnitCircle() * shakeAmount * shakeTimer;
       }
+      if (Target != null)
+      {
+        Position = Vector2.Lerp(Position, Target.Position, 0.1f);
+      }
 
       Bounds = viewport.Bounds;
       UpdateMatrix();
-
-      //var translation = Matrix.CreateTranslation(Position.X, Position.Y, 0);
-      //var scale = Matrix.CreateScale(scaleFactor, scaleFactor, 0);
-
-      //Transform = translation + scale;
     }
   }
 }

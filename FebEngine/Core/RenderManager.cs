@@ -78,8 +78,8 @@ namespace FebEngine
       SetupDebug();
 
       // Remove these two lines if weird time-based stuff starts happening.
-      Graphics.SynchronizeWithVerticalRetrace = false;
-      Game.IsFixedTimeStep = false;
+      //Graphics.SynchronizeWithVerticalRetrace = false;
+      //Game.IsFixedTimeStep = false;
 
       base.Initialize();
     }

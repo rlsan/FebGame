@@ -176,31 +176,31 @@ namespace FebEngine
       var bb2 = bodyB.Bounds;
 
       // Trigger collision
-      if (bodyA.isTrigger || bodyB.isTrigger)
+      if (bodyB.isTrigger)
       {
         if (bb1.Intersects(bb2))
         {
-          bodyA.OnCollision(e);
+          bodyA.Parent.OnTriggerStay(e);
         }
       }
       else
       {
-        //X collision
+        // X collision
         if (bb1.Top < bb2.Bottom && bb1.Bottom > bb2.Top)
         {
           float moveX = bodyA.velocity.X;
 
-          //moving right
+          // Moving right
           if (bodyA.velocity.X > 0)
           {
-            //does the object have collision on the left side?
+            // Does the object have collision on the left side?
             if (bodyB.collidesLeft)
             {
               moveX = Math.Min(Math.Abs(bodyA.velocity.X), Math.Abs(bb2.Left - bb1.Right) - 1);
 
               if (moveX == 0)
               {
-                bodyA.OnCollision(e);
+                bodyA.Parent.OnCollision(e);
                 bodyA.blocked.Right = true;
               }
             }
@@ -215,7 +215,7 @@ namespace FebEngine
 
               if (moveX == 0)
               {
-                bodyA.OnCollision(e);
+                bodyA.Parent.OnCollision(e);
                 bodyA.blocked.Left = true;
               }
             }
@@ -239,7 +239,7 @@ namespace FebEngine
 
               if (moveY == 0)
               {
-                bodyA.OnCollision(e);
+                bodyA.Parent.OnCollision(e);
                 bodyA.blocked.Down = true;
               }
             }
@@ -254,7 +254,7 @@ namespace FebEngine
 
               if (moveY == 0)
               {
-                bodyA.OnCollision(e);
+                bodyA.Parent.OnCollision(e);
                 bodyA.blocked.Up = true;
               }
             }
@@ -326,26 +326,232 @@ namespace FebEngine
 
     private void CollideTilemap(Body body, Tilemap map)
     {
+      if (map == null) return;
+
       var layer = map.GetLayer(1);
+      int size = 64;
+      int dist = 4;
 
-      float xVel = body.velocity.X;
-      xVel = 500;
+      Rectangle bb = body.Bounds;
 
-      Debug.DrawRay(body.Parent.Position, Vector2.UnitX * xVel);
+      int leftSide = Mathf.FloorToGrid(bb.Left, size) / size;
+      int rightSide = Mathf.FloorToGrid(bb.Right, size) / size;
 
-      int min = Mathf.FloorToGrid(body.Parent.Position.X, 64) / 64;
-      int max = Mathf.FloorToGrid(body.Parent.Position.X + xVel, 64) / 64;
+      int topSide = Mathf.FloorToGrid(bb.Top, size) / size;
+      int bottomSide = Mathf.FloorToGrid(bb.Bottom, size) / size;
 
-      List<int> tiles = new List<int>();
+      float moveY = body.velocity.Y;
 
-      for (int i = min; i <= max; i++)
+      if (body.velocity.Y > 0)
       {
-        tiles.Add(layer.GetTile(i, 0));
+        int hitPoint = 10000;
+        for (int x = leftSide; x <= rightSide; x++)
+        {
+          for (int y = bottomSide; y <= bottomSide + dist; y++)
+          {
+            //Debug.DrawLine(new Vector2(x * size, y * size), new Vector2(x * size, bottomSide * size));
+            var tile = layer.GetTile(x, y);
 
-        //if (tile > -1)
-        //{
-        Debug.DrawPoint(new Vector2(i * 64, 0));
-        //}
+            if (tile > -1)
+            {
+              if (y < hitPoint) hitPoint = y;
+              break;
+            }
+          }
+        }
+
+        //Debug.DrawPoint(leftSide * size, hitPoint * size);
+
+        moveY = Math.Min(Math.Abs(body.velocity.Y), Math.Abs(hitPoint * size - body.Bounds.Bottom) - 1);
+
+        if (moveY == 0)
+        {
+          body.blocked.Down = true;
+        }
+
+        //body.velocity.X = moveX;
+      }
+      else if (body.velocity.Y < 0)
+      {
+        int hitPoint = -10000;
+        for (int x = leftSide; x <= rightSide; x++)
+        {
+          for (int y = topSide + 1; y > topSide - dist; y--)
+          {
+            //Debug.DrawLine(new Vector2(x * size, y * size), new Vector2(x * size, topSide * size));
+            var tile = layer.GetTile(x, y);
+
+            if (tile > -1)
+            {
+              if (y + 1 > hitPoint) hitPoint = y + 1;
+              break;
+            }
+          }
+        }
+
+        //Debug.DrawPoint(leftSide * size, hitPoint * size);
+
+        moveY = -Math.Min(Math.Abs(body.velocity.Y), Math.Abs(hitPoint * size - body.Bounds.Top) - 1);
+
+        if (moveY == 0)
+        {
+          body.blocked.Up = true;
+        }
+
+        //body.velocity.X = moveX;
+      }
+
+      body.velocity.Y = moveY;
+
+      float moveX = body.velocity.X;
+
+      if (body.velocity.X > 0)
+      {
+        int hitPoint = 10000;
+        for (int y = topSide; y <= bottomSide; y++)
+        {
+          for (int x = rightSide - 1; x <= rightSide + dist; x++)
+          {
+            //Debug.DrawLine(new Vector2((rightSide - 1) * size, y * size), new Vector2((rightSide + dist) * size, y * size));
+            var tile = layer.GetTile(x, y);
+
+            if (tile > -1)
+            {
+              if (x < hitPoint) hitPoint = x;
+              break;
+            }
+          }
+        }
+
+        moveX = Math.Min(Math.Abs(body.velocity.X), Math.Abs(hitPoint * size - body.Bounds.Right) - 1);
+
+        if (moveX == 0)
+        {
+          body.blocked.Right = true;
+        }
+
+        //body.velocity.X = moveX;
+      }
+      else if (body.velocity.X < 0)
+      {
+        int hitPoint = -10000;
+        for (int y = topSide; y <= bottomSide; y++)
+        {
+          for (int x = leftSide + 1; x > leftSide - dist; x--)
+          {
+            //Debug.DrawLine(new Vector2((leftSide + 1) * size, y * size), new Vector2((leftSide - dist) * size, y * size));
+            var tile = layer.GetTile(x, y);
+
+            if (tile > -1)
+            {
+              if (x + 1 > hitPoint) hitPoint = x + 1;
+              break;
+            }
+          }
+        }
+
+        moveX = -Math.Min(Math.Abs(body.velocity.X), Math.Abs(hitPoint * size - body.Bounds.Left) - 1);
+
+        if (moveX == 0)
+        {
+          body.blocked.Left = true;
+        }
+      }
+
+      body.velocity.X = moveX;
+      return;
+
+      if (body.velocity.X > 0)
+      {
+        int min = Mathf.FloorToGrid(body.Parent.Position.X, size) / size;
+        int max = Mathf.FloorToGrid(body.Parent.Position.X + dist, size) / size;
+
+        int y = Mathf.FloorToGrid(body.Parent.Position.Y, size) / size;
+
+        int hit = 10000;
+        for (int i = min; i <= max; i++)
+        {
+          var tile = layer.GetTile(i, y);
+
+          if (tile > -1)
+          {
+            hit = i * size;
+            break;
+          }
+        }
+
+        //var moveX = Math.Min(Math.Abs(body.velocity.X), Math.Abs(hit - body.Bounds.Right) - 1);
+
+        body.velocity.X = moveX;
+      }
+      else if (body.velocity.X < 0)
+      {
+        int min = Mathf.FloorToGrid(body.Parent.Position.X, size) / size;
+        int max = Mathf.FloorToGrid(body.Parent.Position.X - dist, size) / size;
+
+        int y = Mathf.FloorToGrid(body.Parent.Position.Y, size) / size;
+
+        int hit = 10000;
+        for (int i = min; i > max; i--)
+        {
+          var tile = layer.GetTile(i, y);
+
+          if (tile > -1)
+          {
+            hit = i * size + size;
+            break;
+          }
+        }
+
+        //var moveX = Math.Min(Math.Abs(body.velocity.X), Math.Abs(hit - body.Bounds.Left) - 1);
+
+        body.velocity.X = -moveX;
+      }
+      if (body.velocity.Y > 0)
+      {
+        int min = Mathf.FloorToGrid(body.Parent.Position.Y, size) / size;
+        int max = Mathf.FloorToGrid(body.Parent.Position.Y + dist, size) / size;
+
+        int x = Mathf.FloorToGrid(body.Parent.Position.X, size) / size;
+
+        int hit = 10000;
+        for (int i = min; i <= max; i++)
+        {
+          var tile = layer.GetTile(x, i);
+
+          if (tile > -1)
+          {
+            hit = i * size;
+            break;
+          }
+        }
+
+        //var moveY = Math.Min(Math.Abs(body.velocity.Y), Math.Abs(hit - body.Bounds.Bottom) - 1);
+
+        body.velocity.Y = moveY;
+      }
+      else if (body.velocity.Y < 0)
+      {
+        int min = Mathf.FloorToGrid(body.Parent.Position.Y, size) / size;
+        int max = Mathf.FloorToGrid(body.Parent.Position.Y - dist, size) / size;
+
+        int x = Mathf.FloorToGrid(body.Parent.Position.X, size) / size;
+
+        int hit = 10000;
+        for (int i = min; i > max; i--)
+        {
+          var tile = layer.GetTile(x, i);
+
+          if (tile > -1)
+          {
+            hit = i * size + size;
+            break;
+          }
+        }
+
+        //var moveY = Math.Min(Math.Abs(body.velocity.Y), Math.Abs(hit - body.Bounds.Top) - 1);
+
+        body.velocity.Y = -moveY;
       }
     }
   }

@@ -1,19 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FebEngine
 {
   public static class Mathf
   {
-    public static float Min(float a, float b, float min)
-    {
-      return Math.Min(a, b);
-    }
-
     /// <summary>
     /// Returns true if the difference between both values is less than epsilon.
     /// </summary>
@@ -22,12 +12,26 @@ namespace FebEngine
       return Math.Abs(a - b) <= e;
     }
 
-    public static bool ApproxVec(Vector2 a, Vector2 b, float e)
+    /// <summary>
+    /// Clamps the value between two specified values.
+    /// </summary>
+    public static float Clamp(float x, float min, float max)
     {
-      return Math.Abs(a.X - b.X) <= e && Math.Abs(a.Y - b.Y) <= e;
+      return Math.Max(min, Math.Min(max, x));
     }
 
-    public static float lerp(float a, float b, float f)
+    /// <summary>
+    /// Clamps the value between 0 and 1.
+    /// </summary>
+    public static float Clamp01(float x)
+    {
+      return Math.Max(0, Math.Min(1, x));
+    }
+
+    /// <summary>
+    /// Interpolates between two values.
+    /// </summary>
+    public static float Lerp(float a, float b, float f)
     {
       return (a * (1f - f)) + (b * f);
     }

@@ -58,6 +58,7 @@ namespace FebEngine
 
       canvas.Clear();
       //canvas = null;
+      Camera.Unfollow();
       canvas = new GUICanvas(0, 0);
 
       Console.WriteLine("Unloaded state: {0}", name);

@@ -54,7 +54,7 @@ namespace FebGame
     {
       foreach (var handle in handles)
       {
-        if (Mathf.ApproxVec(m, handle.position, e))
+        if (m.Approx(handle.position, e))
         {
           return handle;
         }

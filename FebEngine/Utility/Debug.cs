@@ -17,7 +17,7 @@ namespace FebEngine
 
     private static List<Tuple<Rectangle, Color>> Rectangles = new List<Tuple<Rectangle, Color>>();
     private static List<Line> Lines = new List<Line>();
-    private static List<RetroFont> Fonts = new List<RetroFont>();
+    //private static List<RetroFont> Fonts = new List<RetroFont>();
 
     public static void Instantiate()
     {
@@ -37,7 +37,7 @@ namespace FebEngine
         message = "null";
       }
 
-      Fonts.Add(new RetroFont(fontTexture, new Vector2(x, y), 12, 20, message.ToString()));
+      //Fonts.Add(new RetroFont(fontTexture, new Vector2(x, y), 12, 20, message.ToString()));
     }
 
     public static void Text(object message, Vector2 position)
@@ -48,7 +48,7 @@ namespace FebEngine
         message = "null";
       }
 
-      Fonts.Add(new RetroFont(fontTexture, position, 12, 20, message.ToString()));
+      //Fonts.Add(new RetroFont(fontTexture, position, 12, 20, message.ToString()));
     }
 
     public static void Text(object message, Point position)
@@ -59,7 +59,7 @@ namespace FebEngine
         message = "null";
       }
 
-      Fonts.Add(new RetroFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
+      //Fonts.Add(new RetroFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
     }
 
     public static void DrawLine(Vector2 start, Vector2 end)
@@ -94,11 +94,21 @@ namespace FebEngine
       Rectangles.Add(Tuple.Create(rect, c));
     }
 
+    public static void DrawPoint(float x, float y, int size = 4, Color? color = null)
+    {
+      Color c = color ?? Color.LimeGreen;
+
+      int halfSize = size / 2;
+      Rectangle rect = new Rectangle((int)x - halfSize, (int)y - halfSize, size, size);
+
+      Rectangles.Add(Tuple.Create(rect, c));
+    }
+
     public static void Clear()
     {
       Rectangles.Clear();
       Lines.Clear();
-      Fonts.Clear();
+      //Fonts.Clear();
     }
 
     public static void Draw(SpriteBatch spriteBatch)
@@ -122,11 +132,11 @@ namespace FebEngine
           color: Color.LimeGreen
         );
       }
-      foreach (var font in Fonts)
-      {
-        spriteBatch.DrawString(spriteFont, font.message, font.position, Color.White);
-        //font.Draw(spriteBatch);
-      }
+      //foreach (var font in Fonts)
+      //{
+      //  spriteBatch.DrawString(spriteFont, font.message, font.position, Color.White);
+      //font.Draw(spriteBatch);
+      //}
     }
   }
 }

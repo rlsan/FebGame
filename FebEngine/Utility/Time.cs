@@ -8,6 +8,7 @@ namespace FebEngine
     private static GameTime _GameTime { get; set; }
 
     public static float CurrentTime => (float)_GameTime.TotalGameTime.TotalSeconds;
+
     public static float DeltaTime => (float)_GameTime.ElapsedGameTime.TotalSeconds;
 
     public static float Sin => (float)Math.Sin(CurrentTime);
