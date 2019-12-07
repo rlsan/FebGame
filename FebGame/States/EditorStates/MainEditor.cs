@@ -32,7 +32,7 @@ namespace FebGame.States
 
     public override void Load(ContentManager content)
     {
-      tileset = TilesetIO.Import("Tileset.ats", content);
+      tileset = TilesetIO.Import("test", content);
       rectTexture = content.Load<Texture2D>("recthandles");
 
       base.Load(content);

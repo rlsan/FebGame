@@ -1,14 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using Microsoft.Xna.Framework.Input;
 
 namespace FebEngine
 {
   public class Config
   {
     private MainGame Game { get; }
-    private string[] configFile;
 
     public Config(MainGame Game)
     {
@@ -16,80 +13,31 @@ namespace FebEngine
     }
 
     /// <summary>
-    /// Sets the specified property using a special syntax.
-    /// Example A: "Resolution 1920 1080"
-    /// Example B: "HideCursor True"
+    /// Sets the specified property using the given parameters.
     /// </summary>
-    public void SetProperty(string property)
+    public void SetProperty(string property, params string[] parameters)
     {
-      // Return the parameter as a string.
-      string GetParam(string matchCase)
-      {
-        if (property.StartsWith(matchCase))
-        {
-          string parameter = property.Replace(matchCase + " ", "");
-          return parameter.Split('"', '"')[1];
-        }
-
-        return string.Empty;
-      }
-
-      // Return the parameters as a string array.
-      string[] GetParams(string matchCase)
-      {
-        if (property.StartsWith(matchCase))
-        {
-          string parameter = property.Replace(matchCase + " ", "");
-          return parameter.Split('"', '"')[1].Split(' ');
-        }
-
-        return new string[0];
-      }
-
-      // Return the parameter as an int.
-      int GetIntParam(string matchCase)
-      {
-        return int.Parse(GetParam(matchCase));
-      }
-
-      // Return the parameters as an int array.
-      int[] GetIntParams(string matchCase)
-      {
-        return GetParams(matchCase).Select(int.Parse).ToArray();
-      }
-
-      // Return the parameter as a boolean.
-      bool GetBoolParam(string matchCase)
-      {
-        return bool.Parse(GetParam(matchCase));
-      }
-
-      // Lines that begin with double slashes are comments.
-      if (property.StartsWith("//")) return;
-      // Ignore lines that are empty.
-      if (string.IsNullOrEmpty(property)) return;
-
-      // Chop off the latter part of the property string to extract the name.
-      string propertyName = property.Substring(0, property.IndexOf(" "));
+      string parameter = parameters[0];
 
       // Determine what to do with the property depending on its name and parameter(s).
-      switch (propertyName)
+      switch (property)
       {
         // The resolution of the game window.
         case "Resolution":
           {
-            int[] size = GetIntParams("Resolution");
+            if (int.TryParse(parameters[0], out int w) && int.TryParse(parameters[1], out int h))
+            {
+              Game.renderManager.ScreenWidth = w;
+              Game.renderManager.ScreenHeight = h;
 
-            RenderManager.Instance.ScreenWidth = size[0];
-            RenderManager.Instance.ScreenHeight = size[1];
-
-            Game.Graphics.ApplyChanges();
+              Game.Graphics.ApplyChanges();
+            }
             break;
           }
-        // The way that the game will be displayed: window, borderless, or fullscreen.
+        // The way that the game will be displayed: in a window, a borderless window, or fullscreen.
         case "DisplayType":
           {
-            string displayType = GetParam("DisplayType");
+            string displayType = parameter;
 
             if (displayType == "Window")
             {
@@ -110,42 +58,81 @@ namespace FebEngine
         // If the cursor should be hidden or not.
         case "HideCursor":
           {
-            Game.IsMouseVisible = !GetBoolParam("HideCursor");
+            if (bool.TryParse(parameter, out bool b)) Game.IsMouseVisible = !b;
+
             break;
           }
-        // Binds an input to a specific command.
-        case "Bind":
+        // The volume (0-100) of all audio playback.
+        case "MasterVolume":
           {
-            string[] controls = GetParams("Bind");
+            if (int.TryParse(parameter, out int v)) ;//Game.Audio.MasterVolume = v;
 
-            string inputString = controls[0];
-            string commandString = controls[1];
+            break;
+          }
+        // The volume (0-100) of music playback.
+        case "MusicVolume":
+          {
+            if (int.TryParse(parameter, out int v)) ;//Game.Audio.MusicVolume = v;
 
-            if (Game.inputManager.ControlMapping.TryGetValue(commandString, out Command c))
-            {
-              Game.inputManager.SingleBindings.Add((Keys)Enum.Parse(typeof(Keys), inputString), c);
-            }
+            break;
+          }
+        // The volume (0-100) of sound effect playback.
+        case "SoundEffectVolume":
+          {
+            if (int.TryParse(parameter, out int v)) ;//Game.Audio.SoundEffectVolume = v;
+
             break;
           }
       }
     }
 
     /// <summary>
-    /// Sets the properties found in "config.cfg".
+    /// Sets the properties from the config file at the path.
     /// </summary>
-    public void RefreshConfig()
+    public void OpenConfigFile(string localPath)
     {
       // Read the file at the local directory.
       string current = Directory.GetCurrentDirectory();
-      configFile = File.ReadAllLines(current + @"\config.cfg");
-
-      // Check if the file contains at least one "bind" command.
-      // If it does, clear the input bindings as they're going to be reset.
-      string bindString = configFile.ToList().Find(s => s.StartsWith("Bind"));
-      if (bindString != null) Game.inputManager.SingleBindings.Clear();
+      string[] configFile = File.ReadAllLines(current + localPath);
 
       // Set the property on each line.
-      foreach (var property in configFile) SetProperty(property);
+      foreach (var line in configFile)
+      {
+        if (line.StartsWith("//")) continue;
+        if (string.IsNullOrEmpty(line)) continue;
+
+        string property = line.Substring(0, line.IndexOf(" "));
+        string[] parameters = line.Replace(property + " = ", "").Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+        SetProperty(property, parameters);
+      }
+    }
+
+    /// <summary>
+    /// Sets the inputs from the config file at the path.
+    /// </summary>
+    public void OpenInputFile(string localPath)
+    {
+      // Read the file at the local directory.
+      string currentDir = Directory.GetCurrentDirectory();
+      string[] inputConfigFile = File.ReadAllLines(currentDir + localPath);
+
+      Game.inputManager.ClearBindings();
+
+      // Set the input on each line.
+      foreach (var line in inputConfigFile)
+      {
+        if (line.StartsWith("//")) continue;
+        if (string.IsNullOrEmpty(line)) continue;
+
+        string command = line.Substring(0, line.IndexOf(" "));
+        string[] inputs = line.Replace(command + " = ", "").Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var input in inputs)
+        {
+          Game.inputManager.AddBinding(command, input);
+        }
+      }
     }
   }
 }

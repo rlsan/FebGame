@@ -16,9 +16,9 @@ namespace FebEngine
     public static Tileset Import(string path, ContentManager content)
     {
       string currentDir = Directory.GetCurrentDirectory();
-      string localPath = currentDir + "\\" + path;
+      string localPath = currentDir + "\\Data\\Tiles\\" + path + ".ats";
 
-      XDocument document = XDocument.Load(path);
+      XDocument document = XDocument.Load(localPath);
 
       XElement root = document.Root;
 

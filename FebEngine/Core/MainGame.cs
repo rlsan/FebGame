@@ -13,7 +13,7 @@ namespace FebEngine
     public StateManager stateManager;
     public WorldManager worldManager;
 
-    public Config config;
+    public Config Config { get; }
 
     public MainGame()
     {
@@ -27,7 +27,10 @@ namespace FebEngine
       worldManager = new WorldManager(this);
       stateManager = new StateManager(this);
 
-      config = new Config(this);
+      Config = new Config(this);
+
+      Config.OpenConfigFile(@"\Data\config.cfg");
+      Config.OpenInputFile(@"\Data\input.cfg");
     }
 
     protected override void Initialize()

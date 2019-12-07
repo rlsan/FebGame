@@ -102,7 +102,7 @@ namespace FebEngine
 
     public void Reset()
     {
-      velocity = Vector2.Zero;
+      //velocity = Vector2.Zero;
       blocked.Reset();
     }
   }

@@ -41,6 +41,7 @@ namespace FebEngine
     {
       entity.world = this;
       entities.Add(entity, state);
+      entity.Init();
       return entity;
     }
 
@@ -71,14 +72,17 @@ namespace FebEngine
               }
               else
               {
-                entity.Key.Update(gameTime);
+                if (!entity.Key.IsFrozen)
+                {
+                  entity.Key.Update(gameTime);
+                }
 
                 activeObjects.AppendLine(entity.Key.ToString() + " - " + entity.Value.name);
               }
             }
           }
 
-          state.Update(gameTime);
+          //state.Update(gameTime);
 
           state.canvas.Update(gameTime);
         }

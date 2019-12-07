@@ -11,26 +11,26 @@ namespace FebEngine
   {
     public List<ObjectID> Objects = new List<ObjectID>();
 
-    public void Add(Vector2 position, int id)
+    public void Add(Vector2 position, string name)
     {
-      Objects.Add(new ObjectID(id, position));
+      Objects.Add(new ObjectID(name, position));
     }
   }
 
   public struct ObjectID
   {
-    public int id;
+    public string name;
     public Vector2 position;
 
-    public ObjectID(int id, Vector2 position)
+    public ObjectID(string name, Vector2 position)
     {
-      this.id = id;
+      this.name = name;
       this.position = position;
     }
 
     public override string ToString()
     {
-      return id.ToString();
+      return name;
     }
   }
 }

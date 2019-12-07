@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using FebEngine;
 
-namespace FebGame
+namespace FebGame.Entities
 {
   public class Player : Actor
   {
@@ -29,7 +29,7 @@ namespace FebGame
     public override void Update(GameTime gameTime)
     {
       tag = "Player";
-      InputManager.actor = this;
+      InputManager.player1 = this;
 
       Body.hasGravity = true;
       Body.maxVelocity.X = 10;

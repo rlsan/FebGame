@@ -13,6 +13,8 @@ namespace FebEngine
     public void Load(string path)
     {
       Tilemaps = GroupIO.Import(path);
+
+      ChangeMap(0);
     }
 
     public Tilemap AddMap(Tilemap tilemap)

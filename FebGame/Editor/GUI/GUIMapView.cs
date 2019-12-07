@@ -70,10 +70,13 @@ namespace FebGame.Editor
       var commands = info.AddText();
       commands.alignment = TextAlignment.TopLeft;
       commands.SetMessage(
+        "Modes:",
+        "T - Tile",
+        "O - Object",
         "Tools:",
         "D - Draw",
-        "E - Erase",
-        "B - Object"
+        "E - Erase"
+
         );
     }
 
@@ -91,7 +94,7 @@ namespace FebGame.Editor
         {
           var o = mapEditor.map.ObjectLayer.Objects[i];
 
-          list[i] = o.id.ToString();
+          list[i] = o.name;
         }
 
         objectList.SetItems(mapEditor.map.ObjectLayer.Objects.ToArray());
@@ -123,6 +126,7 @@ namespace FebGame.Editor
         if (mapEditor.map != null)
         {
           text.SetMessage(
+            "Mode: " + mapEditor.mode,
             "Tool: " + mapEditor.tool,
             "Layer: " + mapEditor.currentLayer.Name,
             "Brush: " + mapEditor.mapView.selectedBrush

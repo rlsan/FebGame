@@ -1,12 +1,10 @@
 ﻿using FebEngine;
-using FebEngine.Tiles;
 using FebEngine.GUI;
 using FebGame.Editor;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -101,7 +99,7 @@ namespace FebGame.States
     internal void SaveGroup()
     {
       string groupFile = GroupIO.Export(editor.mapGroup);
-      canvas.OpenSavePrompt(groupFile, "amg", editor.mapGroup.name.ToString());
+      canvas.OpenSavePrompt(groupFile, "amg", editor.mapGroup.name.ToString(), @"\Data\Chapters\");
     }
 
     internal void LoadGroup(string file)

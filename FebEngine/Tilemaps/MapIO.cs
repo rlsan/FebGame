@@ -21,6 +21,8 @@ namespace FebEngine
         int.Parse(root.Attribute("TileHeight").Value)
         );
 
+      //Console.WriteLine(root.Attribute("Tileset").Value);
+
       tilemap.name = new StringBuilder(root.Attribute("Name").Value);
       tilemap.X = int.Parse(root.Attribute("X").Value);
       tilemap.Y = int.Parse(root.Attribute("Y").Value);
@@ -38,18 +40,17 @@ namespace FebEngine
       }
 
       // Iterate through each object of the object list.
-      /*
+
       foreach (var objectElement in root.Element("Objects").Elements("Object"))
       {
         var x = float.Parse(objectElement.Attribute("X").Value);
         var y = float.Parse(objectElement.Attribute("Y").Value);
-        var id = int.Parse(objectElement.Attribute("ID").Value);
+        string objectName = objectElement.Attribute("Name").Value;
 
         var position = new Vector2(x, y);
 
-        tilemap.ObjectLayer.Add(position, id);
+        tilemap.ObjectLayer.Add(position, objectName);
       }
-      */
 
       // Iterate through each layer of the document.
       foreach (var layer in root.Elements("Layer"))
@@ -80,9 +81,12 @@ namespace FebEngine
         new XAttribute("Y", tilemapToExport.Y),
         new XAttribute("Width", tilemapToExport.Width),
         new XAttribute("Height", tilemapToExport.Height),
+        //new XAttribute("Tileset", tilemapToExport.Tileset.name),
         new XAttribute("TileWidth", tilemapToExport.TileWidth),
         new XAttribute("TileHeight", tilemapToExport.TileHeight)
         );
+
+      //Console.WriteLine(tilemapToExport.Tileset.name);
 
       var warpElement = new XElement("Warps");
 
@@ -103,7 +107,7 @@ namespace FebEngine
       foreach (var gameObject in tilemapToExport.ObjectLayer.Objects)
       {
         objectsElement.Add(new XElement("Object",
-          new XAttribute("ID", gameObject.id),
+          new XAttribute("Name", gameObject.name),
           new XAttribute("X", gameObject.position.X),
           new XAttribute("Y", gameObject.position.Y)
           ));

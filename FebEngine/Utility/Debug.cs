@@ -17,6 +17,7 @@ namespace FebEngine
 
     private static List<Tuple<Rectangle, Color>> Rectangles = new List<Tuple<Rectangle, Color>>();
     private static List<Line> Lines = new List<Line>();
+    private static List<Tuple<string, Vector2>> Strings = new List<Tuple<string, Vector2>>();
     //private static List<RetroFont> Fonts = new List<RetroFont>();
 
     public static void Instantiate()
@@ -48,6 +49,7 @@ namespace FebEngine
         message = "null";
       }
 
+      Strings.Add(Tuple.Create(message.ToString(), position));
       //Fonts.Add(new RetroFont(fontTexture, position, 12, 20, message.ToString()));
     }
 
@@ -59,6 +61,7 @@ namespace FebEngine
         message = "null";
       }
 
+      Strings.Add(Tuple.Create(message.ToString(), position.ToVector2()));
       //Fonts.Add(new RetroFont(fontTexture, position.ToVector2(), 12, 20, message.ToString()));
     }
 
@@ -108,7 +111,7 @@ namespace FebEngine
     {
       Rectangles.Clear();
       Lines.Clear();
-      //Fonts.Clear();
+      Strings.Clear();
     }
 
     public static void Draw(SpriteBatch spriteBatch)
@@ -132,11 +135,11 @@ namespace FebEngine
           color: Color.LimeGreen
         );
       }
-      //foreach (var font in Fonts)
-      //{
-      //  spriteBatch.DrawString(spriteFont, font.message, font.position, Color.White);
-      //font.Draw(spriteBatch);
-      //}
+      foreach (var s in Strings)
+      {
+        spriteBatch.DrawString(spriteFont, s.Item1, s.Item2, Color.White);
+        //font.Draw(spriteBatch);
+      }
     }
   }
 }

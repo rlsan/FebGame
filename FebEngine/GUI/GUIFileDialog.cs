@@ -96,7 +96,7 @@ namespace FebEngine.GUI
 
       string[] directoriesAndFiles = subDirectoryNames.Concat(fileNames).ToArray();
 
-      directoryBox.SetMessage(currentDir);
+      directoryBox.SetMessage(currentDir.Replace(Directory.GetCurrentDirectory(), ""));
       fileBox.SetItems(directoriesAndFiles);
     }
   }

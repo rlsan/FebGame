@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TexturePackerLoader;
+using System.IO;
 
 namespace FebEngine.GUI
 {
@@ -66,26 +67,28 @@ namespace FebEngine.GUI
       LoadPrompt.Disable();
     }
 
-    public void OpenSavePrompt<T>(T export, string extension, string text = "")
+    public void OpenSavePrompt<T>(T export, string extension, string text, string path = "")
     {
       locked = true;
       SavePrompt.Enable();
       SetActiveElement(SavePrompt);
 
-      SavePrompt.Refresh();
-
       SavePrompt.extension = extension;
       SavePrompt.nameField.SetMessage(text);
+
+      SavePrompt.currentDir = Directory.GetCurrentDirectory() + path;
+      SavePrompt.Refresh();
 
       SavePrompt.fileToSave = export;
     }
 
-    public void OpenLoadPrompt(Action<string> action, string extension)
+    public void OpenLoadPrompt(Action<string> action, string extension, string path = "")
     {
       locked = true;
       LoadPrompt.Enable();
       SetActiveElement(LoadPrompt);
 
+      LoadPrompt.currentDir = Directory.GetCurrentDirectory() + path;
       LoadPrompt.Refresh();
 
       LoadPrompt.extension = extension;

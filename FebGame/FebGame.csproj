@@ -83,8 +83,10 @@
     <Compile Include="Editor\GUI\BrushViewer.cs" />
     <Compile Include="Editor\GUI\TilesetInfo.cs" />
     <Compile Include="Editor\GUI\GUITilePalette.cs" />
+    <Compile Include="Entities\Checkpoint.cs" />
     <Compile Include="Entities\DummyA.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\Spring.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -154,8 +156,38 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
-    <None Include="config.cfg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Data\Chapters\c1a_gc.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c1b_ptv.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c2a_voad.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c2b_voaw.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c3a_tatc.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c3b_bwf.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c4a_ml.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Chapters\c4b_fs.amg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\config.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\input.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Tiles\test.ats">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="FebGame_TemporaryKey.pfx" />
     <None Include="packages.config" />
@@ -187,6 +219,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

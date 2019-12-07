@@ -8,6 +8,7 @@ namespace FebEngine
   public class Entity
   {
     public StringBuilder name;
+    public string label;
     public string tag;
     public int id;
 
@@ -21,6 +22,7 @@ namespace FebEngine
     public bool FollowCamera { get; set; } = true;
 
     public bool IsVisible { get; set; } = true;
+    public bool IsFrozen { get; set; } = false;
 
     public WorldManager world;
 
@@ -37,6 +39,21 @@ namespace FebEngine
     public void Show()
     {
       IsVisible = true;
+    }
+
+    public void Freeze()
+    {
+      IsFrozen = true;
+    }
+
+    public void Thaw()
+    {
+      IsFrozen = false;
+    }
+
+    public virtual void Init()
+    {
+      // Default init code.
     }
 
     public virtual void Update(GameTime gameTime)

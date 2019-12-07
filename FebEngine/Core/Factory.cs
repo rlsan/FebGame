@@ -4,15 +4,16 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using TexturePackerLoader;
+using System;
 
 namespace FebEngine
 {
   public class Factory
   {
-    private WorldManager World { get; set; }
-    private GameState State { get; set; }
-    private ContentManager Content { get; set; }
-    private SpriteSheetLoader spriteSheetLoader { get; set; }
+    private WorldManager World { get; }
+    private GameState State { get; }
+    private ContentManager Content { get; }
+    private SpriteSheetLoader SpriteSheetLoader { get; }
 
     public Factory(WorldManager world, GameState state, ContentManager content)
     {
@@ -20,7 +21,7 @@ namespace FebEngine
       State = state;
       Content = content;
 
-      spriteSheetLoader = new SpriteSheetLoader(Content, RenderManager.Instance.GraphicsDevice);
+      SpriteSheetLoader = new SpriteSheetLoader(Content, RenderManager.Instance.GraphicsDevice);
     }
 
     public Entity Entity(Entity entityToAdd, string name)
@@ -34,6 +35,14 @@ namespace FebEngine
       return entity;
     }
 
+    public T Entity<T>() where T : Entity
+    {
+      var entity = (Entity)Activator.CreateInstance(typeof(T));
+
+      World.AddEntity(entity, State);
+      return entity as T;
+    }
+
     public Sprite Sprite(string name, string path)
     {
       var entity = new Sprite();
@@ -41,7 +50,7 @@ namespace FebEngine
       entity.name = new StringBuilder(name);
       entity.world = World;
 
-      entity.SetTexture(spriteSheetLoader.Load("sp1"));
+      entity.SetTexture(SpriteSheetLoader.Load("sp1"));
       entity.Animations.Add("Base", path);
 
       World.entities.Add(entity as Entity, State);
@@ -61,7 +70,7 @@ namespace FebEngine
       return entity;
     }
 
-    public MapGroup MapGroup(string name)
+    public MapGroup MapGroup(string name = "")
     {
       var entity = new MapGroup();
       entity.name = new StringBuilder(name);

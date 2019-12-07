@@ -4,15 +4,20 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using FebEngine;
 using FebEngine.GUI;
-using FebEngine.Tiles;
 using FebGame.Editor;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace FebGame.States
 {
   internal enum Tool
   {
-    Draw, Erase, Object
+    Select, Draw, Erase
+  }
+
+  internal enum Mode
+  {
+    Tile, Object
   }
 
   public class MapEditor : GameState
@@ -20,9 +25,13 @@ namespace FebGame.States
     internal MainEditor editor;
     internal GUIMapView mapView;
     internal Tool tool = Tool.Draw;
+    internal Mode mode = Mode.Tile;
 
     internal Tilemap map;
     internal TilemapLayer currentLayer;
+
+    internal List<Entity> entities;
+    internal Entity selectedEntity;
 
     private int layerID = 1;
 
@@ -30,15 +39,20 @@ namespace FebGame.States
     {
       mapView = canvas.AddElement(new GUIMapView(this), 0, 30, 1920, 1080 - 30) as GUIMapView;
       mapView.anchorPosition = AnchorPosition.Bottom;
+
+      entities = new List<Entity>();
     }
 
     public override void Update(GameTime gameTime)
     {
-      Vector2 mpos = Camera.ToWorld(canvas.mouse.Position);
+      Vector2 worldMouse = Camera.ToWorld(canvas.mouse.Position);
 
+      if (canvas.IsKeyDown(Keys.A)) tool = Tool.Select;
       if (canvas.IsKeyDown(Keys.D)) tool = Tool.Draw;
       if (canvas.IsKeyDown(Keys.E)) tool = Tool.Erase;
-      if (canvas.IsKeyDown(Keys.B)) tool = Tool.Object;
+
+      if (canvas.IsKeyDown(Keys.T)) mode = Mode.Tile;
+      if (canvas.IsKeyDown(Keys.O)) mode = Mode.Object;
 
       if (canvas.IsKeyDown(Keys.D1)) layerID = 0;
       if (canvas.IsKeyDown(Keys.D2)) layerID = 1;
@@ -50,29 +64,81 @@ namespace FebGame.States
       map = editor.mapGroup.CurrentMap;
       currentLayer = map.GetLayer(layerID);
 
-      if (tool == Tool.Draw)
+      if (mode == Mode.Tile)
       {
-        if (canvas.mouse.RightButton == ButtonState.Pressed)
+        if (tool == Tool.Draw)
         {
-          mapView.selectedBrush = currentLayer.GetTile(mpos);
+          if (canvas.mouse.RightButton == ButtonState.Pressed)
+          {
+            mapView.selectedBrush = currentLayer.GetTile(worldMouse);
+          }
+          if (canvas.MouseDown)
+          {
+            currentLayer.PutTile(mapView.selectedBrush, worldMouse);
+          }
         }
-        if (canvas.MouseDown)
+        if (tool == Tool.Erase)
         {
-          currentLayer.PutTile(mapView.selectedBrush, mpos);
+          if (canvas.MouseDown)
+          {
+            currentLayer.EraseTile(worldMouse);
+          }
         }
       }
-      if (tool == Tool.Erase)
+      else if (mode == Mode.Object)
       {
-        if (canvas.MouseDown)
+        if (tool == Tool.Draw)
         {
-          currentLayer.EraseTile(mpos);
+          if (canvas.MousePress)
+          {
+            //map.ObjectLayer.Add(mpos, "obj_checkpoint");
+            Entity e = world.AddEntity(new Entities.Checkpoint(), this);
+            e.Freeze();
+            e.Position = worldMouse;
+            entities.Add(e);
+          }
         }
-      }
-      if (tool == Tool.Object)
-      {
-        if (canvas.MousePress)
+        if (tool == Tool.Select)
         {
-          map.ObjectLayer.Add(mpos, RNG.RandIntRange(0, 99));
+          if (canvas.MousePress)
+          {
+            foreach (var ent in entities)
+            {
+              if (ent is Sprite sprite)
+              {
+                if (sprite.Body.Bounds.Contains(worldMouse))
+                {
+                  selectedEntity = ent;
+                  break;
+                }
+              }
+              else
+              {
+                if (worldMouse.Approx(ent.Position, 30))
+                {
+                  selectedEntity = ent;
+                  break;
+                }
+              }
+            }
+          }
+          if (canvas.MouseDown)
+          {
+            if (selectedEntity != null)
+            {
+              if (canvas.IsKeyDown(Keys.LeftShift))
+              {
+                selectedEntity.Position = new Vector2(
+                  Mathf.RoundToGrid(worldMouse.X, map.TileWidth / 2, map.TileHeight / 2),
+                  Mathf.RoundToGrid(worldMouse.Y, map.TileWidth / 2, map.TileHeight / 2)
+                  );
+              }
+              else
+              {
+                selectedEntity.Position = worldMouse;
+              }
+            }
+          }
         }
       }
     }
@@ -82,6 +148,16 @@ namespace FebGame.States
       var sb = renderer.SpriteBatch;
 
       if (editor.activeTilemap == null) return;
+
+      foreach (var item in entities)
+      {
+        if (item is Sprite sprite)
+        {
+          Debug.DrawRect(sprite.Body.Bounds);
+        }
+
+        Debug.Text(item.label, item.Position);
+      }
 
       var color = Color.White;
       var gridColor = new Color(0.1f, 0.1f, 0.1f);
@@ -94,7 +170,7 @@ namespace FebGame.States
 
       foreach (var item in map.ObjectLayer.Objects)
       {
-        sb.DrawString(canvas.Font, item.id.ToString(), item.position, Color.White);
+        sb.DrawString(canvas.Font, item.name, item.position, Color.White);
       }
 
       // Draw Grid

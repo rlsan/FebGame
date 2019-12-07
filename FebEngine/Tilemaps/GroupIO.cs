@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 using System.IO;
+using System.IO.Compression;
 
 namespace FebEngine
 {
@@ -17,15 +19,19 @@ namespace FebEngine
     public static List<Tilemap> Import(string path)
     {
       string currentDir = Directory.GetCurrentDirectory();
-      string localPath = currentDir + "\\" + path;
+      string localPath = currentDir + "\\Data\\Chapters\\" + path + ".amg";
 
       var group = new MapGroup();
 
-      var document = XElement.Load(path);
+      var documentString = File.ReadAllText(localPath);
+      var uncompressed = Unzip(documentString);
 
-      group.name = new StringBuilder(document.Attribute("Name").Value);
+      //var root = XElement.Load(path);
+      var root = XDocument.Parse(uncompressed).Root;
 
-      foreach (var mapElement in document.Elements("Map"))
+      group.name = new StringBuilder(root.Attribute("Name").Value);
+
+      foreach (var mapElement in root.Elements("Map"))
       {
         string name = mapElement.Attribute("Name").Value;
 
@@ -63,7 +69,63 @@ namespace FebEngine
 
       Console.WriteLine("Saved group to " + Directory.GetCurrentDirectory() + "\\" + group.name + ".amg");
 
-      return root.ToString();
+      string compressed = Zip(root.ToString());
+
+      var sb = new StringBuilder();
+
+      foreach (var item in compressed)
+      {
+        sb.Append(item.ToString());
+      }
+
+      return compressed;
+    }
+
+    public static void CopyTo(Stream src, Stream dest)
+    {
+      byte[] bytes = new byte[4096];
+
+      int cnt;
+
+      while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+      {
+        dest.Write(bytes, 0, cnt);
+      }
+    }
+
+    public static string Zip(string str)
+    {
+      var bytes = Encoding.UTF8.GetBytes(str);
+
+      using (var msi = new MemoryStream(bytes))
+      using (var mso = new MemoryStream())
+      {
+        using (var gs = new GZipStream(mso, CompressionMode.Compress))
+        {
+          CopyTo(msi, gs);
+        }
+
+        var outputBytes = mso.ToArray();
+        var outputbase64 = Convert.ToBase64String(outputBytes);
+
+        return outputbase64;
+      }
+    }
+
+    public static string Unzip(string input)
+    {
+      var bytes = Convert.FromBase64String(input);
+
+      using (var msi = new MemoryStream(bytes))
+      using (var mso = new MemoryStream())
+      {
+        using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+        {
+          CopyTo(gs, mso);
+        }
+
+        return Encoding.UTF8.GetString(mso.ToArray());
+      }
     }
   }
 }

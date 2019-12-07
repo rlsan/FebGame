@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,45 +7,76 @@ namespace FebEngine
 {
   public class InputManager : Manager
   {
-    private KeyboardState oldState;
-
-    private Command Jump { get; } = new Commands.Jump();
+    private Command MoveUp { get; } = new Commands.Interact();
     private Command MoveLeft { get; } = new Commands.Move(-1, 0);
+    private Command MoveDown { get; } = new Commands.Duck();
     private Command MoveRight { get; } = new Commands.Move(1, 0);
+    private Command ActionA { get; } = new Commands.Jump();
+    private Command ActionB { get; } = new Commands.Jump();
+    private Command ActionX { get; } = new Commands.Attack();
+    private Command ActionY { get; } = new Commands.Attack();
+    private Command ActionL { get; } = new Commands.Empty();
+    private Command ActionR { get; } = new Commands.Empty();
+    private Command Pause { get; } = new Commands.Empty();
 
-    public Dictionary<Keys, Command> SingleBindings { get; set; } = new Dictionary<Keys, Command>();
-    public Dictionary<Keys, Command> ConstantBindings { get; set; } = new Dictionary<Keys, Command>();
+    private List<InputBinding> Bindings { get; set; } = new List<InputBinding>();
 
-    public Dictionary<string, Command> ControlMapping
-    {
-      get { return InitControls(); }
-    }
+    private Dictionary<string, Command> Aliases { get { return GetAliases(); } }
 
-    public static Actor actor;
+    public static Actor player1;
+    public static Actor player2;
+    public static Actor player3;
+    public static Actor player4;
 
     public InputManager(MainGame game) : base(game)
     {
     }
 
-    public Dictionary<string, Command> InitControls()
+    private Dictionary<string, Command> GetAliases()
     {
       return new Dictionary<string, Command>
       {
-        { "Jump", Jump },
+        { "MoveUp", MoveUp },
         { "MoveLeft", MoveLeft },
+        { "MoveDown", MoveDown },
         { "MoveRight", MoveRight },
+        { "ActionA", ActionA },
+        { "ActionB", ActionB },
+        { "ActionX", ActionX },
+        { "ActionY", ActionY },
+        { "ActionL", ActionL },
+        { "ActionR", ActionR },
+        { "Pause", Pause }
       };
+    }
+
+    public void AddBinding(string commandString, string inputString)
+    {
+      Aliases.TryGetValue(commandString, out Command c);
+
+      if (Enum.TryParse(inputString, out Keys k))
+      {
+        var b = new InputBinding(k, c);
+        Bindings.Add(b);
+      }
+    }
+
+    public void ClearBindings()
+    {
+      Bindings.Clear();
     }
 
     /// <summary>
     /// Returns a list of commands that match the keyboard state.
     /// </summary>
-    private List<Command> GetCommands(Dictionary<Keys, Command> b, KeyboardState k)
+    private List<Command> GetCommands(List<InputBinding> bindings, KeyboardState k)
     {
-      List<Command> commands = b.Where(
-        x => k.IsKeyDown(x.Key))
-        .Select(x => x.Value)
-        .ToList();
+      var commands = new List<Command>();
+
+      foreach (var binding in bindings)
+      {
+        if (k.IsKeyDown(binding.input)) commands.Add(binding.command);
+      }
 
       return commands;
     }
@@ -55,17 +84,29 @@ namespace FebEngine
     /// <summary>
     /// Gets a list of valid commands and executes them on the given actor.
     /// </summary>
-    private void HandleInput(Actor a)
+    private void HandleInput(Actor a, KeyboardState k)
     {
-      KeyboardState newState = Keyboard.GetState();
-
-      var commands = GetCommands(SingleBindings, newState);
+      var commands = GetCommands(Bindings, k);
       commands.ForEach(c => c.Execute(a));
     }
 
     public override void Update(GameTime gameTime)
     {
-      HandleInput(actor);
+      KeyboardState k = Keyboard.GetState();
+
+      if (player1 != null) HandleInput(player1, k);
+    }
+
+    private class InputBinding
+    {
+      public Keys input;
+      public Command command;
+
+      public InputBinding(Keys input, Command command)
+      {
+        this.input = input;
+        this.command = command;
+      }
     }
   }
 }

@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Duck.cs" />
+    <Compile Include="Commands\Attack.cs" />
+    <Compile Include="Commands\Interact.cs" />
     <Compile Include="Commands\Empty.cs" />
     <Compile Include="Core\Animator.cs" />
     <Compile Include="Core\Command.cs" />

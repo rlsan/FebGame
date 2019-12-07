@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tileset Name="Tileset" TileCount="18" TileWidth="64" TileHeight="64" TexturePath="Test">
+  <Tile ID="0" Name="Tile0" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="1" Name="Tile1" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="2" Name="Tile2" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="3" Name="Tile3" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="4" Name="Tile4" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="5" Name="Tile5" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="6" Name="Tile6" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="7" Name="Tile7" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="8" Name="Tile8" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="9" Name="Tile9" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="10" Name="Tile10" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="11" Name="Tile11" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="12" Name="Tile12" Type="TileBrush" Locked="false">
+    <Inputs />
+    <Properties></Properties>
+  </Tile>
+<Tile ID="13" Name="Log" Type="RowBrush" Locked="false">
+    <Inputs>6, 7, 14, 15</Inputs>
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="14" Name="LogMiddle" Type="RandomBrush" Locked="false">
+    <Inputs>8, 10, 9</Inputs>
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="15" Name="LogEnd" Type="RandomBrush" Locked="false">
+    <Inputs>11, 12</Inputs>
+    <Properties></Properties>
+  </Tile>
+  
+  <Tile ID="16" Name="Block" Type="RandomBrush" Locked="false">
+    <Inputs>3, 5, 4</Inputs>
+    <Properties></Properties>
+  </Tile>
+  <Tile ID="17" Name="Brick" Type="AnimatedBrush" Locked="false">
+    <Inputs>1, 0, 2</Inputs>
+    <Properties></Properties>
+  </Tile>
+</Tileset>

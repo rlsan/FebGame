@@ -31,10 +31,11 @@ namespace FebGame.Editor
       menu.AddElement(new GroupEditorInfo(groupEditor));
       menu.AddButton("New", groupEditor.NewMapGroup);
       menu.AddButton("Save...", groupEditor.SaveGroup);
-      a = () => { Canvas.OpenLoadPrompt(groupEditor.LoadGroup, "amg"); };
+      a = () => { Canvas.OpenLoadPrompt(groupEditor.LoadGroup, "amg", @"\Data\Chapters\"); };
       menu.AddButton("Load...", a);
+      a = () => { Canvas.RenamePrompt(ref groupEditor.editor.mapGroup.name); };
       menu.AddButton("Rename");
-      menu.AddButton("Compile", groupEditor.Compile);
+      //menu.AddButton("Compile", groupEditor.Compile);
       menu.AddButton("Remove Map", groupEditor.RemoveMap);
 
       // Document Panel
