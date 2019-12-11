@@ -137,6 +137,7 @@ namespace FebEngine
       }
       foreach (var s in Strings)
       {
+        spriteBatch.DrawString(spriteFont, s.Item1, s.Item2 + Vector2.One, Color.Black);
         spriteBatch.DrawString(spriteFont, s.Item1, s.Item2, Color.White);
         //font.Draw(spriteBatch);
       }

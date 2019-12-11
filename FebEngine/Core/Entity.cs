@@ -24,6 +24,8 @@ namespace FebEngine
     public bool IsVisible { get; set; } = true;
     public bool IsFrozen { get; set; } = false;
 
+    public GameState State { get; set; }
+
     public WorldManager world;
 
     public void Destroy()

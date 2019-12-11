@@ -7,9 +7,9 @@ namespace FebEngine
 {
   public class InputManager : Manager
   {
-    private Command MoveUp { get; } = new Commands.Interact();
+    private Command MoveUp { get; } = new Commands.Move(0, -1);
     private Command MoveLeft { get; } = new Commands.Move(-1, 0);
-    private Command MoveDown { get; } = new Commands.Duck();
+    private Command MoveDown { get; } = new Commands.Move(0, 1);
     private Command MoveRight { get; } = new Commands.Move(1, 0);
     private Command ActionA { get; } = new Commands.Jump();
     private Command ActionB { get; } = new Commands.Jump();
@@ -50,14 +50,25 @@ namespace FebEngine
       };
     }
 
-    public void AddBinding(string commandString, string inputString)
+    public void AddKeyBinding(string commandString, string inputString)
     {
       Aliases.TryGetValue(commandString, out Command c);
 
       if (Enum.TryParse(inputString, out Keys k))
       {
-        var b = new InputBinding(k, c);
-        Bindings.Add(b);
+        var bind = new InputBinding(k, c);
+        Bindings.Add(bind);
+      }
+    }
+
+    public void AddPadBinding(string commandString, string inputString)
+    {
+      Aliases.TryGetValue(commandString, out Command c);
+
+      if (Enum.TryParse(inputString, out Buttons b))
+      {
+        var bind = new InputBinding(b, c);
+        Bindings.Add(bind);
       }
     }
 
@@ -69,13 +80,24 @@ namespace FebEngine
     /// <summary>
     /// Returns a list of commands that match the keyboard state.
     /// </summary>
-    private List<Command> GetCommands(List<InputBinding> bindings, KeyboardState k)
+    private List<Command> GetCommands(List<InputBinding> bindings, KeyboardState k, GamePadState g)
     {
       var commands = new List<Command>();
 
       foreach (var binding in bindings)
       {
-        if (k.IsKeyDown(binding.input)) commands.Add(binding.command);
+        if (!commands.Contains(binding.command))
+        {
+          if (k.IsKeyDown(binding.keyInput)) commands.Add(binding.command);
+
+          if (binding.buttonInput != 0)
+          {
+            if (g.IsButtonDown(binding.buttonInput))
+            {
+              commands.Add(binding.command);
+            }
+          }
+        }
       }
 
       return commands;
@@ -84,9 +106,9 @@ namespace FebEngine
     /// <summary>
     /// Gets a list of valid commands and executes them on the given actor.
     /// </summary>
-    private void HandleInput(Actor a, KeyboardState k)
+    private void HandleInput(Actor a, KeyboardState k, GamePadState g)
     {
-      var commands = GetCommands(Bindings, k);
+      var commands = GetCommands(Bindings, k, g);
       commands.ForEach(c => c.Execute(a));
     }
 
@@ -94,17 +116,27 @@ namespace FebEngine
     {
       KeyboardState k = Keyboard.GetState();
 
-      if (player1 != null) HandleInput(player1, k);
+      GamePadState g1 = GamePad.GetState(0);
+
+      if (player1 != null) HandleInput(player1, k, g1);
     }
 
     private class InputBinding
     {
-      public Keys input;
+      public Keys keyInput;
+      public Buttons buttonInput;
+
       public Command command;
 
       public InputBinding(Keys input, Command command)
       {
-        this.input = input;
+        this.keyInput = input;
+        this.command = command;
+      }
+
+      public InputBinding(Buttons input, Command command)
+      {
+        this.buttonInput = input;
         this.command = command;
       }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace FebEngine
 {
   public class ParticleEmitter : Entity
   {
-    public int Capacity { get; }
+    public int Capacity { get; set; } = 100;
     private List<Particle> Particles { get; }
     public Texture2D texture;
 
@@ -60,12 +60,9 @@ namespace FebEngine
 
     private float emissionTimer;
 
-    public ParticleEmitter(int capacity, bool startEmitting, EmitterShape shape)
+    public ParticleEmitter()
     {
-      Capacity = capacity;
       Particles = new List<Particle>(Capacity);
-
-      this.shape = shape;
 
       for (int i = 0; i < Capacity; i++)
       {
@@ -75,10 +72,10 @@ namespace FebEngine
         p.Kill();
       }
 
-      if (startEmitting)
-      {
-        Start();
-      }
+      //if (startEmitting)
+      //{
+      //  Start();
+      //}
     }
 
     public void SetTexture(SpriteSheet texture)
@@ -211,9 +208,10 @@ namespace FebEngine
       {
         if (particle.isAlive)
         {
-          int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
+          Debug.DrawPoint(particle.position);
+          //int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
 
-          renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
+          //renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
           //spriteBatch.Draw(texture, particle.position, particle.color);
         }
       }

@@ -65,21 +65,21 @@ namespace FebEngine
         // The volume (0-100) of all audio playback.
         case "MasterVolume":
           {
-            if (int.TryParse(parameter, out int v)) ;//Game.Audio.MasterVolume = v;
+            if (int.TryParse(parameter, out int v)) Audio.MasterMixer.Volume = v;
 
             break;
           }
         // The volume (0-100) of music playback.
         case "MusicVolume":
           {
-            if (int.TryParse(parameter, out int v)) ;//Game.Audio.MusicVolume = v;
+            if (int.TryParse(parameter, out int v)) Audio.MusicMixer.Volume = v;
 
             break;
           }
         // The volume (0-100) of sound effect playback.
         case "SoundEffectVolume":
           {
-            if (int.TryParse(parameter, out int v)) ;//Game.Audio.SoundEffectVolume = v;
+            if (int.TryParse(parameter, out int v)) Audio.SoundEffectMixer.Volume = v;
 
             break;
           }
@@ -125,12 +125,31 @@ namespace FebEngine
         if (line.StartsWith("//")) continue;
         if (string.IsNullOrEmpty(line)) continue;
 
-        string command = line.Substring(0, line.IndexOf(" "));
-        string[] inputs = line.Replace(command + " = ", "").Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string inputType = line.Substring(0, line.IndexOf(" "));
 
-        foreach (var input in inputs)
+        if (inputType == "Key")
         {
-          Game.inputManager.AddBinding(command, input);
+          string commandInput = line.Replace("Key ", "");
+
+          string command = commandInput.Substring(0, commandInput.IndexOf(" "));
+          string[] inputs = commandInput.Replace(command + " = ", "").Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+          foreach (var input in inputs)
+          {
+            Game.inputManager.AddKeyBinding(command, input);
+          }
+        }
+        else if (inputType == "Pad")
+        {
+          string commandInput = line.Replace("Pad ", "");
+
+          string command = commandInput.Substring(0, commandInput.IndexOf(" "));
+          string[] inputs = commandInput.Replace(command + " = ", "").Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+          foreach (var input in inputs)
+          {
+            Game.inputManager.AddPadBinding(command, input);
+          }
         }
       }
     }

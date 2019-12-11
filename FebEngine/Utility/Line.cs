@@ -9,9 +9,9 @@ namespace FebEngine
     public Vector2 start;
     public Vector2 end;
 
-    public static bool Intersect(Line a, Line b, out Vector2 point)
+    public static bool Intersect(Line a, Line b, out Vector2 intersectionPoint)
     {
-      point = Vector2.Zero;
+      intersectionPoint = Vector2.Zero;
 
       float x1 = a.start.X;
       float y1 = a.start.Y;
@@ -23,28 +23,66 @@ namespace FebEngine
       float x4 = b.end.X;
       float y4 = b.end.Y;
 
-      float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-      if (denominator == 0) return false;
+      float deltaACy = a.start.Y - b.start.Y;
+      float deltaDCx = b.end.X - b.start.X;
+      float deltaACx = a.start.X - b.start.X;
+      float deltaDCy = b.end.Y - b.start.Y;
+      float deltaBAx = a.end.X - a.start.X;
+      float deltaBAy = a.end.Y - a.start.Y;
 
-      float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
-      float u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
+      float denominator = deltaBAx * deltaDCy - deltaBAy * deltaDCx;
+      float numerator = deltaACy * deltaDCx - deltaACx * deltaDCy;
 
-      // If the lines intersect...
-      if (t > 0 && t < 1 && u > 0)
+      if (denominator == 0)
       {
-        float hitPointX = x1 + t * (x2 - x1);
-        float hitPointY = y1 + t * (y2 - y1);
-        point = new Vector2(hitPointX, hitPointY);
-
-        return true;
+        if (numerator == 0)
+        {
+          // collinear. Potentially infinite intersection points.
+          // Check and return one of them.
+          if (a.start.X >= b.start.X && a.start.X <= b.end.X)
+          {
+            intersectionPoint = a.start;
+            return true;
+          }
+          else if (b.start.X >= a.start.X && b.start.X <= a.end.X)
+          {
+            intersectionPoint = b.start;
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
+        else
+        { // parallel
+          return false;
+        }
       }
 
-      return false;
+      double r = numerator / denominator;
+      if (r < 0 || r > 1)
+      {
+        return false;
+      }
+
+      double s = (deltaACy * deltaBAx - deltaACx * deltaBAy) / denominator;
+      if (s < 0 || s > 1)
+      {
+        return false;
+      }
+
+      intersectionPoint = new Vector2((float)(a.start.X + r * deltaBAx), (float)(a.start.Y + r * deltaBAy));
+      return true;
     }
 
-    public static bool Intersect(Line line, Rectangle rect, out Line intersectionLine)
+    public static bool Intersect(Line line, Rectangle rect, out Vector2 intersectionPoint)
     {
-      intersectionLine = new Line(Vector2.Zero, Vector2.Zero);
+      bool intersect = false;
+      float shortestDistance = float.PositiveInfinity;
+      Vector2 closestPoint = line.start;
+
+      intersectionPoint = line.end;
 
       var topLeft = new Vector2(rect.X, rect.Y);
       var topRight = new Vector2(rect.X + rect.Width, rect.Y);
@@ -57,16 +95,59 @@ namespace FebEngine
       var right = new Line(topRight, bottomRight);
       var bottom = new Line(bottomLeft, bottomRight);
 
-      Debug.DrawLine(top);
-      Debug.DrawLine(left);
-      Debug.DrawLine(right);
-      Debug.DrawLine(bottom);
+      Vector2 point;
 
-      Debug.DrawLine(line);
+      var points = new List<Vector2>();
 
-      if (Intersect(line, top, out Vector2 point))
+      if (Intersect(line, top, out point))
       {
-        //Debug.DrawPoint(point);
+        intersect = true;
+
+        float d = Vector2.Distance(point, line.start);
+        if (d < shortestDistance)
+        {
+          shortestDistance = d;
+          closestPoint = point;
+        }
+      }
+      if (Intersect(line, left, out point))
+      {
+        intersect = true;
+
+        float d = Vector2.Distance(point, line.start);
+        if (d < shortestDistance)
+        {
+          shortestDistance = d;
+          closestPoint = point;
+        }
+      }
+      if (Intersect(line, right, out point))
+      {
+        intersect = true;
+
+        float d = Vector2.Distance(point, line.start);
+        if (d < shortestDistance)
+        {
+          shortestDistance = d;
+          closestPoint = point;
+        }
+      }
+      if (Intersect(line, bottom, out point))
+      {
+        intersect = true;
+
+        float d = Vector2.Distance(point, line.start);
+        if (d < shortestDistance)
+        {
+          shortestDistance = d;
+          closestPoint = point;
+        }
+      }
+
+      if (intersect)
+      {
+        intersectionPoint = closestPoint;
+
         return true;
       }
 
@@ -103,7 +184,7 @@ namespace FebEngine
         float dy = end.Y - start.Y;
         float dx = end.X - start.X;
         float theta = (float)Math.Atan2(dy, dx); // range (-PI, PI]
-        //theta *= 180 / (float)Math.PI; // rads to degs, range (-180, 180]
+                                                 //theta *= 180 / (float)Math.PI; // rads to degs, range (-180, 180]
 
         //if (theta < 0) theta = 360 + theta; // range [0, 360)
         return theta;

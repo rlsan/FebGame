@@ -51,7 +51,7 @@
     <Compile Include="Commands\Empty.cs" />
     <Compile Include="Core\Animator.cs" />
     <Compile Include="Core\Command.cs" />
-    <Compile Include="Core\AudioHandler.cs" />
+    <Compile Include="Core\Audio.cs" />
     <Compile Include="Core\Config.cs" />
     <Compile Include="Core\Factory.cs" />
     <Compile Include="Core\InputManager.cs" />

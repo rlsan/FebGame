@@ -10,6 +10,7 @@ namespace FebEngine
 
     public RenderManager renderManager;
     public InputManager inputManager;
+    public Audio audioManager;
     public StateManager stateManager;
     public WorldManager worldManager;
 
@@ -24,6 +25,7 @@ namespace FebEngine
 
       renderManager = new RenderManager(this);
       inputManager = new InputManager(this);
+      audioManager = new Audio(this);
       worldManager = new WorldManager(this);
       stateManager = new StateManager(this);
 

@@ -6,6 +6,8 @@ namespace FebEngine
 {
   public class Sprite : Entity
   {
+    public enum SpriteFacing { Left, Right };
+
     public delegate void CollisionEventHandler(object sender, CollisionArgs e);
 
     public event CollisionEventHandler Collision;
@@ -14,6 +16,8 @@ namespace FebEngine
 
     public event CollisionEventHandler TriggerStay;
 
+    public static Sprite Empty { get { return new Sprite(); } }
+
     public string SheetSuffix { get; set; }
     public string TexturePath { get; set; }
 
@@ -21,6 +25,8 @@ namespace FebEngine
     public Color Tint { get; set; }
     public Vector2 Origin { get; set; }
     public Rectangle Bounds { get; set; }
+
+    public SpriteFacing Facing { get; set; } = SpriteFacing.Right;
 
     public Animator Animations { get; } = new Animator();
     public Body Body { get; set; }
@@ -44,12 +50,12 @@ namespace FebEngine
       Animations.spriteSheet = texture;
     }
 
-    public void Kill()
+    public virtual void Kill()
     {
       isAlive = false;
     }
 
-    public void Revive()
+    public virtual void Revive()
     {
       isAlive = true;
     }
@@ -65,10 +71,14 @@ namespace FebEngine
       {
         if (Animations != null && Animations.current != null)
         {
-          int time = (int)(Time.CurrentTime * 1 * Animations.current.frames.Count) % Animations.current.frames.Count;
-          renderer.SpriteRender.Draw(Animations.current.frames[time], Position, Tint, 0, Scale.X, Scale.Y);
-          //renderer.SpriteBatch.Draw(Texture, Position - (Origin * Bounds.Size.ToVector2()), Tint);
-          //renderer.SpriteBatch.Draw(Texture, new Rectangle(Position.ToPoint(), Scale.ToPoint()), Tint);
+          if (Facing == SpriteFacing.Left)
+          {
+            renderer.SpriteRender.Draw(Animations.CurrentFrame, Position, Tint, Rotation, Scale.X, Scale.Y, SpriteEffects.FlipHorizontally);
+          }
+          else if (Facing == SpriteFacing.Right)
+          {
+            renderer.SpriteRender.Draw(Animations.CurrentFrame, Position, Tint, Rotation, Scale.X, Scale.Y);
+          }
         }
       }
     }

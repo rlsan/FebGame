@@ -1,7 +1,7 @@
 ﻿using FebEngine;
 using Microsoft.Xna.Framework;
 
-namespace FebGame.Entities
+namespace FebGame.Objects
 {
   public class Checkpoint : Sprite
   {

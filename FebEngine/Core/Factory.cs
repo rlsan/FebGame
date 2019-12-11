@@ -58,9 +58,19 @@ namespace FebEngine
       return entity;
     }
 
+    public T Sprite<T>(SpriteSheet spriteSheet) where T : Entity
+    {
+      var sprite = (Sprite)Activator.CreateInstance(typeof(T));
+
+      sprite.SetTexture(spriteSheet);
+
+      World.AddEntity(sprite, State);
+      return sprite as T;
+    }
+
     public ParticleEmitter Emitter(string name, string path, int capacity = 1000, bool startEmitting = true, EmitterShape emitterShape = EmitterShape.Circle)
     {
-      var entity = new ParticleEmitter(capacity, startEmitting, emitterShape);
+      var entity = new ParticleEmitter();
       entity.name = new StringBuilder(name);
       //entity.SetTexture(spriteSheetLoader.Load(path));
       entity.world = World;

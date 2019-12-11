@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TexturePackerLoader;
 
 namespace FebEngine
 {
   public class Animator
   {
-    public Dictionary<string, Animation> Animations { get; set; }
-
+    private Dictionary<string, Animation> Animations { get; set; }
     public SpriteSheet spriteSheet;
-
     public Animation current;
+
+    public SpriteFrame CurrentFrame
+    {
+      get
+      {
+        return current.frames[current.CurrentFrame];
+      }
+    }
 
     public Animator()
     {
@@ -38,7 +40,11 @@ namespace FebEngine
 
       if (animation != null)
       {
-        current = animation;
+        if (animation != current)
+        {
+          animation.startTime = Time.CurrentTime;
+          current = animation;
+        }
       }
     }
   }
@@ -48,7 +54,15 @@ namespace FebEngine
     public string Name { get; }
     public List<SpriteFrame> frames;
 
-    public int frame;
+    public float startTime;
+
+    public int CurrentFrame
+    {
+      get
+      {
+        return (int)((startTime + Time.CurrentTime) * Framerate) % frames.Count;
+      }
+    }
 
     public float Framerate { get; set; }
     public bool Loop { get; set; } = true;

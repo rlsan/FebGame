@@ -92,7 +92,7 @@ namespace FebGame.States
           if (canvas.MousePress)
           {
             //map.ObjectLayer.Add(mpos, "obj_checkpoint");
-            Entity e = world.AddEntity(new Entities.Checkpoint(), this);
+            Entity e = world.AddEntity(new Objects.Checkpoint(), this);
             e.Freeze();
             e.Position = worldMouse;
             entities.Add(e);

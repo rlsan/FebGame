@@ -34,6 +34,13 @@ namespace FebEngine
       return RandRange(-1, 1);
     }
 
+    public static Color RandomColor()
+    {
+      var c = new Color(Random(), Random(), Random());
+
+      return c;
+    }
+
     /// <summary>
     /// Returns a random value within a specific range.
     /// </summary>

@@ -15,6 +15,7 @@ namespace FebEngine
 
   public class Body
   {
+    public static Body Empty { get { return new Body(null); } }
     public int xOffset;
     public int yOffset;
     public int width;

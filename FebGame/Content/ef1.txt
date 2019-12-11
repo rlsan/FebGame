@@ -5,7 +5,7 @@
 # https://www.codeandweb.com/texturepacker/monogame
 #
 # Sprite sheet: ef1.png (864 x 1020)
-# $TexturePacker:SmartUpdate:a12df1a448d42f0677cfc954fb2866cf:43aaa126e67cb3bb17e8326aba1b9b42:599f33db16f6751d25a88f09e3328e45$
+# $TexturePacker:SmartUpdate:3d39ea2fe14e48ba54a101c3e1e29f2f:e5e6cb2231d08974e0fc32198bc0ddff:599f33db16f6751d25a88f09e3328e45$
 #
 
 Effect/BlueGlow;0;1;745;128;128;128;128;0.5;0.5

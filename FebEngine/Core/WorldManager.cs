@@ -20,12 +20,13 @@ namespace FebEngine
     public Camera camera;
     public GUICanvas canvas;
 
-    public AudioHandler audio;
+    public Factory Create { get; }
 
     public WorldManager(MainGame game) : base(game)
     {
       physics = new Physics(this);
       camera = new Camera();
+      //Create = new Factory(this,)
       base.Initialize();
     }
 
@@ -40,6 +41,7 @@ namespace FebEngine
     public Entity AddEntity(Entity entity, GameState state)
     {
       entity.world = this;
+      entity.State = state;
       entities.Add(entity, state);
       entity.Init();
       return entity;
