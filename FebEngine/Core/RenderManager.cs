@@ -44,6 +44,8 @@ namespace FebEngine
 
     private RenderTarget2D ViewRenderTarget;
 
+    public SpriteSheet effectSheet;
+
     public RenderManager(MainGame game) : base(game)
     {
       if (Instance == null)
@@ -100,6 +102,9 @@ namespace FebEngine
 
     public override void LoadContent(ContentManager content)
     {
+      var spriteSheetLoader = new SpriteSheetLoader(content, RenderManager.Instance.GraphicsDevice);
+      effectSheet = spriteSheetLoader.Load("ef1");
+
       Debug.spriteFont = content.Load<SpriteFont>("ui");
       //Debug.fontTexture = content.Load<Texture2D>("debug2");
     }

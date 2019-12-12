@@ -9,6 +9,7 @@ namespace FebEngine
   {
     public List<Tilemap> Tilemaps { get; set; } = new List<Tilemap>();
     public Tilemap CurrentMap { get; set; }
+    public int CurrentMapID { get; set; }
 
     public void Load(string path)
     {
@@ -55,6 +56,7 @@ namespace FebEngine
       if (id > Tilemaps.Count - 1 || id < 0) return;
 
       CurrentMap = Tilemaps[id];
+      CurrentMapID = id;
     }
 
     public override void Draw(RenderManager renderer, GameTime gameTime)

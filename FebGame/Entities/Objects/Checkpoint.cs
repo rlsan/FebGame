@@ -14,9 +14,5 @@ namespace FebGame.Objects
       Body.isDynamic = false;
       Body.SetBounds(0, 0, 100, 100);
     }
-
-    public override void Update(GameTime gameTime)
-    {
-    }
   }
 }

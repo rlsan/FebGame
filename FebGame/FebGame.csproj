@@ -87,6 +87,7 @@
     <Compile Include="Entities\Emitters\Stars.cs" />
     <Compile Include="Entities\Objects\Butterfly.cs" />
     <Compile Include="Entities\Objects\Checkpoint.cs" />
+    <Compile Include="Entities\Objects\Pepper.cs" />
     <Compile Include="Entities\Objects\Player.cs" />
     <Compile Include="Entities\Objects\Spring.cs" />
     <Compile Include="Game1.cs" />

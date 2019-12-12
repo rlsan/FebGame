@@ -15,10 +15,11 @@ namespace FebGame.Objects
 
     private float jumpTime = 0.3f;
     private float jumpTimer;
+    private float timeSinceJump;
 
     private Vector2 moveDirection;
 
-    private float coyoteTime = 0.16f;
+    private float coyoteTime = 0.1f;
     private float coyoteTimer;
 
     private bool wasGrounded = false;
@@ -32,6 +33,10 @@ namespace FebGame.Objects
     private bool pepperEffectActive = false;
     private float pepperEffectTime = 0.5f;
 
+    public Vector2 respawnPoint;
+    public string respawnMapGroupName;
+    public int respawnMapNumber;
+
     private Emitters.Stars p;
 
     private PlayerState DetermineState()
@@ -44,7 +49,7 @@ namespace FebGame.Objects
     {
       Animations.Add("Idle", "Sprite/RedBall");
 
-      Body.SetBounds(0, 0, 40, 70);
+      Body.SetBounds(0, -4, 40, 60);
       tag = "Player";
       InputManager.player1 = this;
 
@@ -62,6 +67,8 @@ namespace FebGame.Objects
 
       if (state == PlayerState.Grounded)
       {
+        timeSinceJump = 0;
+
         if (!wasGrounded)
         {
           p.Emit(10, new Vector2(Body.Bounds.Center.X, Body.Bounds.Bottom));
@@ -75,6 +82,8 @@ namespace FebGame.Objects
       }
       else if (state == PlayerState.Airborne)
       {
+        timeSinceJump += Time.DeltaTime;
+
         if (Body.blocked.Up)
         {
           if (!hitCeiling)
@@ -104,7 +113,7 @@ namespace FebGame.Objects
 
             Audio.PlaySound("superjump");
           }
-          world.camera.Shake(15);
+
           Body.velocity.Y = -5f;
         }
         if (pepperTimer <= -pepperEffectTime)
@@ -120,11 +129,24 @@ namespace FebGame.Objects
 
     public override void OnTriggerStay(CollisionArgs collision)
     {
-      if (collision.Other.label == "obj_pepper")
+      if (collision.Other is Checkpoint c)
       {
-        if (collision.Other.isAlive)
+        respawnPoint = c.Position;
+
+        var mg = world.GetEntity<MapGroup>();
+
+        if (mg != null)
         {
-          collision.Other.Kill();
+          //respawnMapGroupName = mg.name.ToString();
+          respawnMapNumber = mg.CurrentMapID;
+        }
+      }
+
+      if (collision.Other is Pepper p)
+      {
+        if (p.isAlive)
+        {
+          p.Kill();
 
           hasPepper = true;
           pepperTimer = pepperTime;
@@ -138,9 +160,23 @@ namespace FebGame.Objects
 
     public override void OnCollision(CollisionArgs collision)
     {
-      if (state == PlayerState.Airborne && !collision.Other.Body.isTrigger)
+      if (collision.Other is Spring s)
       {
-        if (Body.OnWall && !hasHoisted)
+        if (hasJumped)
+        {
+          Audio.PlaySound("superjump");
+          Body.velocity.Y = -s.springForce;
+        }
+        else
+        {
+          Audio.PlaySound("bounce");
+          Body.velocity.Y = -jumpForce * 0.7f;
+        }
+      }
+
+      if (state == PlayerState.Airborne)
+      {
+        if (Body.OnWall && !hasHoisted && timeSinceJump > .2f)
         {
           if (Body.velocity.Y < 1)
           {
@@ -148,14 +184,8 @@ namespace FebGame.Objects
             {
               Body.velocity.Y = Math.Min(-jumpForce, Body.velocity.Y - 1);
 
-              if (Body.blocked.Right)
-              {
-                p.Emit(10, new Vector2(Body.Bounds.Right, Body.Bounds.Center.Y));
-              }
-              else if (Body.blocked.Left)
-              {
-                p.Emit(10, new Vector2(Body.Bounds.Left, Body.Bounds.Center.Y));
-              }
+              if (Body.blocked.Right) p.Emit(10, new Vector2(Body.Bounds.Right, Body.Bounds.Center.Y));
+              else if (Body.blocked.Left) p.Emit(10, new Vector2(Body.Bounds.Left, Body.Bounds.Center.Y));
 
               Audio.PlaySound("giddup");
 
@@ -183,8 +213,11 @@ namespace FebGame.Objects
         {
           if (state == PlayerState.Grounded)
           {
-            Body.velocity.Y += -jumpForce;
-            Audio.PlaySound("jump");
+            if (Body.velocity.Y >= -jumpForce)
+            {
+              Body.velocity.Y = -jumpForce;
+              Audio.PlaySound("jump");
+            }
           }
           if (state == PlayerState.Airborne)
           {

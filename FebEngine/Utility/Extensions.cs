@@ -31,5 +31,23 @@ namespace FebEngine
     {
       return Math.Abs(a.X - b.X) <= e && Math.Abs(a.Y - b.Y) <= e;
     }
+
+    public static Rectangle Clamp(this Rectangle smaller, Rectangle larger)
+    {
+      Rectangle rect;
+
+      rect.X = Math.Max(smaller.X, larger.X);
+      rect.Y = Math.Max(smaller.Y, larger.Y);
+
+      rect.Width = smaller.Width;
+      rect.Height = smaller.Height;
+      /*
+      rect.X = Math.Max(smaller.X, larger.X);
+      rect.Y = Math.Max(smaller.Y, larger.Y);
+      rect.Width = Math.Min(smaller.X + smaller.Width, larger.X + larger.Width) - rect.X;
+      rect.Height = Math.Min(smaller.Y + smaller.Height, larger.Y + larger.Height) - rect.Y;
+      */
+      return rect;
+    }
   }
 }

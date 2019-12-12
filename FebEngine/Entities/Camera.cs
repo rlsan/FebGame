@@ -15,6 +15,18 @@ namespace FebEngine
     private float shakeAmount;
     private float shakeTimer;
 
+    public Rectangle Viewport
+    {
+      get
+      {
+        return new Rectangle(
+        (int)(Position.X - (Bounds.Width / scaleFactor / 2)),
+        (int)(Position.Y - (Bounds.Height / scaleFactor / 2)),
+        (int)(Bounds.Width / scaleFactor),
+        (int)(Bounds.Height / scaleFactor));
+      }
+    }
+
     public Camera()
     {
       Transform = new Matrix();

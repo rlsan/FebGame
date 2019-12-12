@@ -150,13 +150,14 @@ namespace FebEngine
 
                 bodyA.blocked.Right = true;
                 bodyA.Parent.OnCollision(e);
-
+                /*
                 e = new CollisionArgs();
                 e.Primary = bodyB.Parent;
                 e.Other = bodyA.Parent;
 
                 bodyB.blocked.Left = true;
                 bodyB.Parent.OnCollision(e);
+                */
               }
             }
           }
@@ -176,13 +177,14 @@ namespace FebEngine
                 bodyA.blocked.Left = true;
 
                 bodyA.Parent.OnCollision(e);
-
+                /*
                 e = new CollisionArgs();
                 e.Primary = bodyB.Parent;
                 e.Other = bodyA.Parent;
 
                 bodyB.blocked.Right = true;
                 bodyB.Parent.OnCollision(e);
+                */
               }
             }
           }
@@ -204,7 +206,7 @@ namespace FebEngine
               moveY = Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(bb2.Top - bb1.Bottom) - 1);
 
               if (moveY == 0)
-              {
+              {/*
                 e = new CollisionArgs();
                 e.Primary = bodyA.Parent;
                 e.Other = bodyB.Parent;
@@ -213,11 +215,12 @@ namespace FebEngine
                 bodyA.Parent.OnCollision(e);
 
                 e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
+                e.Primary = bodyB.Parent;
+                e.Other = bodyA.Parent;
 
                 bodyB.blocked.Up = true;
                 bodyB.Parent.OnCollision(e);
+                */
               }
             }
           }
@@ -230,7 +233,7 @@ namespace FebEngine
               moveY = -Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(bb2.Bottom - bb1.Top) - 1);
 
               if (moveY == 0)
-              {
+              {/*
                 e = new CollisionArgs();
                 e.Primary = bodyA.Parent;
                 e.Other = bodyB.Parent;
@@ -239,16 +242,37 @@ namespace FebEngine
                 bodyA.Parent.OnCollision(e);
 
                 e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
+                e.Primary = bodyB.Parent;
+                e.Other = bodyA.Parent;
 
                 bodyB.blocked.Down = true;
                 bodyB.Parent.OnCollision(e);
+                */
               }
             }
           }
 
           bodyA.velocity.Y = moveY;
+
+          if (moveY == 0)
+          {
+            if (!bodyB.isTrigger && !bodyA.isTrigger)
+            {
+              e = new CollisionArgs();
+              e.Primary = bodyA.Parent;
+              e.Other = bodyB.Parent;
+
+              bodyA.blocked.Down = true;
+              bodyA.Parent.OnCollision(e);
+
+              e = new CollisionArgs();
+              e.Primary = bodyB.Parent;
+              e.Other = bodyA.Parent;
+
+              bodyB.blocked.Up = true;
+              bodyB.Parent.OnCollision(e);
+            }
+          }
         }
       }
     }

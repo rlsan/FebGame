@@ -110,13 +110,26 @@ namespace FebEngine
 
       foreach (object ent in entities.Keys)
       {
-        if (ent is T)
+        if (ent is T t)
         {
-          foundEntities.Add((T)ent);
+          foundEntities.Add(t);
         }
       }
 
       return foundEntities;
+    }
+
+    /// <summary>
+    /// Returns a the first instance of the type specified.
+    /// </summary>
+    public T GetEntity<T>()
+    {
+      foreach (object ent in entities.Keys)
+      {
+        if (ent is T t) return t;
+      }
+
+      return default(T);
     }
   }
 }

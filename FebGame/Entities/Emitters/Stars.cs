@@ -11,6 +11,8 @@ namespace FebGame.Emitters
   {
     public Stars()
     {
+      var spriteSheetFramesPath = "Effect/WhitePuff";
+
       Capacity = 100;
       shape = EmitterShape.Circle;
       radius = 10;

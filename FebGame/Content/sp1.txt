@@ -5,7 +5,7 @@
 # https://www.codeandweb.com/texturepacker/monogame
 #
 # Sprite sheet: sp1.png (888 x 484)
-# $TexturePacker:SmartUpdate:3d39ea2fe14e48ba54a101c3e1e29f2f:e5e6cb2231d08974e0fc32198bc0ddff:599f33db16f6751d25a88f09e3328e45$
+# $TexturePacker:SmartUpdate:6584b9b1d954c4f2f6c058e3676b7f9a:274b2a635e7371b5518dd0117cfbe393:599f33db16f6751d25a88f09e3328e45$
 #
 
 Sprite/Arrow;0;133;436;62;46;62;46;0.5;0.5

@@ -4,7 +4,7 @@ namespace FebGame.Objects
 {
   public class Spring : Sprite
   {
-    public float springForce = 3;
+    public float springForce = 5.5f;
 
     public override void Init()
     {
@@ -21,12 +21,12 @@ namespace FebGame.Objects
     public override void OnCollision(CollisionArgs collision)
     {
       base.OnCollision(collision);
-
+      /*
       if (collision.Other.Body.blocked.Down)
       {
         Audio.PlaySound("bounce");
-        collision.Other.Body.velocity.Y = -springForce;
       }
+      */
     }
   }
 }

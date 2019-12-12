@@ -20,6 +20,8 @@ namespace FebGame.Objects
 
     public override void Init()
     {
+      label = "obj_butterfly";
+
       Animations.Add("Idle", "Sprite/Butterfly/Idle", 30);
       Animations.Add("Flying", "Sprite/Butterfly/Flying", 100);
 
@@ -38,7 +40,7 @@ namespace FebGame.Objects
       {
         Facing = SpriteFacing.Right;
       }
-      else
+      else if (Body.velocity.X < 0)
       {
         Facing = SpriteFacing.Left;
       }
@@ -78,7 +80,7 @@ namespace FebGame.Objects
       {
         if (!isExcited)
         {
-          Audio.PlaySound("flee", 0.5f);
+          Audio.PlaySound("flee", 0.33f);
           excitedTimer = excitedTime;
           isExcited = true;
 

@@ -199,9 +199,6 @@ namespace FebEngine
 
     public override void Draw(RenderManager renderer, GameTime gameTime)
     {
-      int framerate = 30;
-      //var spriteRender = new SpriteRender(spriteBatch);
-
       //int frames = (int)(Time.CurrentTime * framerate % spriteSheet.spriteList.Count);
 
       foreach (var particle in Particles)
@@ -209,10 +206,14 @@ namespace FebEngine
         if (particle.isAlive)
         {
           Debug.DrawPoint(particle.position);
-          //int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
 
-          //renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
-          //spriteBatch.Draw(texture, particle.position, particle.color);
+          if (spriteSheet != null)
+          {
+            int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
+
+            renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
+            //spriteBatch.Draw(texture, particle.position, particle.color);
+          }
         }
       }
     }

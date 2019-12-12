@@ -359,6 +359,24 @@ namespace TexDef
 		public const string Effect_Snowflake = "Effect/Snowflake";
 		public const string Effect_Stone = "Effect/Stone";
 		public const string Effect_WhiteGlow = "Effect/WhiteGlow";
+		public const string Effect_WhitePuff_0 = "Effect/WhitePuff/0";
+		public const string Effect_WhitePuff_1 = "Effect/WhitePuff/1";
+		public const string Effect_WhitePuff_2 = "Effect/WhitePuff/2";
+		public const string Effect_WhitePuff_3 = "Effect/WhitePuff/3";
+		public const string Effect_WhitePuff_4 = "Effect/WhitePuff/4";
+		public const string Effect_WhitePuff_5 = "Effect/WhitePuff/5";
+		public const string Effect_WhitePuff_6 = "Effect/WhitePuff/6";
+		public const string Effect_WhitePuff_7 = "Effect/WhitePuff/7";
+		public const string Effect_WhitePuff_8 = "Effect/WhitePuff/8";
+		public const string Effect_WhitePuff_9 = "Effect/WhitePuff/9";
+		public const string Effect_WhitePuff_10 = "Effect/WhitePuff/10";
+		public const string Effect_WhitePuff_11 = "Effect/WhitePuff/11";
+		public const string Effect_WhitePuff_12 = "Effect/WhitePuff/12";
+		public const string Effect_WhitePuff_13 = "Effect/WhitePuff/13";
+		public const string Effect_WhitePuff_14 = "Effect/WhitePuff/14";
+		public const string Effect_WhitePuff_15 = "Effect/WhitePuff/15";
+		public const string Effect_WhitePuff_16 = "Effect/WhitePuff/16";
+		public const string Effect_WhitePuff_17 = "Effect/WhitePuff/17";
 		public const string Effect_WhiteSmoke = "Effect/WhiteSmoke";
 		public const string Effect_YellowGlow = "Effect/YellowGlow";
 	}
