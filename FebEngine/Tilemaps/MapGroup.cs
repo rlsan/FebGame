@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class MapGroup : Entity
   {

@@ -1,4 +1,4 @@
-﻿namespace FebEngine.Tiles
+﻿namespace Fubar.Tiles
 {
   public class NetBrush : TileBrush
   {

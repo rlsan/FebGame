@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Sprite : Entity
   {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using TexturePackerLoader;
 using System.IO;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUICanvas : Entity
   {
@@ -26,11 +26,20 @@ namespace FebEngine.GUI
     public MouseState mouse;
     public KeyboardState keyboard;
 
-    public bool MousePress { get; set; }
+    public Camera camera;
+
+    public bool IsMousePressed { get; set; }
     public bool MouseRelease { get; set; }
     public bool DoubleMousePress { get; set; }
     public bool MouseDown { get; set; }
     public bool MouseUp { get; set; }
+
+    public Vector2 pressedMousePosition;
+
+    public bool RightMousePress { get; set; }
+    public bool RightMouseRelease { get; set; }
+    public bool RightMouseDown { get; set; }
+    public bool RightMouseUp { get; set; }
 
     public bool KeyboardAccept { get; set; }
     public bool KeyboardCancel { get; set; }
@@ -42,6 +51,7 @@ namespace FebEngine.GUI
     public GUIElement activeElement;
 
     private bool hasClicked;
+    private bool rightHasClicked;
     private bool hasKey;
     private float doubleClickTimer = 0;
     private float doubleClickDelay = .3f;
@@ -154,9 +164,11 @@ namespace FebEngine.GUI
     {
       mouse = Mouse.GetState();
 
+      // Left
+
       MouseDown = mouse.LeftButton == ButtonState.Pressed;
       MouseUp = !MouseDown;
-      MousePress = false;
+      IsMousePressed = false;
       MouseRelease = false;
       DoubleMousePress = false;
 
@@ -167,7 +179,8 @@ namespace FebEngine.GUI
         if (!hasClicked)
         {
           hasClicked = true;
-          MousePress = true;
+          IsMousePressed = true;
+          //OnMousePressed(e);
         }
       }
       else
@@ -179,10 +192,34 @@ namespace FebEngine.GUI
         }
       }
 
-      if (MousePress)
+      if (IsMousePressed)
       {
         if (doubleClickTimer > 0) DoubleMousePress = true;
         else doubleClickTimer = doubleClickDelay;
+      }
+
+      // Right
+
+      RightMouseDown = mouse.RightButton == ButtonState.Pressed;
+      RightMouseUp = !RightMouseDown;
+      RightMousePress = false;
+      RightMouseRelease = false;
+
+      if (RightMouseDown)
+      {
+        if (!rightHasClicked)
+        {
+          rightHasClicked = true;
+          RightMousePress = true;
+        }
+      }
+      else
+      {
+        if (rightHasClicked)
+        {
+          rightHasClicked = false;
+          RightMouseRelease = true;
+        }
       }
     }
 
@@ -258,7 +295,7 @@ namespace FebEngine.GUI
             element.OnRelease();
           }
 
-          if (MousePress)
+          if (IsMousePressed)
           {
             element.isPressed = true;
             element.OnPress(mouse.Position);
@@ -283,7 +320,7 @@ namespace FebEngine.GUI
         }
       }
 
-      if (MousePress && nothingSelected) activeElement = null;
+      if (IsMousePressed && nothingSelected) activeElement = null;
     }
 
     public void BringToTop(GUIElement element)
@@ -315,5 +352,28 @@ namespace FebEngine.GUI
         //Debug.DrawRect(activeElement.bounds);
       }
     }
+
+    public bool DoMouse(out Vector2 startPosition, out Vector2 currentPosition)
+    {
+      if (IsMousePressed || RightMousePress) pressedMousePosition = mouse.Position.ToVector2();
+
+      startPosition = pressedMousePosition;
+      currentPosition = mouse.Position.ToVector2();
+
+      return MouseDown || MouseRelease || RightMouseDown || RightMouseRelease;
+    }
+
+    private void OnMousePressed(MouseEventArgs e)
+    {
+      MousePressed?.Invoke(this, e);
+    }
+
+    public event EventHandler<MouseEventArgs> MousePressed;
+  }
+
+  public class MouseEventArgs : EventArgs
+  {
+    public Vector2 StartPosition { get; set; }
+    public Vector2 CurrentPosition { get; set; }
   }
 }

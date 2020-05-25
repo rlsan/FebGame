@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine
+namespace Fubar
 {
   public class CollisionArgs : EventArgs
   {
@@ -94,6 +94,16 @@ namespace FebEngine
       {
         collisionLayers.Add(layers[i]);
       }
+    }
+
+    public void SetVelocity(float newVelocityX, float newVelocityY)
+    {
+      velocity = new Vector2(newVelocityX, newVelocityY);
+    }
+
+    public void AddVelocity(float newVelocityX, float newVelocityY)
+    {
+      velocity += new Vector2(newVelocityX, newVelocityY);
     }
 
     public void AddToLayer(int layer)

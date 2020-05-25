@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class RenderManager : Manager
   {
@@ -80,8 +80,8 @@ namespace FebEngine
       SetupDebug();
 
       // Remove these two lines if weird time-based stuff starts happening.
-      Graphics.SynchronizeWithVerticalRetrace = false;
-      Game.IsFixedTimeStep = false;
+      //Graphics.SynchronizeWithVerticalRetrace = false;
+      //Game.IsFixedTimeStep = false;
 
       base.Initialize();
     }
@@ -115,7 +115,7 @@ namespace FebEngine
 
       GraphicsDevice.SetRenderTarget(ViewRenderTarget);
 
-      GraphicsDevice.Clear(new Color(0, 0, 0));
+      GraphicsDevice.Clear(Color.CornflowerBlue);
 
       foreach (var state in Game.stateManager.states.Values)
       {
@@ -127,6 +127,26 @@ namespace FebEngine
 
           foreach (KeyValuePair<Entity, GameState> entity in Game.worldManager.entities)
           {
+            if (entity.Key is ParticleEmitter p)
+            {
+              if (p.spriteSheet == null)
+              {
+                p.spriteSheet = effectSheet;
+
+                var frames = new List<SpriteFrame>();
+
+                foreach (var item in p.spriteSheet.spriteList)
+                {
+                  if (item.Key.StartsWith(p.spriteSheetFramesPath))
+                  {
+                    frames.Add(item.Value);
+                  }
+                }
+
+                p.frames = frames;
+              }
+            }
+
             // Draw if the entity's state matches the state being iterated on.
             if (entity.Value == state)
             {

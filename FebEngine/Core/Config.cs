@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Config
   {

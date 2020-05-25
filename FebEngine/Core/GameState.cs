@@ -1,10 +1,10 @@
-﻿using FebEngine.GUI;
+﻿using Fubar.GUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace FebEngine
+namespace Fubar
 {
   public abstract class GameState
   {
@@ -60,6 +60,11 @@ namespace FebEngine
       //canvas = null;
       Camera.Unfollow();
       canvas = new GUICanvas(0, 0);
+
+      foreach (var item in world.GetEntities<Entity>())
+      {
+        if (item.State == this) item.Destroy();
+      }
 
       Console.WriteLine("Unloaded state: {0}", name);
     }

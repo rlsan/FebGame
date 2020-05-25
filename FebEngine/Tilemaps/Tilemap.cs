@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Tilemap : Entity
   {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUITextPrompt : GUIWindow
   {

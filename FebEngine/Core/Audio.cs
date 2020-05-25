@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Audio : Manager
   {
@@ -39,6 +39,11 @@ namespace FebEngine
       soundEffects.Add("land", content.Load<SoundEffect>("sfx/land"));
       soundEffects.Add("flee", content.Load<SoundEffect>("sfx/flee"));
       soundEffects.Add("hitCeiling", content.Load<SoundEffect>("sfx/ceilingHit"));
+      soundEffects.Add("heavyHit1", content.Load<SoundEffect>("sfx/heavyHit"));
+      soundEffects.Add("heavyHit2", content.Load<SoundEffect>("sfx/heavyHit2"));
+      soundEffects.Add("heavyHit3", content.Load<SoundEffect>("sfx/heavyHit3"));
+      soundEffects.Add("exit2", content.Load<SoundEffect>("sfx/exit2"));
+      soundEffects.Add("woosh", content.Load<SoundEffect>("sfx/woosh"));
     }
 
     public override void Update(GameTime gameTime)

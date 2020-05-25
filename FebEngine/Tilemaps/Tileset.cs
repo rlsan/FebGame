@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using FebEngine.Tiles;
+using Fubar.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Tileset
   {

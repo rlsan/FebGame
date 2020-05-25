@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUIFileDialog : GUIWindow
   {

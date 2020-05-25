@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace FebEngine
+namespace Fubar
 {
   public abstract class Manager
   {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class Extensions
   {
@@ -41,6 +41,15 @@ namespace FebEngine
 
       rect.Width = smaller.Width;
       rect.Height = smaller.Height;
+
+      if (smaller.Right > larger.Right)
+      {
+        rect.X = larger.Right - smaller.Width;
+      }
+      if (smaller.Bottom > larger.Bottom)
+      {
+        rect.Y = larger.Bottom - smaller.Height;
+      }
       /*
       rect.X = Math.Max(smaller.X, larger.X);
       rect.Y = Math.Max(smaller.Y, larger.Y);

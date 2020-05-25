@@ -1,12 +1,12 @@
-﻿using FebEngine.GUI;
-using FebEngine.Tiles;
+﻿using Fubar.GUI;
+using Fubar.Tiles;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using TexturePackerLoader;
 using System;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Factory
   {

@@ -1,4 +1,4 @@
-﻿using FebEngine.Tiles;
+﻿using Fubar.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.IO.Compression;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class GroupIO
   {

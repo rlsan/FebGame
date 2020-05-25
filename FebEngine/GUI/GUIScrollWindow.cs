@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUIScrollWindow<T> : GUIContainer
   {

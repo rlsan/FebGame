@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class Mathf
   {

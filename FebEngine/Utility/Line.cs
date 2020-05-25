@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Line
   {
@@ -188,6 +188,38 @@ namespace FebEngine
 
         //if (theta < 0) theta = 360 + theta; // range [0, 360)
         return theta;
+      }
+    }
+
+    public Rectangle Bounds
+    {
+      get
+      {
+        var rect = new Rectangle();
+        float width = end.X - start.X;
+        float height = end.Y - start.Y;
+
+        if (start.X < end.X)
+        {
+          rect.X = (int)start.X;
+          rect.Width = (int)width;
+        }
+        else
+        {
+          rect.X = (int)(start.X + width);
+          rect.Width = -(int)width;
+        }
+        if (start.Y < end.Y)
+        {
+          rect.Y = (int)start.Y;
+          rect.Height = (int)height;
+        }
+        else
+        {
+          rect.Y = (int)(start.Y + height);
+          rect.Height = -(int)height;
+        }
+        return rect;
       }
     }
 

@@ -1,4 +1,4 @@
-﻿namespace FebEngine
+﻿namespace Fubar
 {
   public abstract class Command
   {

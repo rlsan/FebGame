@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace FebEngine
+namespace Fubar
 {
   public class TilemapLayer
   {

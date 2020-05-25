@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace FebEngine.Tiles
+namespace Fubar.Tiles
 {
   public class AnimatedBrush : TileBrush
   {

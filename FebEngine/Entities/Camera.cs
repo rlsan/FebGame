@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Camera : Entity
   {

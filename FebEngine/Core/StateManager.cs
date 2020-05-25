@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine
+namespace Fubar
 {
   public class StateManager : Manager
   {
@@ -133,6 +133,10 @@ namespace FebEngine
           if (!state.Value.isLocked || ignoreLocked)
           {
             UnloadState(state.Key);
+            InputManager.player1 = null;
+            InputManager.player2 = null;
+            InputManager.player3 = null;
+            InputManager.player4 = null;
           }
         }
       }

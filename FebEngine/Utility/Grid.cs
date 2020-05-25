@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Grid<T> : IEnumerable<T>
   {
-    private List<List<T>> rows = new List<List<T>>();
+    public List<List<T>> rows = new List<List<T>>();
 
     public int Width
     {

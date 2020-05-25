@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Animator
   {
@@ -20,6 +20,11 @@ namespace FebEngine
     public Animator()
     {
       Animations = new Dictionary<string, Animation>();
+    }
+
+    public bool IsAnimationPlaying(string animationName)
+    {
+      return current.Name == animationName;
     }
 
     public void Add(string name, string path, float framerate = 12, bool loop = true)
@@ -44,42 +49,6 @@ namespace FebEngine
         {
           animation.startTime = Time.CurrentTime;
           current = animation;
-        }
-      }
-    }
-  }
-
-  public class Animation
-  {
-    public string Name { get; }
-    public List<SpriteFrame> frames;
-
-    public float startTime;
-
-    public int CurrentFrame
-    {
-      get
-      {
-        return (int)((startTime + Time.CurrentTime) * Framerate) % frames.Count;
-      }
-    }
-
-    public float Framerate { get; set; }
-    public bool Loop { get; set; } = true;
-
-    public Animation(string name, string path, float framerate, bool loop, SpriteSheet spriteSheet)
-    {
-      Name = name;
-      Framerate = framerate;
-      Loop = loop;
-
-      frames = new List<SpriteFrame>();
-
-      foreach (var item in spriteSheet.spriteList)
-      {
-        if (item.Key.StartsWith(path))
-        {
-          frames.Add(item.Value);
         }
       }
     }

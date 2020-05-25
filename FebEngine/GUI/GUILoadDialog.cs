@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUILoadDialog : GUIFileDialog
   {

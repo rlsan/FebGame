@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class MapIO
   {

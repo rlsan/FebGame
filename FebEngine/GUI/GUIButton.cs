@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUIButton : GUIElement
   {

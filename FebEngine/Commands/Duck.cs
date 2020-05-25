@@ -1,4 +1,4 @@
-﻿namespace FebEngine.Commands
+﻿namespace Fubar.Commands
 {
   public class Duck : Command
   {

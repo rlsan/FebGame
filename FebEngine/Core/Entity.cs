@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Text;
-using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Entity
   {
@@ -16,13 +14,17 @@ namespace FebEngine
     public Vector2 Scale { get; set; } = Vector2.One;
     public float Rotation { get; set; }
 
+    // Whether or not the entity should be visible and update.
     public bool IsActive { get; set; } = true;
+
+    // Whether or not the entity should be visible.
+    public bool IsVisible { get; set; } = true;
+
+    // Whether or not the entity should update.
+    public bool IsFrozen { get; set; } = false;
 
     public int DrawOrder { get; set; } = 0;
     public bool FollowCamera { get; set; } = true;
-
-    public bool IsVisible { get; set; } = true;
-    public bool IsFrozen { get; set; } = false;
 
     public GameState State { get; set; }
 
@@ -31,6 +33,21 @@ namespace FebEngine
     public void Destroy()
     {
       world.RemoveEntity(this);
+    }
+
+    public void SetActive(bool tf)
+    {
+      IsActive = tf;
+    }
+
+    public void Activate()
+    {
+      IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+      IsActive = false;
     }
 
     public void Hide()

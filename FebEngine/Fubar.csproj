@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{851523F8-B48B-42FC-8A69-FA19FCA0C611}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fubar</RootNamespace>
+    <AssemblyName>Fubar</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ChaiFoxes.FMODAudio.Desktop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChaiFoxes.FMODAudio.Desktop.1.0.3\lib\net45\ChaiFoxes.FMODAudio.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\Duck.cs" />
+    <Compile Include="Commands\Attack.cs" />
+    <Compile Include="Commands\Interact.cs" />
+    <Compile Include="Commands\Empty.cs" />
+    <Compile Include="Core\Animation.cs" />
+    <Compile Include="Core\Animator.cs" />
+    <Compile Include="Core\Command.cs" />
+    <Compile Include="Core\Audio.cs" />
+    <Compile Include="Core\Config.cs" />
+    <Compile Include="Core\Factory.cs" />
+    <Compile Include="Core\InputManager.cs" />
+    <Compile Include="Entities\Actor.cs" />
+    <Compile Include="Entities\Camera.cs" />
+    <Compile Include="Entities\Group.cs" />
+    <Compile Include="Entities\ParticleEmitter.cs" />
+    <Compile Include="Entities\Sprite.cs" />
+    <Compile Include="Commands\Jump.cs" />
+    <Compile Include="Commands\Move.cs" />
+    <Compile Include="Physics\Physics.cs" />
+    <Compile Include="Physics\Ray.cs" />
+    <Compile Include="Physics\RaycastHit.cs" />
+    <Compile Include="TexturePackerLoader\SpriteFrame.cs" />
+    <Compile Include="TexturePackerLoader\SpriteRender.cs" />
+    <Compile Include="TexturePackerLoader\SpriteSheet.cs" />
+    <Compile Include="TexturePackerLoader\SpriteSheetLoader.cs" />
+    <Compile Include="Tilemaps\Brushes\NetBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\TileBrush.cs" />
+    <Compile Include="Tilemaps\GroupIO.cs" />
+    <Compile Include="Tilemaps\ObjectLayer.cs" />
+    <Compile Include="Tilemaps\TileGroup.cs" />
+    <Compile Include="Tilemaps\TilesetIO.cs" />
+    <Compile Include="Tilemaps\Warp.cs" />
+    <Compile Include="GUI\GUIBar.cs" />
+    <Compile Include="GUI\GUIFileDialog.cs" />
+    <Compile Include="GUI\GUITextPrompt.cs" />
+    <Compile Include="GUI\GUILoadDialog.cs" />
+    <Compile Include="GUI\GUIPrompt.cs" />
+    <Compile Include="GUI\GUISaveDialog.cs" />
+    <Compile Include="GUI\GUIScrollWindow.cs" />
+    <Compile Include="GUI\GUIText.cs" />
+    <Compile Include="GUI\GUITextField.cs" />
+    <Compile Include="GUI\GUIWindow.cs" />
+    <Compile Include="Utility\Debug.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\MainGame.cs" />
+    <Compile Include="Core\Manager.cs" />
+    <Compile Include="Physics\Body.cs" />
+    <Compile Include="Physics\QuadTree.cs" />
+    <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\Grid.cs" />
+    <Compile Include="Utility\Line.cs" />
+    <Compile Include="Utility\Mathf.cs" />
+    <Compile Include="Utility\RNG.cs" />
+    <Compile Include="Core\StateManager.cs" />
+    <Compile Include="Tilemaps\Brushes\AnimatedBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\ColumnBrush.cs" />
+    <Compile Include="Tilemaps\Tile.cs" />
+    <Compile Include="Tilemaps\Tilemap.cs" />
+    <Compile Include="Tilemaps\MapGroup.cs" />
+    <Compile Include="Tilemaps\MapIO.cs" />
+    <Compile Include="Tilemaps\Brushes\RandomBrush.cs" />
+    <Compile Include="Tilemaps\Brushes\RowBrush.cs" />
+    <Compile Include="Utility\Time.cs" />
+    <Compile Include="Entities\Timer.cs" />
+    <Compile Include="GUI\GUIButton.cs" />
+    <Compile Include="Core\GameState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\RenderManager.cs" />
+    <Compile Include="Tilemaps\TilemapLayer.cs" />
+    <Compile Include="Tilemaps\Tileset.cs" />
+    <Compile Include="GUI\GUIContainer.cs" />
+    <Compile Include="GUI\GUICanvas.cs" />
+    <Compile Include="GUI\GUIElement.cs" />
+    <Compile Include="Core\WorldManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

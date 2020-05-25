@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUISaveDialog : GUIFileDialog
   {

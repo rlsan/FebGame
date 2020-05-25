@@ -1,8 +1,8 @@
-﻿using FebEngine.Tiles;
+﻿using Fubar.Tiles;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Tile
   {

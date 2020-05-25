@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TexturePackerLoader;
 
-namespace FebEngine
+namespace Fubar
 {
   public class ParticleEmitter : Entity
   {
@@ -17,6 +17,7 @@ namespace FebEngine
 
     public SpriteSheet spriteSheet;
     public List<SpriteFrame> frames;
+    public string spriteSheetFramesPath;
 
     // Shape
 
@@ -205,13 +206,11 @@ namespace FebEngine
       {
         if (particle.isAlive)
         {
-          Debug.DrawPoint(particle.position);
-
           if (spriteSheet != null)
           {
             int time = (int)(particle.NormalizedLifetime * animationSpeed * frames.Count) % frames.Count;
 
-            renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale);
+            renderer.SpriteRender.Draw(frames[time], particle.position, particle.color, particle.rotation, particle.scale, particle.scale);
             //spriteBatch.Draw(texture, particle.position, particle.color);
           }
         }

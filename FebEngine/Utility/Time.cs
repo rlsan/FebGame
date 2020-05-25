@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class Time
   {

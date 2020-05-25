@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FebEngine.GUI
+namespace Fubar.GUI
 {
   public class GUIWindow : GUIElement
   {

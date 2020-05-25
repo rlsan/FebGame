@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
-namespace FebEngine
+namespace Fubar
 {
   public class Physics
   {
     /// <summary>
     /// The downward force of gravity.
     /// </summary>
-    public float gravity = 10;
+    public float gravity = 0.5f;
 
     /// <summary>
     /// How far from a body to check for collision.
     /// </summary>
     public int queryRange = 400;
+
+    /// <summary>
+    /// The size of the buffer between colliding objects.
+    /// </summary>
+    public int skinWidth = 1;
 
     private static WorldManager World { get; set; }
     private static QuadTree QuadTree { get; set; }
@@ -110,13 +115,14 @@ namespace FebEngine
     {
       var e = new CollisionArgs();
 
-      var bb1 = bodyA.Bounds;
-      var bb2 = bodyB.Bounds;
+      var AABB1 = bodyA.Bounds;
+      var AABB2 = bodyB.Bounds;
 
-      // Trigger collision
+      #region Trigger Collision
+
       if (bodyB.isTrigger)
       {
-        if (bb1.Intersects(bb2))
+        if (AABB1.Intersects(AABB2))
         {
           e.Primary = bodyA.Parent;
           e.Other = bodyB.Parent;
@@ -126,155 +132,125 @@ namespace FebEngine
           e.Other = bodyA.Parent;
           bodyB.Parent.OnCollision(e);
         }
+
+        return;
       }
-      else
+
+      #endregion Trigger Collision
+
+      #region X Collision
+
+      // If the both AABBs are overlapping on the X axis...
+      if (AABB1.Top < AABB2.Bottom && AABB1.Bottom > AABB2.Top)
       {
-        // X collision
-        if (bb1.Top < bb2.Bottom && bb1.Bottom > bb2.Top)
+        // Set the maximum distance this object can move to its current X velocity.
+        float maxDistanceX = bodyA.velocity.X;
+
+        // If moving right...
+        if (bodyA.velocity.X > 0)
         {
-          float moveX = bodyA.velocity.X;
-
-          // Moving right
-          if (bodyA.velocity.X > 0)
+          // Does the object have collision on the left side?
+          if (bodyB.collidesLeft)
           {
-            // Does the object have collision on the left side?
-            if (bodyB.collidesLeft)
-            {
-              moveX = Math.Min(Math.Abs(bodyA.velocity.X), Math.Abs(bb2.Left - bb1.Right) - 1);
+            // Limit the maximum distance to the distance between the object's right and the second object's left.
+            maxDistanceX = Math.Min(Math.Abs(bodyA.velocity.X), Math.Abs(AABB2.Left - AABB1.Right) - 1);
 
-              if (moveX == 0)
-              {
-                e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
-
-                bodyA.blocked.Right = true;
-                bodyA.Parent.OnCollision(e);
-                /*
-                e = new CollisionArgs();
-                e.Primary = bodyB.Parent;
-                e.Other = bodyA.Parent;
-
-                bodyB.blocked.Left = true;
-                bodyB.Parent.OnCollision(e);
-                */
-              }
-            }
-          }
-          //moving left
-          else if (bodyA.velocity.X < 0)
-          {
-            //does the object have collision on the right side?
-            if (bodyB.collidesRight)
-            {
-              moveX = -Math.Min(Math.Abs(bodyA.velocity.X), Math.Abs(bb2.Right - bb1.Left) - 1);
-
-              if (moveX == 0)
-              {
-                e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
-                bodyA.blocked.Left = true;
-
-                bodyA.Parent.OnCollision(e);
-                /*
-                e = new CollisionArgs();
-                e.Primary = bodyB.Parent;
-                e.Other = bodyA.Parent;
-
-                bodyB.blocked.Right = true;
-                bodyB.Parent.OnCollision(e);
-                */
-              }
-            }
-          }
-
-          bodyA.velocity.X = moveX;
-        }
-
-        //Y collision
-        if (bb1.Left < bb2.Right && bb1.Right > bb2.Left)
-        {
-          float moveY = bodyA.velocity.Y;
-
-          //moving down
-          if (bodyA.velocity.Y > 0)
-          {
-            //does the object have collision on the top?
-            if (bodyB.collidesUp)
-            {
-              moveY = Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(bb2.Top - bb1.Bottom) - 1);
-
-              if (moveY == 0)
-              {/*
-                e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
-
-                bodyA.blocked.Down = true;
-                bodyA.Parent.OnCollision(e);
-
-                e = new CollisionArgs();
-                e.Primary = bodyB.Parent;
-                e.Other = bodyA.Parent;
-
-                bodyB.blocked.Up = true;
-                bodyB.Parent.OnCollision(e);
-                */
-              }
-            }
-          }
-          //moving up
-          else if (bodyA.velocity.Y < 0)
-          {
-            //does the object have collision on the bottom?
-            if (bodyB.collidesDown)
-            {
-              moveY = -Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(bb2.Bottom - bb1.Top) - 1);
-
-              if (moveY == 0)
-              {/*
-                e = new CollisionArgs();
-                e.Primary = bodyA.Parent;
-                e.Other = bodyB.Parent;
-
-                bodyA.blocked.Up = true;
-                bodyA.Parent.OnCollision(e);
-
-                e = new CollisionArgs();
-                e.Primary = bodyB.Parent;
-                e.Other = bodyA.Parent;
-
-                bodyB.blocked.Down = true;
-                bodyB.Parent.OnCollision(e);
-                */
-              }
-            }
-          }
-
-          bodyA.velocity.Y = moveY;
-
-          if (moveY == 0)
-          {
-            if (!bodyB.isTrigger && !bodyA.isTrigger)
+            // If the objects are touching...
+            if (maxDistanceX == 0)
             {
               e = new CollisionArgs();
               e.Primary = bodyA.Parent;
               e.Other = bodyB.Parent;
 
-              bodyA.blocked.Down = true;
+              bodyA.blocked.Right = true;
               bodyA.Parent.OnCollision(e);
-
-              e = new CollisionArgs();
-              e.Primary = bodyB.Parent;
-              e.Other = bodyA.Parent;
-
-              bodyB.blocked.Up = true;
-              bodyB.Parent.OnCollision(e);
             }
           }
         }
+
+        // If moving left...
+        else if (bodyA.velocity.X < 0)
+        {
+          // Does the object have collision on the right side?
+          if (bodyB.collidesRight)
+          {
+            // Limit the maximum distance to the distance between the object's left and the second object's right.
+            maxDistanceX = -Math.Min(Math.Abs(bodyA.velocity.X), Math.Abs(AABB2.Right - AABB1.Left) - 1);
+
+            // If the objects are touching...
+            if (maxDistanceX == 0)
+            {
+              e = new CollisionArgs();
+              e.Primary = bodyA.Parent;
+              e.Other = bodyB.Parent;
+              bodyA.blocked.Left = true;
+
+              bodyA.Parent.OnCollision(e);
+            }
+          }
+        }
+
+        // Update the body's velocity to the new, limited velocity.
+        bodyA.velocity.X = maxDistanceX;
       }
+
+      #endregion X Collision
+
+      #region Y Collision
+
+      // If the both AABBs are overlapping on the Y axis...
+      if (AABB1.Left < AABB2.Right && AABB1.Right > AABB2.Left)
+      {
+        // Set the maximum distance this object can move to its current Y velocity.
+        float maxDistanceY = bodyA.velocity.Y;
+
+        // If moving down...
+        if (bodyA.velocity.Y > 0)
+        {
+          // Does the object have collision on the top?
+          if (bodyB.collidesUp)
+          {
+            // Limit the maximum distance to the distance between the object's bottom and the second object's top.
+            maxDistanceY = Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(AABB2.Top - AABB1.Bottom) - skinWidth);
+          }
+        }
+
+        // If moving up...
+        else if (bodyA.velocity.Y < 0)
+        {
+          // Does the object have collision on the bottom?
+          if (bodyB.collidesDown)
+          {
+            // Limit the maximum distance to the distance between the object's top and the second object's bottom.
+            maxDistanceY = -Math.Min(Math.Abs(bodyA.velocity.Y), Math.Abs(AABB2.Bottom - AABB1.Top) - skinWidth);
+          }
+        }
+
+        // Update the body's velocity to the new, limited velocity.
+        bodyA.velocity.Y = maxDistanceY;
+
+        if (maxDistanceY == 0)
+        {
+          if (!bodyB.isTrigger && !bodyA.isTrigger)
+          {
+            e = new CollisionArgs();
+            e.Primary = bodyA.Parent;
+            e.Other = bodyB.Parent;
+
+            bodyA.blocked.Down = true;
+            bodyA.Parent.OnCollision(e);
+
+            e = new CollisionArgs();
+            e.Primary = bodyB.Parent;
+            e.Other = bodyA.Parent;
+
+            bodyB.blocked.Up = true;
+            bodyB.Parent.OnCollision(e);
+          }
+        }
+      }
+
+      #endregion Y Collision
     }
 
     public void Update()
@@ -295,7 +271,7 @@ namespace FebEngine
         if (!body.enabled) continue;
 
         // Apply gravity.
-        if (body.hasGravity) body.velocity += Vector2.UnitY * gravity * Time.DeltaTime;
+        if (body.hasGravity) body.AddVelocity(0, gravity);
 
         // Limit velocity for each axis.
         body.velocity = body.velocity.Limit(body.maxVelocity);

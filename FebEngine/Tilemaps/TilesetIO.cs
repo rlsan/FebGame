@@ -1,4 +1,4 @@
-﻿using FebEngine.Tiles;
+﻿using Fubar.Tiles;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace FebEngine
+namespace Fubar
 {
   public static class TilesetIO
   {
